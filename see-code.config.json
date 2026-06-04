@@ -1,6 +1,14 @@
 {
   "scan": {
-    "exclude": ["tests/fixtures/**"],
+    "exclude": [
+      "tests/fixtures/**",
+      "eval-projects/**",
+      "external-projects/**",
+      "spring-petclinic/**",
+      "cleanarchitecture/**",
+      "mall/**",
+      "dubbo-samples/**"
+    ],
     "maxFileBytes": 1048576
   },
   "llm": {

@@ -22,12 +22,13 @@
 
 | File | Language | Bytes |
 | --- | --- | --- |
+| evaluations/spring-petclinic.md | markdown | 3903 |
 | package.json | json | 797 |
 | README.md | markdown | 5162 |
 | schema/result-diff.schema.json | json | 2493 |
 | schema/result.schema.json | json | 4702 |
 | scripts/secret-scan.mjs | javascript | 1382 |
-| see-code.config.json | json | 221 |
+| see-code.config.json | json | 391 |
 | SPEC.md | markdown | 8983 |
 | src/analyzer/analyzeRepo.ts | typescript | 2076 |
 | src/config/projectConfig.ts | typescript | 2238 |
@@ -53,5 +54,5 @@
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
 | tests/analyzeRepo.test.ts | typescript | 10373 |
-| tests/schemaContract.test.ts | typescript | 3265 |
+| tests/schemaContract.test.ts | typescript | 4473 |
 | tsconfig.json | json | 311 |

@@ -1,10 +1,28 @@
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { analyzeRepo } from "../src/analyzer/analyzeRepo.js";
+import { generateDocs } from "../src/docs/docsGenerator.js";
+import type { ModelConfig } from "../src/llm/modelConfig.js";
+import { writeResultJson } from "../src/output/resultJsonWriter.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const fixturesRoot = path.join(repoRoot, "tests", "fixtures");
+
+const noLlmConfig: ModelConfig = {
+  provider: "none",
+  model: "",
+  temperature: 0.1,
+  maxTokens: 700,
+  maxRetries: 0,
+  timeoutMs: 1_000,
+  concurrency: 1,
+  cacheEnabled: true,
+  enabled: false
+};
 
 interface JsonSchema {
   required?: string[];
@@ -14,11 +32,12 @@ interface JsonSchema {
   not?: JsonSchema;
 }
 
-test("current structured outputs satisfy the published schema contracts", async () => {
+test("generated structured outputs satisfy the published schema contracts", async () => {
   const resultSchema = await readJson<JsonSchema>("schema/result.schema.json");
   const diffSchema = await readJson<JsonSchema>("schema/result-diff.schema.json");
-  const result = await readJson<Record<string, unknown>>(".see-code/result.json");
-  const diff = await readJson<Record<string, unknown>>(".see-code/result-diff.json");
+  const generated = await generateFixtureOutput();
+  const result = await readJsonAt<Record<string, unknown>>(generated.resultPath);
+  const diff = await readJsonAt<Record<string, unknown>>(generated.diffPath);
 
   assertSchema(result, resultSchema, "result");
   assertSchema(diff, diffSchema, "resultDiff");
@@ -59,7 +78,28 @@ test("schema contracts expose stable top-level consumer fields", async () => {
 });
 
 async function readJson<T>(relativePath: string): Promise<T> {
-  return JSON.parse(await fs.readFile(path.join(repoRoot, relativePath), "utf8")) as T;
+  return readJsonAt(path.join(repoRoot, relativePath));
+}
+
+async function readJsonAt<T>(filePath: string): Promise<T> {
+  return JSON.parse(await fs.readFile(filePath, "utf8")) as T;
+}
+
+async function generateFixtureOutput(): Promise<{ resultPath: string; diffPath: string }> {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "see-code-schema-contract-"));
+  await fs.cp(path.join(fixturesRoot, "java-spring"), tempRoot, { recursive: true });
+
+  const result = await analyzeRepo(tempRoot, {
+    modelConfig: noLlmConfig
+  });
+  const docs = await generateDocs(result);
+
+  return writeResultJson({
+    result,
+    overview: docs.overview,
+    quality: docs.quality,
+    docs: docs.written
+  });
 }
 
 function assertSchema(value: unknown, schema: JsonSchema, pathLabel: string): void {

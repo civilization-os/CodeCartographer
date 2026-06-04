@@ -1,11 +1,11 @@
 # Change Summary
 
-Compared previous result `2026-06-04T02:32:22.854Z` with current result `2026-06-04T03:20:50.279Z`.
+Compared previous result `2026-06-04T03:49:51.729Z` with current result `2026-06-04T05:47:20.480Z`.
 
 ## Summary
 
-- Files: +3 / -0 / ~3
-- Methods: +4 / -0 / ~2
+- Files: +0 / -0 / ~1
+- Methods: +2 / -0 / ~1
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
@@ -13,10 +13,8 @@ Compared previous result `2026-06-04T02:32:22.854Z` with current result `2026-06
 
 ## Added Methods
 
-- tests/schemaContract.test.ts: readJson
-- tests/schemaContract.test.ts: assertSchema
-- tests/schemaContract.test.ts: objectRecord
-- tests/schemaContract.test.ts: typeOf
+- tests/schemaContract.test.ts: readJsonAt
+- tests/schemaContract.test.ts: generateFixtureOutput
 
 ## Removed Methods
 
@@ -24,8 +22,7 @@ Compared previous result `2026-06-04T02:32:22.854Z` with current result `2026-06
 
 ## Modified Methods
 
-- src/docs/docsGenerator.ts: renderProjectOverview
-- src/docs/docsGenerator.ts: renderMaintenanceGuide
+- tests/schemaContract.test.ts: readJson
 
 ## Entrypoints
 

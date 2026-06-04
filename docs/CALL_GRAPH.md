@@ -685,12 +685,24 @@ flowchart TD
   N226_A["matchesExclude"]
   N226_B["toPosixPath"]
   N226_A --> N226_B
-  N227_A["assertSchema"]
-  N227_B["assertSchema"]
+  N227_A["readJson"]
+  N227_B["readJsonAt"]
   N227_A --> N227_B
-  N228_A["assertSchema"]
-  N228_B["typeOf"]
+  N228_A["generateFixtureOutput"]
+  N228_B["analyzeRepo"]
   N228_A --> N228_B
+  N229_A["generateFixtureOutput"]
+  N229_B["generateDocs"]
+  N229_A --> N229_B
+  N230_A["generateFixtureOutput"]
+  N230_B["writeResultJson"]
+  N230_A --> N230_B
+  N231_A["assertSchema"]
+  N231_B["assertSchema"]
+  N231_A --> N231_B
+  N232_A["assertSchema"]
+  N232_B["typeOf"]
+  N232_A --> N232_B
 ```
 
 ## Edges
@@ -924,5 +936,9 @@ flowchart TD
 | matchesAnyExclude | matchesExclude | matchesExclude | 1 |
 | matchesExclude | escapeRegex | escapeRegex | 1 |
 | matchesExclude | toPosixPath | toPosixPath | 1 |
+| readJson | readJsonAt | readJsonAt | 1 |
+| generateFixtureOutput | analyzeRepo | analyzeRepo | 1 |
+| generateFixtureOutput | generateDocs | generateDocs | 1 |
+| generateFixtureOutput | writeResultJson | writeResultJson | 3 |
 | assertSchema | assertSchema | assertSchema | 1 |
 | assertSchema | typeOf | typeOf | 1 |

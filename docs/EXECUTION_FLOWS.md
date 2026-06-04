@@ -133,6 +133,39 @@ Entry: `src/parser/typescriptStructureParser.ts:96` extractClassUnit
 
 - 无
 
+## generateFixtureOutput
+
+Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
+
+### Steps
+
+1. generateFixtureOutput - 在临时目录中复制Java Spring测试夹具，执行仓库分析和文档生成，并将结果写入JSON文件。
+2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。
+3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。
+4. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
+5. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
+6. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，包含节点和边。
+7. buildScanRuntimeInfo - 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。
+8. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
+9. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。
+10. parseModules - 遍历源文件列表，使用适配器解析每个文件并返回模块单元数组，若找不到适配器则生成默认模块单元。
+
+### Resources
+
+- `FILE:ARCHITECTURE.md`
+- `FILE:BUSINESS_FLOWS.md`
+- `FILE:CALL_GRAPH.md`
+- `FILE:CHANGE_SUMMARY.md`
+- `FILE:DATA_AND_RESOURCES.md`
+- `FILE:ENTRYPOINTS.md`
+- `FILE:EXECUTION_FLOWS.md`
+- `FILE:MAINTENANCE_GUIDE.md`
+- `FILE:MODULES.md`
+- `FILE:PROJECT_OVERVIEW.md`
+- `FILE:QUALITY_REPORT.md`
+- `FILE:result-diff.json`
+- `FILE:result.json`
+
 ## extractResources
 
 Entry: `src/graph/relationGraphBuilder.ts:101` extractResources
@@ -142,20 +175,6 @@ Entry: `src/graph/relationGraphBuilder.ts:101` extractResources
 1. extractResources - 从模块单元中提取所有资源并去重排序，返回资源节点列表。
 2. resourceKind - 根据资源字符串前缀判断资源类型并返回对应的枚举值。
 3. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
-
-### Resources
-
-- 无
-
-## extractFrameworkHints
-
-Entry: `src/parser/typescriptStructureParser.ts:346` extractFrameworkHints
-
-### Steps
-
-1. extractFrameworkHints - 遍历 TypeScript AST 节点，识别 HTTP 路由、fetch 调用、定时任务和环境变量等框架相关模式并返回去重后的提示列表。
-2. literalText - 从TypeScript AST节点中提取字面量文本，支持字符串字面量和模板字面量。
-3. parseHttpRouteCall - 解析TypeScript AST中的HTTP路由调用表达式，提取HTTP方法和路径。
 
 ### Resources
 
