@@ -1,11 +1,11 @@
 # Change Summary
 
-Compared previous result `2026-06-04T15:36:17.687Z` with current result `2026-06-04T15:44:38.718Z`.
+Compared previous result `2026-06-04T15:44:38.718Z` with current result `2026-06-04T15:55:22.820Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~3
-- Methods: +1 / -0 / ~1
+- Files: +1 / -0 / ~4
+- Methods: +1 / -0 / ~2
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
@@ -13,7 +13,7 @@ Compared previous result `2026-06-04T15:36:17.687Z` with current result `2026-06
 
 ## Added Methods
 
-- src/docs/qualityReport.ts: methodSummaryCoverageCheck
+- src/parser/javaStructureParser.ts: isRepositoryClass
 
 ## Removed Methods
 
@@ -21,7 +21,8 @@ Compared previous result `2026-06-04T15:36:17.687Z` with current result `2026-06
 
 ## Modified Methods
 
-- src/docs/qualityReport.ts: buildChecks
+- src/parser/javaStructureParser.ts: extractClassResources
+- src/parser/javaStructureParser.ts: extractFrameworkHints
 
 ## Entrypoints
 

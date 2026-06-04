@@ -57,6 +57,27 @@ Entry: `src/index.ts:8` main
 - `FILE:result-diff.json`
 - `FILE:result.json`
 
+## extractFrameworkHints
+
+Entry: `src/parser/javaStructureParser.ts:578` extractFrameworkHints
+
+### Steps
+
+1. extractFrameworkHints - 从Java类和方法注解中提取框架相关的路由、定时任务、消息消费者、持久化和环境配置提示。
+2. annotationAttribute - 从注解字符串中提取指定属性的值。
+3. annotationByName - 根据名称在注解字符串数组中查找匹配的注解。
+4. firstAnnotationString - 从注解字符串中提取第一个双引号内的内容。
+5. hasAnnotation - 检查给定的注解列表中是否存在指定名称的注解。
+6. isRepositoryClass - 判断给定的Java类块是否为仓库类，基于注解、类名后缀或继承的仓库接口。
+7. routeFromAnnotations - 从注解列表中解析出HTTP方法和路径，结合类路由前缀生成完整路由。
+8. annotationName - 从注解字符串中提取注解名称。
+9. joinRoutePaths - 拼接路由路径前缀与路径，去除空段和重复斜杠，并确保结果以斜杠开头。
+10. requestMappingMethod - 从Spring注解中提取HTTP请求方法并转换为小写，默认返回'all'。
+
+### Resources
+
+- 无
+
 ## parseJavaModule
 
 Entry: `src/parser/javaStructureParser.ts:84` parseJavaModule
@@ -73,26 +94,6 @@ Entry: `src/parser/javaStructureParser.ts:84` parseJavaModule
 8. findMatchingBrace - 从指定起始位置开始，在字符串中查找与左花括号匹配的右花括号的索引。
 9. annotationAttribute - 从注解字符串中提取指定属性的值。
 10. annotationByName - 根据名称在注解字符串数组中查找匹配的注解。
-
-### Resources
-
-- 无
-
-## extractFrameworkHints
-
-Entry: `src/parser/javaStructureParser.ts:575` extractFrameworkHints
-
-### Steps
-
-1. extractFrameworkHints - 从Java类和方法中提取框架相关的注解和模式，生成框架提示列表。
-2. annotationAttribute - 从注解字符串中提取指定属性的值。
-3. annotationByName - 根据名称在注解字符串数组中查找匹配的注解。
-4. firstAnnotationString - 从注解字符串中提取第一个双引号内的内容。
-5. hasAnnotation - 检查给定的注解列表中是否存在指定名称的注解。
-6. routeFromAnnotations - 从注解列表中解析出HTTP方法和路径，结合类路由前缀生成完整路由。
-7. annotationName - 从注解字符串中提取注解名称。
-8. joinRoutePaths - 拼接路由路径前缀与路径，去除空段和重复斜杠，并确保结果以斜杠开头。
-9. requestMappingMethod - 从Spring注解中提取HTTP请求方法并转换为小写，默认返回'all'。
 
 ### Resources
 

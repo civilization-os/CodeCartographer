@@ -198,10 +198,7 @@ function extractClassResources(classBlock: JavaClassBlock): string[] {
     resources.add(`TABLE:${tableName}`);
   }
 
-  if (
-    /Repository$|Dao$|Mapper$/.test(classBlock.name) ||
-    /\b(?:JpaRepository|CrudRepository|PagingAndSortingRepository|Repository)\s*</.test(classBlock.declaration)
-  ) {
+  if (isRepositoryClass(classBlock)) {
     resources.add(`REPOSITORY:${classBlock.name}`);
     const repositoryEntity = /(?:JpaRepository|CrudRepository|PagingAndSortingRepository|Repository)\s*<\s*([A-Za-z_$][\w$]*)/.exec(
       classBlock.declaration
@@ -216,6 +213,12 @@ function extractClassResources(classBlock: JavaClassBlock): string[] {
 
 function buildClassResourceIndex(classBlocks: JavaClassBlock[]): Map<string, string[]> {
   return new Map(classBlocks.map((classBlock) => [classBlock.name, extractClassResources(classBlock)]));
+}
+
+function isRepositoryClass(classBlock: JavaClassBlock): boolean {
+  return hasAnnotation(classBlock.annotations, "Repository") ||
+    /Repository$|Dao$/.test(classBlock.name) ||
+    /\b(?:JpaRepository|CrudRepository|PagingAndSortingRepository|Repository)\s*</.test(classBlock.declaration);
 }
 
 function buildMethodReturnTypeIndex(
@@ -618,7 +621,7 @@ function extractFrameworkHints(
     hasAnnotation(annotations, "Entity") ||
     hasAnnotation(methodBlock.annotations, "Query") ||
     /\b(save|findBy|findAll|delete|query|executeUpdate)\s*\(/.test(bodyMasked) ||
-    /Repository$|Dao$|Mapper$/.test(classBlock.name)
+    isRepositoryClass(classBlock)
   ) {
     hints.push({
       kind: "persistence",

@@ -169,5 +169,5 @@ summaries are LLM-generated and the project narrative is domain-specific.
    `owner.getPets().add(...)` and stream/map pipelines can resolve more deeply.
 2. Expand synthetic repository operation modeling for paginated, sorted, and
    batch methods such as `findAll(Pageable)`, `saveAll`, and `deleteAll`.
-3. Add a second real-world Java project with service-layer code to validate
-   repository binding and collaborator call resolution beyond PetClinic.
+3. Use the Book Social Network evaluation to harden service-layer, mapper,
+   security, feedback, file-upload, and borrow/return approval documentation.

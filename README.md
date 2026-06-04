@@ -125,24 +125,31 @@ schema/
 
 `DOC_INDEX.md` is the best starting point. It links the generated documents, shows the quality snapshot, and recommends a reading order.
 
-## Real-project Snapshot
+## Real-project Snapshots
 
-Spring PetClinic is used as an ignored external evaluation project.
+Spring PetClinic and Book Social Network are used as ignored external evaluation
+projects.
 
-| Metric | PetClinic with DeepSeek |
-| --- | ---: |
-| Scanned files | 33 |
-| Classes | 25 |
-| Method units | 93 |
-| Graph nodes | 175 |
-| Graph edges | 201 |
-| Business flows | 17 |
-| Static execution flows | 8 |
-| Resources | 24 |
-| LLM method summaries | 93/93 |
-| Quality score | 100/100 |
+| Metric | PetClinic with DeepSeek | Book Social Network with DeepSeek |
+| --- | ---: | ---: |
+| Scanned files | 33 | 51 |
+| Classes | 25 | 49 |
+| Method units | 93 | 87 |
+| Graph nodes | 175 | 224 |
+| Graph edges | 201 | 255 |
+| Business flows | 17 | 15 |
+| Static execution flows | 8 | 8 |
+| Resources | 24 | 37 |
+| LLM method summaries | 93/93 | 87/87 |
+| Quality score | 100/100 | 100/100 |
 
-The generated PetClinic docs resolve Spring MVC routes, JPA entities, repository interfaces, table resources, controller flows, domain-object calls, and synthetic Spring Data operations such as `OwnerRepository#save`.
+The generated PetClinic docs resolve Spring MVC routes, JPA entities,
+repository interfaces, table resources, controller flows, domain-object calls,
+and synthetic Spring Data operations such as `OwnerRepository#save`.
+
+The generated Book Social Network docs validate a deeper Spring service-layer
+shape: controllers, services, repositories, DTO mappers, security, exception
+handling, file upload, feedback, borrow, return, and return-approval flows.
 
 ## Current Scope
 
@@ -177,6 +184,7 @@ Java support:
 
 - Add chained Java expression and generic collection element inference.
 - Expand synthetic Spring Data operation modeling for paginated, sorted, and batch operations.
-- Add a second real-world Java project with a deeper service layer to validate cross-layer calls.
+- Add first-class mapper/component documentation without treating DTO mappers as repositories.
+- Separate HTTP route counts from other entrypoint types in generated narratives.
 - Add tree-sitter adapters for higher-fidelity Java and broader language support.
 - Add LangGraph orchestration once the deterministic parser and graph contracts are stable.

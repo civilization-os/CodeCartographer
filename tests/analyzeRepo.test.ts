@@ -238,6 +238,52 @@ test("builds static execution flows from Java class methods", async () => {
   ]);
 });
 
+test("does not classify service mappers as repositories", async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "see-code-java-mapper-resource-"));
+  await fs.mkdir(path.join(tempRoot, "src/main/java/com/acme"), { recursive: true });
+  await fs.writeFile(
+    path.join(tempRoot, "src/main/java/com/acme/AccountMapper.java"),
+    `
+package com.acme;
+
+import jakarta.persistence.Entity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+class AccountMapper {
+  AccountDto toDto(Account account) {
+    return new AccountDto();
+  }
+}
+
+@Entity
+class Account {
+}
+
+class AccountDto {
+}
+
+interface AccountRepository extends JpaRepository<Account, Integer> {
+}
+`,
+    "utf8"
+  );
+
+  const result = await analyzeRepo(tempRoot, {
+    modelConfig: noLlmConfig
+  });
+  const mapper = result.classes.find((classUnit) => classUnit.name === "AccountMapper");
+  const repository = result.classes.find((classUnit) => classUnit.name === "AccountRepository");
+
+  assert.ok(mapper);
+  assert.ok(repository);
+  assert.ok(!mapper.resources.includes("REPOSITORY:AccountMapper"));
+  assert.ok(!result.resources.some((resource) => resource.name === "REPOSITORY:AccountMapper"));
+  assert.ok(repository.resources.includes("REPOSITORY:AccountRepository"));
+  assert.ok(result.resources.some((resource) => resource.name === "REPOSITORY:AccountRepository"));
+});
+
 test("localizes fallback generated docs without LLM", async () => {
   const fixturePath = path.join(fixturesDir, "java-spring");
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "see-code-localized-docs-"));

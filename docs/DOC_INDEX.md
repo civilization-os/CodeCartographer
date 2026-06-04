@@ -1,22 +1,22 @@
 # Documentation Index
 
-该工具对指定代码仓库进行静态分析，提取模块、方法、类、资源和调用关系图，并生成结构化工程文档（Markdown 和 JSON）。
+该工具扫描指定代码仓库，提取模块、方法、类、资源和调用关系，生成结构化工程文档和JSON结果，支持TypeScript和Java项目。
 
 ## Snapshot
 
 | Metric | Value |
 | --- | --- |
 | Quality score | 100/100 |
-| Scanned files | 35 |
+| Scanned files | 36 |
 | Source files | 27 |
-| Modules | 35 |
+| Modules | 36 |
 | Classes | 2 |
-| Method units | 249 |
-| LLM method summaries | 249/249 |
+| Method units | 250 |
+| LLM method summaries | 250/250 |
 | Business flows | 1 |
 | Static execution flows | 8 |
 | External resources | 22 |
-| Graph edges | 579 |
+| Graph edges | 583 |
 
 ## Recommended Reading Order
 
@@ -30,15 +30,15 @@
 
 | Document | Use it for | Size |
 | --- | --- | --- |
-| [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | 项目目标、运行模型、规模指标和生成产物总览。 | 4571 chars |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | 架构层、模块区域、关键路径和核心热点方法。 | 6457 chars |
+| [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | 项目目标、运行模型、规模指标和生成产物总览。 | 4572 chars |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | 架构层、模块区域、关键路径和核心热点方法。 | 6353 chars |
 | [BUSINESS_FLOWS.md](BUSINESS_FLOWS.md) | 由框架入口驱动的业务流程和资源访问路径。 | 1229 chars |
-| [EXECUTION_FLOWS.md](EXECUTION_FLOWS.md) | 由静态调用图推断出的执行路径。 | 5754 chars |
-| [CALL_GRAPH.md](CALL_GRAPH.md) | 可解析的仓库内部调用边和 Mermaid 图。 | 38814 chars |
-| [ENTRYPOINTS.md](ENTRYPOINTS.md) | 框架感知入口和静态入口候选。 | 2070 chars |
+| [EXECUTION_FLOWS.md](EXECUTION_FLOWS.md) | 由静态调用图推断出的执行路径。 | 5827 chars |
+| [CALL_GRAPH.md](CALL_GRAPH.md) | 可解析的仓库内部调用边和 Mermaid 图。 | 39256 chars |
+| [ENTRYPOINTS.md](ENTRYPOINTS.md) | 框架感知入口和静态入口候选。 | 2082 chars |
 | [DATA_AND_RESOURCES.md](DATA_AND_RESOURCES.md) | 检测到的数据库、HTTP、文件、环境变量等资源。 | 763 chars |
-| [MODULES.md](MODULES.md) | 模块、类、关键方法和高信号方法摘要。 | 52829 chars |
-| [MAINTENANCE_GUIDE.md](MAINTENANCE_GUIDE.md) | 当前分析边界、维护注意事项和仓库文件清单。 | 2658 chars |
+| [MODULES.md](MODULES.md) | 模块、类、关键方法和高信号方法摘要。 | 52828 chars |
+| [MAINTENANCE_GUIDE.md](MAINTENANCE_GUIDE.md) | 当前分析边界、维护注意事项和仓库文件清单。 | 2715 chars |
 | [QUALITY_REPORT.md](QUALITY_REPORT.md) | 质量得分、覆盖率、模板残留和输出完整性检查。 | generated later |
 | [CHANGE_SUMMARY.md](CHANGE_SUMMARY.md) | 本次分析相对上一版结构化结果的变化。 | generated later |
 

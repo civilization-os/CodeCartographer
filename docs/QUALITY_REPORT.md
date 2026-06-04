@@ -8,8 +8,8 @@
 | Pass | 9 |
 | Warn | 0 |
 | Fail | 0 |
-| Method units | 249 |
-| LLM method summaries | 249 |
+| Method units | 250 |
+| LLM method summaries | 250 |
 | Business flows | 1 |
 | Static execution flows | 8 |
 
@@ -17,14 +17,14 @@
 
 | Status | Check | Detail |
 | --- | --- | --- |
-| PASS | Method summary coverage | 249/249 methods use LLM summaries; 0 methods use fallback summaries. |
-| PASS | Narrative overview | 该工具对指定代码仓库进行静态分析，提取模块、方法、类、资源和调用关系图，并生成结构化工程文档（Markdown 和 JSON）。 |
-| PASS | Architecture abstraction | 8 architecture layers generated. |
+| PASS | Method summary coverage | 250/250 methods use LLM summaries; 0 methods use fallback summaries. |
+| PASS | Narrative overview | 该工具扫描指定代码仓库，提取模块、方法、类、资源和调用关系，生成结构化工程文档和JSON结果，支持TypeScript和Java项目。 |
+| PASS | Architecture abstraction | 6 architecture layers generated. |
 | PASS | Business flow coverage | 1 framework-aware business flows generated. |
 | PASS | Static execution flow coverage | 8 static execution flows generated. |
 | PASS | Placeholder residue | 0 placeholder-like fragments found across generated docs. |
 | PASS | English template residue | 0 English template fragments found across generated docs. |
-| PASS | Document size balance | Largest document is 52829 characters. |
+| PASS | Document size balance | Largest document is 52828 characters. |
 | PASS | Required outputs | 10 documents generated before quality report. |
 
 ## Recommendations

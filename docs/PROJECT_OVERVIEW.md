@@ -2,28 +2,29 @@
 
 Repository path: `/root/project/ai/see_code`
 
-Scan time: `2026-06-04T15:44:24.648Z`
+Scan time: `2026-06-04T15:55:09.377Z`
 
 ## Purpose
 
-该工具对指定代码仓库进行静态分析，提取模块、方法、类、资源和调用关系图，并生成结构化工程文档（Markdown 和 JSON）。
+该工具扫描指定代码仓库，提取模块、方法、类、资源和调用关系，生成结构化工程文档和JSON结果，支持TypeScript和Java项目。
 
 ## Operating Model
 
-1. CLI 入口解析命令行参数，加载项目配置和 LLM 模型配置。
-2. 扫描器递归遍历仓库目录，过滤排除项和大文件，返回源文件列表。
-3. 解析器根据文件语言（TypeScript/JavaScript）解析源文件，提取模块、类、方法和导入信息。
-4. 分析器为每个仓库操作生成合成方法，构建模块、类、方法和资源之间的关系图。
-5. LLM 模块对方法进行语义分析（优先使用缓存，未缓存则调用大语言模型或启发式方法）。
-6. 文档生成器将分析结果写入多个 Markdown 文件和 JSON 结果文件。
+1. CLI入口解析参数，加载项目配置和LLM模型配置。
+2. 扫描仓库文件，过滤排除项和大文件，按语言分类。
+3. 解析源文件提取模块、类、方法和导入信息。
+4. 构建关系图（节点和边），包含模块、类、方法和资源之间的引用。
+5. 对每个方法进行语义分析，优先使用缓存，未缓存则通过LLM或启发式规则补充。
+6. 生成多个Markdown文档（概览、架构、模块、业务流等）并写入文件系统。
+7. 输出结果JSON、差异JSON和变更摘要到指定目录。
 
 ## Key Capabilities
 
-- 支持 TypeScript 和 JavaScript 源文件的静态解析。
-- 自动生成合成仓库操作方法（CRUD 操作）。
-- 构建模块、类、方法和资源之间的完整关系图。
-- 通过 LLM 或启发式规则为方法附加语义标签。
-- 生成项目概览、架构、模块、业务流和质量报告等工程文档。
+- 递归扫描仓库文件并自动检测语言类型。
+- 解析Java和TypeScript源文件的结构（类、方法、导入、资源）。
+- 构建模块-类-方法-资源的关系图。
+- 通过LLM或启发式规则为方法附加语义标签。
+- 生成完整的工程文档集（架构、模块、业务流、质量报告）。
 - 支持结果差异比较和变更摘要输出。
 
 ## Primary Areas
@@ -36,7 +37,7 @@ Scan time: `2026-06-04T15:44:24.648Z`
 | Configuration | package.json, see-code.config.json, tsconfig.json |  |
 | core | src/core/types.ts |  |
 | docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。 生成文档索引页面，包含项目快照、推荐阅读顺序、文档映射表和机器可读输出列表。 生成项目概览的 Markdown 字符串，包含仓库元数据、目的、能力、模块分组、结构统计、语义分析器配置、扫描配置和输出文件列表。 |
-| Documentation | evaluations/spring-petclinic.md, README.md, SPEC.md |  |
+| Documentation | evaluations/book-social-network.md, evaluations/spring-petclinic.md, README.md, SPEC.md |  |
 | graph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 从模块单元中提取所有资源并去重排序，返回资源节点数组。 构建方法名称到方法单元的索引映射，支持类名限定和多种命名格式。 |
 | llm | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 将未知类型的错误对象转换为字符串消息。 遍历模块列表，为每个方法附加启发式语义标签。 |
 | output | src/output/resultJsonWriter.ts | 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。 将扫描结果、概览、质量数据和文档路径组装为结构化的 JSON 对象并返回。 将模块单元序列化为包含标识符、路径、语言、导入、摘要以及类和方法的ID列表的普通对象。 |
@@ -49,14 +50,14 @@ Scan time: `2026-06-04T15:44:24.648Z`
 
 | Metric | Count |
 | --- | --- |
-| Scanned files | 35 |
+| Scanned files | 36 |
 | Source files | 27 |
-| Markdown documents | 3 |
-| Modules | 35 |
+| Markdown documents | 4 |
+| Modules | 36 |
 | Classes | 2 |
-| Method units | 249 |
+| Method units | 250 |
 | External resource nodes | 22 |
-| Graph edges | 579 |
+| Graph edges | 583 |
 
 ## Semantic Analyzer
 
