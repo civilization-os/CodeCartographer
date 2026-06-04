@@ -17,7 +17,7 @@ Entry: `src/index.ts:8` main
 7. printHelp - 打印 see-code 工具的使用说明和命令行参数帮助信息。
 8. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
 9. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
-10. buildRelationGraph - 根据模块单元和资源节点构建包含模块、类、方法和资源层级的关系图，并返回去重后的节点和边集合。
+10. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
 
 ### Resources
 
@@ -58,7 +58,7 @@ Entry: `src/parser/javaStructureParser.ts:136` extractClassUnit
 
 ## extractFrameworkHints
 
-Entry: `src/parser/javaStructureParser.ts:394` extractFrameworkHints
+Entry: `src/parser/javaStructureParser.ts:434` extractFrameworkHints
 
 ### Steps
 
@@ -144,7 +144,7 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。
 4. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
 5. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
-6. buildRelationGraph - 根据模块单元和资源节点构建包含模块、类、方法和资源层级的关系图，并返回去重后的节点和边集合。
+6. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
 7. buildScanRuntimeInfo - 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。
 8. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
 9. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。

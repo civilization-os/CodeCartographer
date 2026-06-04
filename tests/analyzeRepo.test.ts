@@ -121,6 +121,15 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
   const callEdges = result.graph.edges.filter((edge) => edge.kind === "calls");
   assert.ok(callEdges.some((edge) => edge.label === "validateAndCreate"));
 
+  const validateAndCreate = result.methods.find((method) => method.name === "validateAndCreate");
+  assert.ok(validateAndCreate);
+  assert.ok(validateAndCreate.resources.includes("DB_WRITE:orderRepository.save"));
+  assert.ok(
+    result.graph.edges.some(
+      (edge) => edge.from === validateAndCreate.id && edge.kind === "writes" && edge.label === "DB_WRITE:orderRepository.save"
+    )
+  );
+
   const entityClass = result.classes.find((classUnit) => classUnit.name === "OrderEntity");
   const repositoryClass = result.classes.find((classUnit) => classUnit.name === "OrderRepository");
   assert.ok(entityClass);

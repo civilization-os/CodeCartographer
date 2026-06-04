@@ -92,7 +92,7 @@ export function buildRelationGraph(
         edges.push({
           from: method.id,
           to: resourceId,
-          kind: resource.startsWith("HTTP:") ? "depends_on" : "reads",
+          kind: relationKindForResource(resource),
           weight: 2,
           label: resource
         });
@@ -201,13 +201,33 @@ function resourceKind(resource: string): ResourceNode["kind"] {
   if (resource.startsWith("ENV:")) {
     return "env";
   }
-  if (resource.startsWith("ENTITY:") || resource.startsWith("REPOSITORY:") || resource.startsWith("TABLE:")) {
+  if (
+    resource.startsWith("ENTITY:") ||
+    resource.startsWith("REPOSITORY:") ||
+    resource.startsWith("TABLE:") ||
+    resource.startsWith("DB_READ:") ||
+    resource.startsWith("DB_WRITE:") ||
+    resource.startsWith("DB_DELETE:")
+  ) {
     return "database";
   }
   if (resource.startsWith("FILE:")) {
     return "file";
   }
   return "unknown";
+}
+
+function relationKindForResource(resource: string): RelationEdge["kind"] {
+  if (resource.startsWith("HTTP:")) {
+    return "depends_on";
+  }
+  if (resource.startsWith("DB_WRITE:")) {
+    return "writes";
+  }
+  if (resource.startsWith("DB_DELETE:")) {
+    return "deletes";
+  }
+  return "reads";
 }
 
 function dedupeEdges(edges: RelationEdge[]): RelationEdge[] {

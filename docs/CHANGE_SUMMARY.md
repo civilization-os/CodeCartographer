@@ -1,20 +1,22 @@
 # Change Summary
 
-Compared previous result `2026-06-04T06:02:08.990Z` with current result `2026-06-04T06:09:57.620Z`.
+Compared previous result `2026-06-04T06:09:57.620Z` with current result `2026-06-04T06:17:29.833Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~7
-- Methods: +2 / -0 / ~7
+- Files: +0 / -0 / ~5
+- Methods: +4 / -0 / ~3
 - Entrypoints: +0 / -0
-- Resources: +0 / -0
+- Resources: +3 / -0
 - Business flows: +0 / -0
 - Quality: 100/100 -> 100/100
 
 ## Added Methods
 
-- src/parser/javaStructureParser.ts: extractClassResources
-- src/parser/javaStructureParser.ts: summarizeClass
+- src/graph/relationGraphBuilder.ts: relationKindForResource
+- src/parser/javaStructureParser.ts: extractRepositoryOperationResources
+- src/parser/javaStructureParser.ts: repositoryOperationIntent
+- src/parser/javaStructureParser.ts: isPersistenceReceiver
 
 ## Removed Methods
 
@@ -23,12 +25,8 @@ Compared previous result `2026-06-04T06:02:08.990Z` with current result `2026-06
 ## Modified Methods
 
 - src/graph/relationGraphBuilder.ts: buildRelationGraph
-- src/graph/relationGraphBuilder.ts: extractResources
 - src/graph/relationGraphBuilder.ts: resourceKind
-- src/output/resultJsonWriter.ts: serializeClass
-- src/parser/javaStructureParser.ts: extractClassBlocks
-- src/parser/javaStructureParser.ts: extractClassUnit
-- src/parser/typescriptStructureParser.ts: extractClassUnit
+- src/parser/javaStructureParser.ts: extractResources
 
 ## Entrypoints
 
@@ -38,6 +36,8 @@ Compared previous result `2026-06-04T06:02:08.990Z` with current result `2026-06
 
 ## Resources
 
-- Added: 无
+- Added: ENV:DB_DELETE
+- Added: ENV:DB_READ
+- Added: ENV:DB_WRITE
 
 - Removed: 无

@@ -14,6 +14,7 @@ export type RelationKind =
   | "writes"
   | "publishes"
   | "consumes"
+  | "deletes"
   | "depends_on"
   | "contains";
 

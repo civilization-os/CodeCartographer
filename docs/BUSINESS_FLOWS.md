@@ -4,7 +4,7 @@
 
 ## main function
 
-用户通过 CLI 执行 see-code 命令，系统解析参数后加载配置，扫描仓库文件，解析模块结构，构建关系图，对方法进行语义分析，最后生成文档并输出结果。
+从 CLI 入口开始，依次执行参数解析、配置加载、仓库扫描、文件解析、关系图构建、语义分析、文档生成和结果输出。
 
 | Field | Value |
 | --- | --- |
@@ -16,14 +16,15 @@
 
 ### Steps
 
-1. parseArgs 解析命令行参数，提取命令、目标路径和环境变量覆盖值。
-2. loadProjectConfig 从目标路径加载 see-code.config.json 配置。
-3. loadModelConfig 从环境变量和项目配置合并 LLM 模型配置。
-4. analyzeRepo 递归扫描目录，过滤排除项，解析源文件为模块单元。
-5. buildRelationGraph 根据模块单元和资源构建关系图（节点和边）。
-6. enrichModulesWithMethodSemantics 对每个方法执行语义分析（缓存/LLM/启发式）。
-7. generateDocs 将分析结果渲染为 Markdown 文档并写入文件系统。
-8. writeResultJson 将结果序列化为 JSON，写入结果文件、差异文件和变更摘要。
+1. main 函数解析命令行参数，调用 parseArgs 提取命令、目标路径和环境变量覆盖值。
+2. loadProjectConfig 从目标路径加载 see-code.config.json，若不存在则返回空配置。
+3. loadModelConfig 从环境变量和项目配置中合并 LLM 模型配置。
+4. analyzeRepo 调用 repoScanner 扫描目录，过滤后返回源文件列表。
+5. 遍历源文件列表，根据语言类型调用对应解析器（TypeScriptAdapter 或 JavaAdapter）提取模块单元。
+6. buildRelationGraph 从模块单元中构建节点和边，生成关系图。
+7. enrichModulesWithMethodSemantics 对每个方法执行语义分析（优先缓存，未缓存则调用 LLM 或启发式规则）。
+8. generateDocs 将分析结果渲染为多个 Markdown 文件（概览、架构、模块、流程、质量报告）。
+9. writeResultJson 将结果、文档路径、差异报告序列化为 JSON 并写入文件系统。
 
 ### Resources
 

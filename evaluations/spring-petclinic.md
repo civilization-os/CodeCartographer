@@ -35,11 +35,11 @@ Local evaluation config:
 | Source files | 30 |
 | Classes | 25 |
 | Method units | 87 |
-| Graph nodes | 163 |
-| Graph edges | 146 |
+| Graph nodes | 168 |
+| Graph edges | 161 |
 | Business flows | 17 |
 | Static execution flows | 8 |
-| Resources | 18 |
+| Resources | 23 |
 | Quality score | 89/100 |
 | LLM method summaries | 0/87 |
 | Architecture areas | Configuration, Documentation, model, owner, petclinic, Project Files, system, vet |
@@ -67,9 +67,13 @@ The run generated the full document set, `.see-code/result.json`, and
   run produced 8 static execution flows, including owner, pet, visit, cache, and
   controller helper paths.
 - Repository interfaces, JPA entities, mapped superclasses, and table names now
-  appear as first-class database resources. `DATA_AND_RESOURCES.md` lists 18
+  appear as first-class database resources. `DATA_AND_RESOURCES.md` lists 23
   resources, including `ENTITY:Owner`, `REPOSITORY:OwnerRepository`, and
   `TABLE:owners`.
+- Repository call intent is inferred at method level for common read and write
+  operations. Business flows now surface examples such as
+  `DB_READ:owners.findById`, `DB_READ:vetRepository.findAll`, and
+  `DB_WRITE:owners.save`.
 - No-LLM fallback narratives are localized for generated operating-model and
   business-flow text.
 - Repository cleanliness held: external project files remain ignored, and the
@@ -93,17 +97,17 @@ docs.
 
 ## Gaps Found
 
-- Java call resolution still does not perform full type inference, so
+- Java call resolution still does not perform full type inference, so arbitrary
   field-injected collaborators and repository interface methods remain shallow.
-- Resource usage is still class-level for Java persistence structures; method
-  level read/write intent for repository calls is not inferred yet.
+- Repository intent is name-based and conservative; it does not yet bind calls
+  back to the exact repository interface or entity type.
 
 ## Recommended Next Work
 
 1. Improve Java call resolution for same-class calls, field-injected
    collaborators, repository interfaces, and simple service/controller helper
    methods.
-2. Add method-level read/write intent for repository calls so resource usage can
-   distinguish query, save, update, and delete paths.
+2. Bind repository call resources back to repository interfaces and entity/table
+   resources where the injected field type can be inferred.
 3. Run one DeepSeek-backed evaluation on Spring PetClinic after parser fixes to
    compare no-LLM structure quality against LLM narrative quality.

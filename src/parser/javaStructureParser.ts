@@ -388,7 +388,47 @@ function extractResources(bodySource: string, annotations: string[]): string[] {
     resources.add(`ENV:${match[1]}`);
   }
 
+  for (const resource of extractRepositoryOperationResources(combined)) {
+    resources.add(resource);
+  }
+
   return [...resources].sort();
+}
+
+function extractRepositoryOperationResources(sourceText: string): string[] {
+  const resources = new Set<string>();
+  const repositoryCallPattern =
+    /\b(?:this\.)?([A-Za-z_$][\w$]*(?:Repository|Repo|Dao|Mapper|Service|owners|types|vets|vetRepository)?)\.([A-Za-z_$][\w$]*)\s*\(/g;
+
+  for (const match of sourceText.matchAll(repositoryCallPattern)) {
+    const owner = match[1];
+    const operation = match[2];
+    const intent = repositoryOperationIntent(operation);
+    if (!intent || !isPersistenceReceiver(owner)) {
+      continue;
+    }
+    resources.add(`${intent}:${owner}.${operation}`);
+  }
+
+  return [...resources].sort();
+}
+
+function repositoryOperationIntent(operation: string): string | undefined {
+  if (/^(find|get|read|query|count|exists|search|load)/i.test(operation)) {
+    return "DB_READ";
+  }
+  if (/^(save|create|insert|update|merge|persist)/i.test(operation)) {
+    return "DB_WRITE";
+  }
+  if (/^(delete|remove)/i.test(operation)) {
+    return "DB_DELETE";
+  }
+  return undefined;
+}
+
+function isPersistenceReceiver(owner: string): boolean {
+  return /(?:Repository|Repo|Dao|Mapper)$/i.test(owner) ||
+    ["owners", "types", "vetRepository"].includes(owner);
 }
 
 function extractFrameworkHints(

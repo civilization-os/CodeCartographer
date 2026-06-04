@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class OrderController {
   private final OrderService orderService;
+  private final OrderRepository orderRepository;
 
-  public OrderController(OrderService orderService) {
+  public OrderController(OrderService orderService, OrderRepository orderRepository) {
     this.orderService = orderService;
+    this.orderRepository = orderRepository;
   }
 
   @PostMapping("/orders")
@@ -28,6 +30,7 @@ public class OrderController {
   }
 
   private OrderDto validateAndCreate(CreateOrderRequest request) {
+    orderRepository.save(new OrderEntity());
     return orderService.create(request);
   }
 

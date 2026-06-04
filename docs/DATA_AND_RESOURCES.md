@@ -2,6 +2,9 @@
 
 | Resource | Kind |
 | --- | --- |
+| ENV:DB_DELETE | env |
+| ENV:DB_READ | env |
+| ENV:DB_WRITE | env |
 | FILE:ARCHITECTURE.md | file |
 | FILE:BUSINESS_FLOWS.md | file |
 | FILE:CALL_GRAPH.md | file |
