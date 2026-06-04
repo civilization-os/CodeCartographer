@@ -30,15 +30,15 @@ Entry: `src/index.ts:8` main
 ### Steps
 
 1. main - 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。
-2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。
+2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
 3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。
 4. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。
 5. loadProjectConfig - 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。
 6. parseArgs - 解析命令行参数，提取命令、目标路径和环境变量覆盖值。
 7. printHelp - 打印命令行帮助信息，展示使用方法和配置选项。
 8. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
-9. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
-10. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
+9. addSyntheticRepositoryMethods - 为每个仓库操作生成合成方法并注入到对应的类和模块中。
+10. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
 
 ### Resources
 
@@ -144,15 +144,15 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 ### Steps
 
 1. generateFixtureOutput - 在临时目录中复制Java Spring测试夹具，执行仓库分析和文档生成，并将结果写入JSON文件。
-2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。
+2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
 3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。
 4. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
-5. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
-6. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
-7. buildScanRuntimeInfo - 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。
-8. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
-9. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。
-10. parseModules - 遍历源文件列表，使用适配器解析每个文件并返回模块单元数组，若找不到适配器则生成默认模块单元。
+5. addSyntheticRepositoryMethods - 为每个仓库操作生成合成方法并注入到对应的类和模块中。
+6. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
+7. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
+8. buildScanRuntimeInfo - 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。
+9. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
+10. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。
 
 ### Resources
 

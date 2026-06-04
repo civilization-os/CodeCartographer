@@ -16,6 +16,7 @@ import {
   scanRepo,
   type ScanRepoOptions
 } from "../scanner/repoScanner.js";
+import { addSyntheticRepositoryMethods } from "./syntheticRepositoryMethods.js";
 
 export interface AnalyzeRepoOptions {
   modelConfig?: ModelConfig;
@@ -31,7 +32,7 @@ export async function analyzeRepo(
   const modelConfig = options.modelConfig ?? loadModelConfig();
   const scan = buildScanRuntimeInfo(options.scanConfig, options.configPath);
   const files = await scanRepo(absoluteRoot, options.scanConfig);
-  let modules = attachHeuristicSemantics(await parseModules(files));
+  let modules = attachHeuristicSemantics(addSyntheticRepositoryMethods(await parseModules(files)));
   if (modelConfig.enabled) {
     modules = await enrichModulesWithMethodSemantics(modules, modelConfig, {
       rootPath: absoluteRoot

@@ -141,6 +141,19 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
     )
   );
 
+  const repositorySave = result.methods.find((method) => method.className === "OrderRepository" && method.name === "save");
+  assert.ok(repositorySave);
+  assert.ok(repositorySave.modifiers.includes("synthetic"));
+  assert.equal(repositorySave.returnType, "OrderEntity");
+  assert.ok(repositorySave.resources.includes("DB_WRITE:OrderRepository.save"));
+  assert.ok(repositorySave.resources.includes("REPOSITORY:OrderRepository"));
+  assert.ok(repositorySave.resources.includes("ENTITY:OrderEntity"));
+  assert.ok(
+    result.graph.edges.some(
+      (edge) => edge.from === validateAndCreate.id && edge.to === repositorySave.id && edge.kind === "calls"
+    )
+  );
+
   const loadOrder = result.methods.find((method) => method.name === "loadOrder");
   const findByExternalId = result.methods.find((method) => method.className === "OrderRepository" && method.name === "findByExternalId");
   assert.ok(loadOrder);
@@ -217,6 +230,7 @@ test("builds static execution flows from Java class methods", async () => {
   assert.deepEqual(createFlow.steps.map((method) => `${method.className}#${method.name}`), [
     "OrderController#create",
     "OrderController#validateAndCreate",
+    "OrderRepository#save",
     "OrderService#create",
     "OrderDto#touch",
     "OrderEntity#markCreated",

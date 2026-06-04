@@ -40,14 +40,14 @@ Local evaluation config:
 | Scanned files | 33 |
 | Source files | 30 |
 | Classes | 25 |
-| Method units | 92 |
-| Graph nodes | 174 |
-| Graph edges | 192 |
+| Method units | 93 |
+| Graph nodes | 175 |
+| Graph edges | 201 |
 | Business flows | 17 |
 | Static execution flows | 8 |
 | Resources | 24 |
 | Quality score | 89/100 |
-| LLM method summaries | 0/92 |
+| LLM method summaries | 0/93 |
 | Architecture areas | Configuration, Documentation, model, owner, petclinic, Project Files, system, vet |
 
 The run generated the full document set, `.see-code/result.json`, and
@@ -58,11 +58,11 @@ The run generated the full document set, `.see-code/result.json`, and
 | Metric | Value |
 | --- | --- |
 | Quality score | 100/100 |
-| LLM method summaries | 92/92 |
+| LLM method summaries | 93/93 |
 | Business flows | 17 |
 | Static execution flows | 8 |
 | Resources | 24 |
-| Largest document | 55011 characters |
+| Largest document | 55268 characters |
 
 The LLM-backed run produced project-level narrative that correctly describes
 PetClinic as a Spring Boot pet clinic management application with owner, pet,
@@ -85,7 +85,7 @@ structured output.
 
 - Project configuration worked as intended: build output, tests, Maven wrapper
   files, and analysis output stayed out of the scan.
-- Java parsing covered the main Spring application shape: 25 classes and 92
+- Java parsing covered the main Spring application shape: 25 classes and 93
   method units were extracted from 30 Java source files.
 - Spring MVC route extraction was useful. The analyzer produced 17
   framework-aware business flows, including owner, pet, visit, system, and vet
@@ -118,6 +118,11 @@ structured output.
   PetClinic graph edges increased to 192 because domain object calls such as
   `Owner.addPet`, `Pet.getBirthDate`, `Pet.setType`, and `Visit.getDate` now
   resolve to internal method nodes.
+- Spring Data inherited or derived repository operations are now modeled as
+  synthetic method units when a typed repository call has no explicit source
+  declaration. PetClinic now includes `OwnerRepository#save`, and write flows
+  from owner, pet, and visit controllers connect to that repository method as
+  well as to `DB_WRITE:OwnerRepository.save`.
 - No-LLM fallback narratives are localized and target-project aware for
   generated purpose, operating-model, and business-flow text.
 - Repository cleanliness held: external project files remain ignored, and the
@@ -130,7 +135,7 @@ structured output.
 ## Quality Notes
 
 The 89/100 quality score is reasonable for a no-LLM run. The failing method
-summary coverage check is expected because all 92 method summaries used the
+summary coverage check is expected because all 93 method summaries used the
 heuristic fallback. Business flow coverage passed because framework entrypoint
 detection does not require an LLM. Static execution flow coverage now passes
 because class methods with internal call edges are eligible as flow candidates.
@@ -149,15 +154,15 @@ summaries are LLM-generated and the project narrative is domain-specific.
 - Java call resolution now handles fields, parameters, explicit locals, and
   basic `var` return-type inference, but it still does not perform full chained
   expression, generic collection element, or inherited-method type inference.
-- Repository intent is still name-based and conservative; inherited Spring Data
-  methods such as `save` are represented as database resources even when no
-  explicit repository method declaration exists in source.
+- Repository intent is still name-based and conservative; synthetic Spring Data
+  methods are generated from observed repository calls rather than a full
+  framework type hierarchy.
 
 ## Recommended Next Work
 
 1. Add chained expression and generic collection element inference so calls like
    `owner.getPets().add(...)` and stream/map pipelines can resolve more deeply.
-2. Model inherited Spring Data repository methods explicitly, linking operations
-   such as `save` to repository and entity resources even without declarations.
+2. Expand synthetic repository operation modeling for paginated, sorted, and
+   batch methods such as `findAll(Pageable)`, `saveAll`, and `deleteAll`.
 3. Add a second real-world Java project with service-layer code to validate
    repository binding and collaborator call resolution beyond PetClinic.

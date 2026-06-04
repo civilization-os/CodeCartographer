@@ -2,36 +2,35 @@
 
 Repository path: `/root/project/ai/see_code`
 
-Scan time: `2026-06-04T14:47:25.361Z`
+Scan time: `2026-06-04T15:05:16.147Z`
 
 ## Purpose
 
-该工具对指定代码仓库进行静态分析，提取模块、方法、类、资源及调用关系图，并生成结构化工程文档（Markdown）和JSON结果。
+该工具扫描指定代码仓库，提取模块、方法、类、资源和调用关系，生成结构化工程文档（Markdown 和 JSON），并输出分析报告。
 
 ## Operating Model
 
-1. CLI入口解析命令行参数，加载项目配置和LLM模型配置。
-2. 递归扫描仓库文件，过滤排除项和大文件，按语言分类。
+1. CLI 入口解析命令行参数，加载项目配置和 LLM 模型配置。
+2. 递归扫描仓库文件，过滤排除项和大文件，识别源代码语言。
 3. 解析源文件提取模块单元（类、方法、导入、资源）。
-4. 构建模块、类、方法、资源之间的关系图。
-5. 对每个方法进行语义分析（优先缓存，未缓存则调用LLM或启发式规则）。
-6. 生成Markdown文档（概览、架构、模块、业务流、质量报告）并写入文件系统。
-7. 输出结果JSON、差异JSON和变更摘要到指定目录。
+4. 构建模块、类、方法和资源之间的关系图。
+5. 对每个方法进行语义分析（缓存优先，未命中则调用 LLM 或启发式规则）。
+6. 生成工程文档（项目概览、架构、模块、业务流、质量报告）并写入文件系统。
+7. 将分析结果序列化为 JSON 并输出到控制台和文件。
 
 ## Key Capabilities
 
-- 支持Java和TypeScript/JavaScript源文件解析。
-- 构建静态调用关系图，包含节点和边。
-- 通过LLM或启发式规则为方法附加语义标签。
+- 支持 TypeScript/JavaScript 和 Java 源代码解析。
+- 自动构建静态调用关系图。
+- 通过 LLM 或启发式规则为方法附加语义标签。
 - 生成多维度工程文档（架构、模块、业务流、质量报告）。
-- 支持结果差异比较和变更摘要生成。
-- 可配置排除规则、最大文件大小和LLM模型参数。
+- 支持结果差异比较和变更摘要输出。
 
 ## Primary Areas
 
 | Area | Modules | Responsibilities |
 | --- | --- | --- |
-| analyzer | src/analyzer/analyzeRepo.ts | 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。 |
+| analyzer | src/analyzer/analyzeRepo.ts, src/analyzer/syntheticRepositoryMethods.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。 为每个仓库操作生成合成方法并注入到对应的类和模块中。 |
 | Application | src/index.ts | 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。 解析命令行参数，提取命令、目标路径和环境变量覆盖值。 验证命令行参数值是否存在且不以'--'开头，否则抛出错误。 |
 | config | src/config/projectConfig.ts | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 递归遍历对象并检查是否包含敏感键名，若发现则抛出错误。 判断未知错误是否为 Node.js 的 ErrnoException 类型。 |
 | Configuration | package.json, see-code.config.json, tsconfig.json |  |
@@ -50,14 +49,14 @@ Scan time: `2026-06-04T14:47:25.361Z`
 
 | Metric | Count |
 | --- | --- |
-| Scanned files | 34 |
-| Source files | 26 |
+| Scanned files | 35 |
+| Source files | 27 |
 | Markdown documents | 3 |
-| Modules | 34 |
+| Modules | 35 |
 | Classes | 2 |
-| Method units | 238 |
+| Method units | 247 |
 | External resource nodes | 21 |
-| Graph edges | 537 |
+| Graph edges | 557 |
 
 ## Semantic Analyzer
 
