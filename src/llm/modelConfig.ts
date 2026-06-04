@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { ProjectConfig } from "../config/projectConfig.js";
 import type { ModelProvider, ModelRuntimeInfo } from "../core/types.js";
 
 const modelProviderSchema = z.enum([
@@ -25,27 +26,33 @@ export interface ModelConfig {
   enabled: boolean;
 }
 
-export function loadModelConfig(env: NodeJS.ProcessEnv = process.env): ModelConfig {
+export function loadModelConfig(
+  env: NodeJS.ProcessEnv = process.env,
+  config: ProjectConfig["llm"] = {}
+): ModelConfig {
   const provider = modelProviderSchema.parse(
-    env.SEE_CODE_LLM_PROVIDER ?? env.LLM_PROVIDER ?? "none"
+    env.SEE_CODE_LLM_PROVIDER ?? env.LLM_PROVIDER ?? config?.provider ?? "none"
   );
 
-  const model = env.SEE_CODE_LLM_MODEL ?? defaultModel(provider);
-  const baseUrl = env.SEE_CODE_LLM_BASE_URL ?? defaultBaseUrl(provider);
+  const model = env.SEE_CODE_LLM_MODEL ?? config?.model ?? defaultModel(provider);
+  const baseUrl = env.SEE_CODE_LLM_BASE_URL ?? config?.baseUrl ?? defaultBaseUrl(provider);
   const apiKey = getApiKey(provider, env);
+  const cacheValue = env.SEE_CODE_LLM_CACHE;
 
   return {
     provider,
     model,
     apiKey,
     baseUrl,
-    temperature: parseNumber(env.SEE_CODE_LLM_TEMPERATURE, 0.1),
-    maxTokens: parseInteger(env.SEE_CODE_LLM_MAX_TOKENS, 700),
-    maxRetries: parseInteger(env.SEE_CODE_LLM_MAX_RETRIES, 2),
-    timeoutMs: parseInteger(env.SEE_CODE_LLM_TIMEOUT_MS, 60_000),
-    concurrency: parseInteger(env.SEE_CODE_LLM_CONCURRENCY, 2),
-    limit: parseOptionalInteger(env.SEE_CODE_LLM_LIMIT),
-    cacheEnabled: env.SEE_CODE_LLM_CACHE !== "0" && env.SEE_CODE_LLM_CACHE !== "false",
+    temperature: parseNumber(env.SEE_CODE_LLM_TEMPERATURE, config?.temperature ?? 0.1),
+    maxTokens: parseInteger(env.SEE_CODE_LLM_MAX_TOKENS, config?.maxTokens ?? 700),
+    maxRetries: parseInteger(env.SEE_CODE_LLM_MAX_RETRIES, config?.maxRetries ?? 2),
+    timeoutMs: parseInteger(env.SEE_CODE_LLM_TIMEOUT_MS, config?.timeoutMs ?? 60_000),
+    concurrency: parseInteger(env.SEE_CODE_LLM_CONCURRENCY, config?.concurrency ?? 2),
+    limit: parseOptionalInteger(env.SEE_CODE_LLM_LIMIT) ?? config?.limit,
+    cacheEnabled: cacheValue === undefined
+      ? config?.cache ?? true
+      : cacheValue !== "0" && cacheValue !== "false",
     enabled: provider !== "none" && Boolean(apiKey)
   };
 }

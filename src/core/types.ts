@@ -143,12 +143,19 @@ export interface AnalysisResult {
   scannedAt: string;
   model?: ModelRuntimeInfo;
   modelConfig?: unknown;
+  scan?: ScanRuntimeInfo;
   files: SourceFileInfo[];
   modules: ModuleUnit[];
   methods: MethodUnit[];
   classes: ClassUnit[];
   resources: ResourceNode[];
   graph: RelationGraph;
+}
+
+export interface ScanRuntimeInfo {
+  exclude: string[];
+  maxFileBytes: number;
+  configPath?: string;
 }
 
 export type ModelProvider =

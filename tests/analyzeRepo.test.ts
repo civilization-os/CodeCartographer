@@ -5,8 +5,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { analyzeRepo } from "../src/analyzer/analyzeRepo.js";
+import { loadProjectConfig } from "../src/config/projectConfig.js";
 import { generateDocs } from "../src/docs/docsGenerator.js";
-import type { ModelConfig } from "../src/llm/modelConfig.js";
+import { loadModelConfig, type ModelConfig } from "../src/llm/modelConfig.js";
 import {
   RESULT_JSON_SCHEMA_VERSION,
   writeResultJson
@@ -257,4 +258,69 @@ export function cancelOrder(id: string): string {
   assert.ok(diff.changes.methods.added.some((method) => method.name === "cancelOrder"));
   assert.ok(diff.changes.resources.added.includes("ENV:ORDER_CANCEL_TOPIC"));
   assert.match(changeSummary, /cancelOrder/);
+});
+
+test("loads minimal project config for scan and non-sensitive LLM defaults", async () => {
+  const fixturePath = path.join(fixturesDir, "typescript-basic");
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "see-code-config-"));
+  await fs.cp(fixturePath, tempRoot, { recursive: true });
+  await fs.mkdir(path.join(tempRoot, "generated"), { recursive: true });
+  await fs.writeFile(
+    path.join(tempRoot, "generated/ignored.ts"),
+    "export function ignoredGeneratedMethod(): void {}\n",
+    "utf8"
+  );
+  await fs.writeFile(
+    path.join(tempRoot, "see-code.config.json"),
+    JSON.stringify({
+      scan: {
+        exclude: ["generated/**"],
+        maxFileBytes: 4096
+      },
+      llm: {
+        provider: "deepseek",
+        model: "deepseek-chat",
+        limit: 7,
+        cache: false
+      }
+    }, null, 2),
+    "utf8"
+  );
+
+  const projectConfig = await loadProjectConfig(tempRoot);
+  const modelConfig = loadModelConfig({}, projectConfig.config.llm);
+  const result = await analyzeRepo(tempRoot, {
+    modelConfig,
+    scanConfig: projectConfig.config.scan,
+    configPath: projectConfig.configPath
+  });
+
+  assert.equal(modelConfig.provider, "deepseek");
+  assert.equal(modelConfig.model, "deepseek-chat");
+  assert.equal(modelConfig.limit, 7);
+  assert.equal(modelConfig.cacheEnabled, false);
+  assert.equal(modelConfig.enabled, false);
+  assert.ok(projectConfig.configPath?.endsWith("see-code.config.json"));
+  assert.equal(result.scan?.maxFileBytes, 4096);
+  assert.ok(result.scan?.exclude.includes("generated/**"));
+  assert.ok(!result.files.some((file) => file.relativePath.includes("generated")));
+});
+
+test("rejects API keys in project config", async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "see-code-config-secret-"));
+  await fs.writeFile(
+    path.join(tempRoot, "see-code.config.json"),
+    JSON.stringify({
+      llm: {
+        provider: "deepseek",
+        apiKey: "sk-should-not-be-here-but-this-is-a-test-placeholder"
+      }
+    }),
+    "utf8"
+  );
+
+  await assert.rejects(
+    () => loadProjectConfig(tempRoot),
+    /must not contain API keys/
+  );
 });

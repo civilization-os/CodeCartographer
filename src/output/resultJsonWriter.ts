@@ -130,6 +130,7 @@ function toResultJson(input: ResultJsonInput): Record<string, unknown> {
     rootPath: result.rootPath,
     scannedAt: result.scannedAt,
     model: result.model,
+    scan: result.scan,
     stats: {
       files: result.files.length,
       sourceFiles: sourceFiles.length,

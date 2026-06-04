@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { AnalysisResult } from "../core/types.js";
+import type { AnalysisResult, ScanRuntimeInfo } from "../core/types.js";
 import {
   buildRelationGraph,
   extractResources
@@ -10,10 +10,17 @@ import {
 } from "../llm/methodSemanticAnalyzer.js";
 import { loadModelConfig, toModelRuntimeInfo, type ModelConfig } from "../llm/modelConfig.js";
 import { parseModules } from "../parser/moduleParser.js";
-import { scanRepo } from "../scanner/repoScanner.js";
+import {
+  DEFAULT_MAX_FILE_BYTES,
+  DEFAULT_SCAN_EXCLUDE,
+  scanRepo,
+  type ScanRepoOptions
+} from "../scanner/repoScanner.js";
 
 export interface AnalyzeRepoOptions {
   modelConfig?: ModelConfig;
+  scanConfig?: ScanRepoOptions;
+  configPath?: string;
 }
 
 export async function analyzeRepo(
@@ -22,7 +29,8 @@ export async function analyzeRepo(
 ): Promise<AnalysisResult> {
   const absoluteRoot = path.resolve(rootPath);
   const modelConfig = options.modelConfig ?? loadModelConfig();
-  const files = await scanRepo(absoluteRoot);
+  const scan = buildScanRuntimeInfo(options.scanConfig, options.configPath);
+  const files = await scanRepo(absoluteRoot, options.scanConfig);
   let modules = attachHeuristicSemantics(await parseModules(files));
   if (modelConfig.enabled) {
     modules = await enrichModulesWithMethodSemantics(modules, modelConfig, {
@@ -39,11 +47,23 @@ export async function analyzeRepo(
     scannedAt: new Date().toISOString(),
     model: toModelRuntimeInfo(modelConfig),
     modelConfig,
+    scan,
     files,
     modules,
     methods,
     classes,
     resources,
     graph
+  };
+}
+
+function buildScanRuntimeInfo(
+  scanConfig: ScanRepoOptions | undefined,
+  configPath: string | undefined
+): ScanRuntimeInfo {
+  return {
+    exclude: [...DEFAULT_SCAN_EXCLUDE, ...(scanConfig?.exclude ?? [])],
+    maxFileBytes: scanConfig?.maxFileBytes ?? DEFAULT_MAX_FILE_BYTES,
+    configPath
   };
 }

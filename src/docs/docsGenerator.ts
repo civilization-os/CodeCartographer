@@ -135,6 +135,17 @@ function renderProjectOverview(
       ]
     ),
     "",
+    heading(2, "Scan Configuration"),
+    "",
+    table(
+      ["Field", "Value"],
+      [
+        ["Config file", result.scan?.configPath ?? "not found"],
+        ["Max file bytes", String(result.scan?.maxFileBytes ?? "")],
+        ["Exclude rules", result.scan?.exclude.join(", ") ?? ""]
+      ]
+    ),
+    "",
     heading(2, "Generated Outputs"),
     "",
     bulletList([
@@ -515,6 +526,7 @@ function renderMaintenanceGuide(result: AnalysisResult): string {
     bulletList([
       "TypeScript and JavaScript are parsed through the TypeScript compiler AST.",
       "Java is parsed through a lightweight static parser adapter that extracts classes, methods, annotations, signatures, calls, resources, and common Spring entrypoint hints.",
+      "`see-code.config.json` can provide minimal non-sensitive configuration for scan excludes, max file size, and LLM defaults.",
       "Parsing is routed through language adapters that emit the shared ModuleUnit, ClassUnit, and MethodUnit structures.",
       "MethodUnit includes language-neutral metadata such as parameters, return type, modifiers, annotations/decorators, framework hints, and entrypoint hints.",
       "Higher-fidelity Java support can replace the lightweight adapter with tree-sitter or another Java AST backend without changing the semantic analyzer, relation graph builder, or docs generator.",

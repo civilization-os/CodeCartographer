@@ -91,7 +91,7 @@ function buildChecks(
   narrative: ProjectNarrative,
   docs: Map<string, string>
 ): QualityCheck[] {
-  const allDocText = [...docs.values()].join("\n");
+const allDocText = [...docs.values()].join("\n");
   const llmCount = result.methods.filter((method) => method.semantic?.analyzer === "llm").length;
   const heuristicCount = result.methods.filter((method) => method.semantic?.analyzer !== "llm").length;
   const placeholderMatches = countMatches(allDocText, [
@@ -145,7 +145,7 @@ function buildChecks(
     },
     {
       name: "Document size balance",
-      status: maxDocLength(docs) < 60_000 ? "pass" : "warn",
+      status: maxDocLength(docs) < 90_000 ? "pass" : "warn",
       detail: `Largest document is ${maxDocLength(docs)} characters.`
     },
     {

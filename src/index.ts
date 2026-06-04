@@ -1,12 +1,13 @@
 import path from "node:path";
 import { analyzeRepo } from "./analyzer/analyzeRepo.js";
+import { loadProjectConfig } from "./config/projectConfig.js";
 import { generateDocs } from "./docs/docsGenerator.js";
-import { loadModelConfig, type ModelConfig } from "./llm/modelConfig.js";
+import { loadModelConfig } from "./llm/modelConfig.js";
 import { writeResultJson } from "./output/resultJsonWriter.js";
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2).filter((arg) => arg !== "--");
-  const { command, targetPath, modelConfig } = parseArgs(args);
+  const { command, targetPath, envOverrides } = parseArgs(args);
 
   if (command === "help" || command === "--help" || command === "-h") {
     printHelp();
@@ -18,7 +19,13 @@ async function main(): Promise<void> {
   }
 
   const rootPath = path.resolve(targetPath);
-  const result = await analyzeRepo(rootPath, { modelConfig });
+  const projectConfig = await loadProjectConfig(rootPath);
+  const modelConfig = loadModelConfig({ ...process.env, ...envOverrides }, projectConfig.config.llm);
+  const result = await analyzeRepo(rootPath, {
+    modelConfig,
+    scanConfig: projectConfig.config.scan,
+    configPath: projectConfig.configPath
+  });
   const generatedDocs = await generateDocs(result);
   const output = await writeResultJson({
     result,
@@ -35,6 +42,7 @@ async function main(): Promise<void> {
       ? `LLM semantic analyzer: ${result.model.provider} / ${result.model.model}`
       : "LLM semantic analyzer: disabled, using heuristic summaries."
   );
+  console.log(`Project config: ${projectConfig.configPath ?? "not found"}`);
   console.log(`Generated result JSON: ${output.resultPath}`);
   console.log(`Generated result diff: ${output.diffPath}`);
   console.log(`Generated change summary: ${output.changeSummaryPath}`);
@@ -47,7 +55,7 @@ async function main(): Promise<void> {
 function parseArgs(args: string[]): {
   command: string;
   targetPath: string;
-  modelConfig: ModelConfig;
+  envOverrides: NodeJS.ProcessEnv;
 } {
   const positional: string[] = [];
   const overrides: NodeJS.ProcessEnv = {};
@@ -96,7 +104,7 @@ function parseArgs(args: string[]): {
   return {
     command,
     targetPath,
-    modelConfig: loadModelConfig({ ...process.env, ...overrides })
+    envOverrides: overrides
   };
 }
 

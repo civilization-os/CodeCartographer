@@ -3,37 +3,49 @@ import path from "node:path";
 import type { SourceFileInfo, SourceLanguage } from "../core/types.js";
 import { toPosixPath } from "../utils/path.js";
 
-const IGNORED_DIRS = new Set([
-  ".git",
-  ".see-code",
-  "node_modules",
-  "dist",
-  "docs",
-  "build",
-  "coverage",
-  ".next",
-  ".turbo",
-  ".cache",
-  "target",
-  "__pycache__"
-]);
+export const DEFAULT_SCAN_EXCLUDE = [
+  ".git/**",
+  ".see-code/**",
+  "node_modules/**",
+  "dist/**",
+  "docs/**",
+  "build/**",
+  "coverage/**",
+  ".next/**",
+  ".turbo/**",
+  ".cache/**",
+  "target/**",
+  "__pycache__/**"
+];
 
-const MAX_FILE_BYTES = 1024 * 1024;
+export const DEFAULT_MAX_FILE_BYTES = 1024 * 1024;
 
-export async function scanRepo(rootPath: string): Promise<SourceFileInfo[]> {
+export interface ScanRepoOptions {
+  exclude?: string[];
+  maxFileBytes?: number;
+}
+
+export async function scanRepo(
+  rootPath: string,
+  options: ScanRepoOptions = {}
+): Promise<SourceFileInfo[]> {
   const absoluteRoot = path.resolve(rootPath);
   const files: SourceFileInfo[] = [];
+  const exclude = [...DEFAULT_SCAN_EXCLUDE, ...(options.exclude ?? [])];
+  const maxFileBytes = options.maxFileBytes ?? DEFAULT_MAX_FILE_BYTES;
 
   async function walk(currentPath: string): Promise<void> {
     const entries = await fs.readdir(currentPath, { withFileTypes: true });
 
     for (const entry of entries) {
       const absolutePath = path.join(currentPath, entry.name);
+      const relativePath = toPosixPath(path.relative(absoluteRoot, absolutePath));
+      if (matchesAnyExclude(relativePath, entry.name, exclude)) {
+        continue;
+      }
 
       if (entry.isDirectory()) {
-        if (!IGNORED_DIRS.has(entry.name)) {
-          await walk(absolutePath);
-        }
+        await walk(absolutePath);
         continue;
       }
 
@@ -42,7 +54,7 @@ export async function scanRepo(rootPath: string): Promise<SourceFileInfo[]> {
       }
 
       const stat = await fs.stat(absolutePath);
-      if (stat.size > MAX_FILE_BYTES) {
+      if (stat.size > maxFileBytes) {
         continue;
       }
 
@@ -53,7 +65,7 @@ export async function scanRepo(rootPath: string): Promise<SourceFileInfo[]> {
 
       files.push({
         absolutePath,
-        relativePath: toPosixPath(path.relative(absoluteRoot, absolutePath)),
+        relativePath,
         language,
         bytes: stat.size
       });
@@ -62,6 +74,31 @@ export async function scanRepo(rootPath: string): Promise<SourceFileInfo[]> {
 
   await walk(absoluteRoot);
   return files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+}
+
+function matchesAnyExclude(relativePath: string, baseName: string, patterns: string[]): boolean {
+  return patterns.some((pattern) => matchesExclude(relativePath, baseName, pattern));
+}
+
+function matchesExclude(relativePath: string, baseName: string, pattern: string): boolean {
+  const normalized = toPosixPath(pattern).replace(/^\/+/, "");
+  if (!normalized) {
+    return false;
+  }
+  if (!normalized.includes("*")) {
+    return relativePath === normalized ||
+      relativePath.startsWith(`${normalized}/`) ||
+      baseName === normalized;
+  }
+
+  const regex = new RegExp(`^${escapeRegex(normalized)
+    .replace(/\\\*\\\*/g, ".*")
+    .replace(/\\\*/g, "[^/]*")}$`);
+  return regex.test(relativePath);
+}
+
+function escapeRegex(value: string): string {
+  return value.replace(/[|\\{}()[\]^$+?.*]/g, "\\$&");
 }
 
 function detectLanguage(fileName: string): SourceLanguage {

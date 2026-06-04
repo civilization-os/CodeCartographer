@@ -1,0 +1,12 @@
+{
+  "scan": {
+    "exclude": ["tests/fixtures/**"],
+    "maxFileBytes": 1048576
+  },
+  "llm": {
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "baseUrl": "https://api.deepseek.com",
+    "cache": true
+  }
+}

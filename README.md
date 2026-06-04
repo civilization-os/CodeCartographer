@@ -35,6 +35,25 @@ SEE_CODE_LLM_LIMIT=10 \
 pnpm analyze -- .
 ```
 
+Minimal project config can live in `see-code.config.json`:
+
+```json
+{
+  "scan": {
+    "exclude": ["tests/fixtures/**", "generated/**"],
+    "maxFileBytes": 1048576
+  },
+  "llm": {
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "baseUrl": "https://api.deepseek.com",
+    "cache": true
+  }
+}
+```
+
+Do not put API keys in `see-code.config.json`; use CLI flags or environment variables for secrets. Precedence is CLI flags, then environment variables, then config, then defaults.
+
 OpenAI-compatible private server:
 
 ```bash
@@ -90,6 +109,7 @@ docs/
 - Parse TypeScript and JavaScript with the TypeScript compiler AST through a parser adapter.
 - Parse Java with a lightweight static parser adapter that extracts classes, methods, annotations, calls, resources, and common Spring entrypoint hints.
 - Validate parser behavior with fixture-based TypeScript, Java Spring, and document-only tests.
+- Load minimal non-sensitive project config from `see-code.config.json`.
 - Extract `MethodUnit` and `ClassUnit` records.
 - Build a basic relation graph.
 - Optionally enrich method summaries through LangChain chat model adapters.
