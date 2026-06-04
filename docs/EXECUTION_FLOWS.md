@@ -17,7 +17,7 @@ Entry: `src/index.ts:8` main
 7. printHelp - 打印 see-code 工具的使用说明和命令行参数帮助信息。
 8. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
 9. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
-10. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，包含节点和边。
+10. buildRelationGraph - 根据模块单元和资源节点构建包含模块、类、方法和资源层级的关系图，并返回去重后的节点和边集合。
 
 ### Resources
 
@@ -37,20 +37,20 @@ Entry: `src/index.ts:8` main
 
 ## extractClassUnit
 
-Entry: `src/parser/javaStructureParser.ts:134` extractClassUnit
+Entry: `src/parser/javaStructureParser.ts:136` extractClassUnit
 
 ### Steps
 
-1. extractClassUnit - 从Java类块中提取类单元，包括方法列表和类元数据。
+1. extractClassUnit - 从Java类块中提取类单元，包括方法、资源和摘要信息。
 2. buildMethodUnit - 根据给定的源代码、掩码文本、行索引、模块路径、类块和方法块等信息，构建并返回一个包含方法元数据（如名称、签名、调用、资源、框架提示等）的 MethodUnit 对象。
-3. extractMethodBlocks - 从Java类块中提取所有方法块，返回方法定义列表。
-4. locationFromOffsets - 根据文件路径、行索引和偏移量范围计算并返回源代码位置信息。
-5. requestMappingPath - 从注解列表中提取RequestMapping注解的路径值。
-6. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
-7. findMatchingBrace - 从指定起始位置开始，在字符串中查找与左花括号匹配的右花括号的索引。
-8. leadingWhitespaceLength - 计算字符串开头空白字符的长度。
-9. parseMethodHeader - 解析Java方法头文本，提取方法名、注解、修饰符、可见性、返回类型和参数列表，并返回结构化的方法块信息。
-10. lineNumberAt - 通过二分查找在行索引数组中定位给定偏移量对应的行号。
+3. extractClassResources - 从Java类块中提取实体、表和仓库资源标识符。
+4. extractMethodBlocks - 从Java类块中提取所有方法块，返回方法定义列表。
+5. locationFromOffsets - 根据文件路径、行索引和偏移量范围计算并返回源代码位置信息。
+6. requestMappingPath - 从注解列表中提取RequestMapping注解的路径值。
+7. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
+8. summarizeClass - 生成Java类的中文摘要字符串，包含类名、类型、方法数量和关联资源。
+9. annotationAttribute - 从注解字符串中提取指定属性的值。
+10. annotationByName - 根据名称在注解字符串数组中查找匹配的注解。
 
 ### Resources
 
@@ -58,7 +58,7 @@ Entry: `src/parser/javaStructureParser.ts:134` extractClassUnit
 
 ## extractFrameworkHints
 
-Entry: `src/parser/javaStructureParser.ts:356` extractFrameworkHints
+Entry: `src/parser/javaStructureParser.ts:394` extractFrameworkHints
 
 ### Steps
 
@@ -78,13 +78,13 @@ Entry: `src/parser/javaStructureParser.ts:356` extractFrameworkHints
 
 ## parseJavaModule
 
-Entry: `src/parser/javaStructureParser.ts:76` parseJavaModule
+Entry: `src/parser/javaStructureParser.ts:77` parseJavaModule
 
 ### Steps
 
 1. parseJavaModule - 解析Java源文件并提取模块单元信息，包括导入、类和方法。
 2. buildLineIndex - 根据源代码文本构建行索引，记录每行起始字符位置。
-3. extractClassBlocks - 从Java源文本中提取类、接口、枚举或记录的定义块，返回包含名称、类型、注解和位置信息的数组。
+3. extractClassBlocks - 从Java源代码中提取类、接口、枚举和记录的定义块，包括注解、声明和代码范围。
 4. maskJavaSource - 将Java源代码中的注释和字符串字面量替换为空格，返回脱敏后的文本。
 5. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
 6. findMatchingBrace - 从指定起始位置开始，在字符串中查找与左花括号匹配的右花括号的索引。
@@ -144,7 +144,7 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。
 4. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
 5. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
-6. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，包含节点和边。
+6. buildRelationGraph - 根据模块单元和资源节点构建包含模块、类、方法和资源层级的关系图，并返回去重后的节点和边集合。
 7. buildScanRuntimeInfo - 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。
 8. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
 9. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。
@@ -168,12 +168,12 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 
 ## extractResources
 
-Entry: `src/graph/relationGraphBuilder.ts:101` extractResources
+Entry: `src/graph/relationGraphBuilder.ts:117` extractResources
 
 ### Steps
 
-1. extractResources - 从模块单元中提取所有资源并去重排序，返回资源节点列表。
-2. resourceKind - 根据资源字符串前缀判断资源类型并返回对应的枚举值。
+1. extractResources - 从模块单元中提取所有资源并去重排序，返回资源节点数组。
+2. resourceKind - 根据资源字符串前缀返回对应的资源类型标识。
 3. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
 
 ### Resources

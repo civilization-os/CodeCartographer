@@ -1,11 +1,11 @@
 # Change Summary
 
-Compared previous result `2026-06-04T05:57:13.445Z` with current result `2026-06-04T06:02:08.990Z`.
+Compared previous result `2026-06-04T06:02:08.990Z` with current result `2026-06-04T06:09:57.620Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~3
-- Methods: +0 / -0 / ~1
+- Files: +0 / -0 / ~7
+- Methods: +2 / -0 / ~7
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
@@ -13,7 +13,8 @@ Compared previous result `2026-06-04T05:57:13.445Z` with current result `2026-06
 
 ## Added Methods
 
-- 无
+- src/parser/javaStructureParser.ts: extractClassResources
+- src/parser/javaStructureParser.ts: summarizeClass
 
 ## Removed Methods
 
@@ -21,7 +22,13 @@ Compared previous result `2026-06-04T05:57:13.445Z` with current result `2026-06
 
 ## Modified Methods
 
-- src/docs/semanticAggregator.ts: buildSemanticOverview
+- src/graph/relationGraphBuilder.ts: buildRelationGraph
+- src/graph/relationGraphBuilder.ts: extractResources
+- src/graph/relationGraphBuilder.ts: resourceKind
+- src/output/resultJsonWriter.ts: serializeClass
+- src/parser/javaStructureParser.ts: extractClassBlocks
+- src/parser/javaStructureParser.ts: extractClassUnit
+- src/parser/typescriptStructureParser.ts: extractClassUnit
 
 ## Entrypoints
 

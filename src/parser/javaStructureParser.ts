@@ -19,6 +19,7 @@ interface JavaClassBlock {
   name: string;
   kind: string;
   annotations: string[];
+  declaration: string;
   start: number;
   bodyStart: number;
   end: number;
@@ -122,6 +123,7 @@ function extractClassBlocks(sourceText: string, masked: string): JavaClassBlock[
       name: match[4],
       kind: match[3],
       annotations: extractAnnotations(declarationText),
+      declaration: declarationText.replace(/\s+/g, " ").trim(),
       start,
       bodyStart,
       end
@@ -140,6 +142,7 @@ function extractClassUnit(
 ): ClassUnit {
   const methodBlocks = extractMethodBlocks(sourceText, masked, classBlock);
   const classRoutePrefix = requestMappingPath(classBlock.annotations) ?? "";
+  const resources = extractClassResources(classBlock);
   const methods = methodBlocks.map((methodBlock) =>
     buildMethodUnit(sourceText, masked, lineIndex, modulePath, classBlock, methodBlock, classRoutePrefix)
   );
@@ -150,8 +153,43 @@ function extractClassUnit(
     modulePath,
     location: locationFromOffsets(modulePath, lineIndex, classBlock.start, classBlock.end),
     methods,
-    summary: `${classBlock.name} 是 ${classBlock.kind}，包含 ${methods.length} 个方法。`
+    resources,
+    summary: summarizeClass(classBlock, methods.length, resources)
   };
+}
+
+function extractClassResources(classBlock: JavaClassBlock): string[] {
+  const resources = new Set<string>();
+
+  if (
+    hasAnnotation(classBlock.annotations, "Entity") ||
+    hasAnnotation(classBlock.annotations, "MappedSuperclass") ||
+    hasAnnotation(classBlock.annotations, "Embeddable")
+  ) {
+    resources.add(`ENTITY:${classBlock.name}`);
+  }
+
+  const tableName =
+    annotationAttribute(annotationByName(classBlock.annotations, "Table") ?? "", "name") ??
+    annotationAttribute(annotationByName(classBlock.annotations, "Table") ?? "", "value");
+  if (tableName) {
+    resources.add(`TABLE:${tableName}`);
+  }
+
+  if (
+    /Repository$|Dao$|Mapper$/.test(classBlock.name) ||
+    /\b(?:JpaRepository|CrudRepository|PagingAndSortingRepository|Repository)\s*</.test(classBlock.declaration)
+  ) {
+    resources.add(`REPOSITORY:${classBlock.name}`);
+    const repositoryEntity = /(?:JpaRepository|CrudRepository|PagingAndSortingRepository|Repository)\s*<\s*([A-Za-z_$][\w$]*)/.exec(
+      classBlock.declaration
+    )?.[1];
+    if (repositoryEntity) {
+      resources.add(`ENTITY:${repositoryEntity}`);
+    }
+  }
+
+  return [...resources].sort();
 }
 
 function extractMethodBlocks(
@@ -786,6 +824,18 @@ function dedupeBy<T>(items: T[], keyFn: (item: T) => string): T[] {
     }
   }
   return result;
+}
+
+function summarizeClass(
+  classBlock: JavaClassBlock,
+  methodCount: number,
+  resources: string[]
+): string {
+  const parts = [`${classBlock.name} 是 ${classBlock.kind}，包含 ${methodCount} 个方法`];
+  if (resources.length > 0) {
+    parts.push(`关联 ${resources.slice(0, 5).join(", ")}`);
+  }
+  return `${parts.join("，")}。`;
 }
 
 function summarizeMethod(

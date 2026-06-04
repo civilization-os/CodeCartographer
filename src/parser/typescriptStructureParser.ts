@@ -121,6 +121,7 @@ function extractClassUnit(
     modulePath,
     location: getLocation(sourceFile, node),
     methods,
+    resources: [],
     summary: `${className} 暴露 ${methods.length} 个方法。`
   };
 }

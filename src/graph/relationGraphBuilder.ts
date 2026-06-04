@@ -35,6 +35,22 @@ export function buildRelationGraph(
         kind: "contains",
         weight: 1
       });
+
+      for (const resource of classUnit.resources) {
+        const resourceId = stableId("resource", resource);
+        nodes.set(resourceId, {
+          id: resourceId,
+          label: resource,
+          level: "resource"
+        });
+        edges.push({
+          from: classUnit.id,
+          to: resourceId,
+          kind: "depends_on",
+          weight: 2,
+          label: resource
+        });
+      }
     }
 
     for (const method of module.methods) {
@@ -100,6 +116,17 @@ export function buildRelationGraph(
 
 export function extractResources(modules: ModuleUnit[]): ResourceNode[] {
   const resources = new Map<string, ResourceNode>();
+
+  for (const classUnit of modules.flatMap((module) => module.classes)) {
+    for (const resource of classUnit.resources) {
+      const id = stableId("resource", resource);
+      resources.set(id, {
+        id,
+        name: resource,
+        kind: resourceKind(resource)
+      });
+    }
+  }
 
   for (const method of modules.flatMap((module) => module.methods)) {
     for (const resource of method.resources) {
@@ -173,6 +200,9 @@ function resourceKind(resource: string): ResourceNode["kind"] {
   }
   if (resource.startsWith("ENV:")) {
     return "env";
+  }
+  if (resource.startsWith("ENTITY:") || resource.startsWith("REPOSITORY:") || resource.startsWith("TABLE:")) {
+    return "database";
   }
   if (resource.startsWith("FILE:")) {
     return "file";

@@ -35,11 +35,11 @@ Local evaluation config:
 | Source files | 30 |
 | Classes | 25 |
 | Method units | 87 |
-| Graph nodes | 145 |
-| Graph edges | 125 |
+| Graph nodes | 163 |
+| Graph edges | 146 |
 | Business flows | 17 |
 | Static execution flows | 8 |
-| Resources | 0 |
+| Resources | 18 |
 | Quality score | 89/100 |
 | LLM method summaries | 0/87 |
 | Architecture areas | Configuration, Documentation, model, owner, petclinic, Project Files, system, vet |
@@ -66,6 +66,10 @@ The run generated the full document set, `.see-code/result.json`, and
 - Java class methods now participate in static execution flow detection. The
   run produced 8 static execution flows, including owner, pet, visit, cache, and
   controller helper paths.
+- Repository interfaces, JPA entities, mapped superclasses, and table names now
+  appear as first-class database resources. `DATA_AND_RESOURCES.md` lists 18
+  resources, including `ENTITY:Owner`, `REPOSITORY:OwnerRepository`, and
+  `TABLE:owners`.
 - No-LLM fallback narratives are localized for generated operating-model and
   business-flow text.
 - Repository cleanliness held: external project files remain ignored, and the
@@ -91,16 +95,15 @@ docs.
 
 - Java call resolution still does not perform full type inference, so
   field-injected collaborators and repository interface methods remain shallow.
-- Persistence and resource modeling is still shallow. Repository interfaces and
-  JPA entities are detected as hints, but they are not yet represented as
-  first-class data/resource nodes.
+- Resource usage is still class-level for Java persistence structures; method
+  level read/write intent for repository calls is not inferred yet.
 
 ## Recommended Next Work
 
 1. Improve Java call resolution for same-class calls, field-injected
    collaborators, repository interfaces, and simple service/controller helper
    methods.
-2. Promote repository interfaces and persistence entities into explicit
-   resource nodes so `DATA_AND_RESOURCES.md` is more valuable for Java projects.
+2. Add method-level read/write intent for repository calls so resource usage can
+   distinguish query, save, update, and delete paths.
 3. Run one DeepSeek-backed evaluation on Spring PetClinic after parser fixes to
    compare no-LLM structure quality against LLM narrative quality.

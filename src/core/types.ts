@@ -102,6 +102,7 @@ export interface ClassUnit {
   modulePath: string;
   location: SourceLocation;
   methods: MethodUnit[];
+  resources: string[];
   summary: string;
 }
 

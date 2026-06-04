@@ -190,6 +190,7 @@ function serializeClass(classUnit: ClassUnit): Record<string, unknown> {
     modulePath: classUnit.modulePath,
     location: classUnit.location,
     summary: classUnit.summary,
+    resources: classUnit.resources,
     methodIds: classUnit.methods.map((method) => method.id)
   };
 }

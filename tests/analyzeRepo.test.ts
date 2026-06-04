@@ -73,7 +73,11 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
 
   assert.equal(result.files.length, 1);
   assert.equal(result.files[0].language, "java");
-  assert.deepEqual(result.classes.map((classUnit) => classUnit.name), ["OrderController"]);
+  assert.deepEqual(result.classes.map((classUnit) => classUnit.name), [
+    "OrderController",
+    "OrderEntity",
+    "OrderRepository"
+  ]);
 
   const create = result.methods.find((method) => method.name === "create");
   assert.ok(create);
@@ -116,6 +120,20 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
 
   const callEdges = result.graph.edges.filter((edge) => edge.kind === "calls");
   assert.ok(callEdges.some((edge) => edge.label === "validateAndCreate"));
+
+  const entityClass = result.classes.find((classUnit) => classUnit.name === "OrderEntity");
+  const repositoryClass = result.classes.find((classUnit) => classUnit.name === "OrderRepository");
+  assert.ok(entityClass);
+  assert.ok(repositoryClass);
+  assert.deepEqual(entityClass.resources, ["ENTITY:OrderEntity", "TABLE:orders"]);
+  assert.deepEqual(repositoryClass.resources, ["ENTITY:OrderEntity", "REPOSITORY:OrderRepository"]);
+  assert.ok(result.resources.some((resource) => resource.name === "ENTITY:OrderEntity" && resource.kind === "database"));
+  assert.ok(result.resources.some((resource) => resource.name === "REPOSITORY:OrderRepository" && resource.kind === "database"));
+  assert.ok(
+    result.graph.edges.some(
+      (edge) => edge.from === repositoryClass.id && edge.kind === "depends_on" && edge.label === "REPOSITORY:OrderRepository"
+    )
+  );
 });
 
 test("groups Java modules by package area instead of source set", async () => {

@@ -2,29 +2,25 @@
 
 ## System Shape
 
-系统采用分层架构，包括 CLI 入口层、分析器层、解析器层、图构建层、语义分析层、文档生成层和输出层。各层通过明确的接口和数据结构协作，数据流从文件扫描开始，经过解析、图构建、语义增强，最终生成文档和结果文件。
+系统采用分层架构，由 CLI 入口层、分析引擎层、文档生成层、LLM 语义分析层和输出层组成。分析引擎负责扫描和解析源文件，构建关系图；LLM 层为方法提供语义增强；文档生成层将结构化数据渲染为 Markdown；输出层序列化结果并写入文件。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| 入口层 | src/index.ts | 解析命令行参数，加载配置，协调分析流程，输出结果。 |
-| 分析器层 | src/analyzer/analyzeRepo.ts | 编排扫描、解析、图构建、语义分析和文档生成的完整流程。 |
-| 扫描器层 | src/scanner/repoScanner.ts | 递归扫描文件系统，过滤排除项和大文件，返回源文件列表。 |
-| 解析器层 | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 将源代码文本解析为模块、类、方法的结构化单元。 |
-| 图构建层 | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
-| 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 为方法附加语义标签，支持缓存和 LLM 调用降级。 |
-| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果渲染为 Markdown 文档并写入输出目录。 |
-| 输出层 | src/output/resultJsonWriter.ts | 将结果序列化为 JSON 并写入文件系统，支持差异比较。 |
-| 配置层 | src/config/projectConfig.ts | 从文件系统加载项目配置，支持敏感键检测。 |
-| 工具层 | src/utils/path.ts | 提供路径规范化、稳定标识符生成等工具函数。 |
+| CLI 入口层 | src/index.ts | 解析命令行参数，加载配置，编排分析流程，调用各模块完成扫描、分析、文档生成和输出。 |
+| 分析引擎层 | src/analyzer/analyzeRepo.ts, src/scanner/repoScanner.ts, src/parser/typescriptStructureParser.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/graph/relationGraphBuilder.ts | 扫描文件系统，解析源文件为模块单元（类、方法、资源），构建调用关系图。 |
+| LLM 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对方法进行语义分析，管理缓存，调用 LLM 或启发式规则生成方法摘要和语义标签。 |
+| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果和语义概览渲染为 Markdown 文档，包括项目概览、架构、模块、业务流和质量报告。 |
+| 输出层 | src/output/resultJsonWriter.ts | 将扫描结果序列化为 JSON，写入文件系统，生成差异报告和变更摘要。 |
+| 配置层 | src/config/projectConfig.ts, src/llm/modelConfig.ts | 加载和解析项目配置文件（see-code.config.json）和 LLM 模型配置（环境变量 + 配置文件）。 |
 
 ## Critical Paths
 
 - src/index.ts:main
 - src/analyzer/analyzeRepo.ts:analyzeRepo
-- src/scanner/repoScanner.ts:scanRepo
-- src/parser/moduleParser.ts:parseModules
+- src/scanner/repoScanner.ts:scanDirectory
+- src/parser/typescriptStructureParser.ts:extractCallableUnit
 - src/graph/relationGraphBuilder.ts:buildRelationGraph
 - src/llm/methodSemanticAnalyzer.ts:enrichModulesWithMethodSemantics
 - src/docs/docsGenerator.ts:generateDocs
@@ -41,10 +37,10 @@
 | core | 1 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | docs | 5 | 56 | 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 |
 | Documentation | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
-| graph | 1 | 7 | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
+| graph | 1 | 7 | 根据模块单元和资源节点构建包含模块、类、方法和资源层级的关系图，并返回去重后的节点和边集合。 |
 | llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
 | output | 1 | 32 | 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。 |
-| parser | 6 | 67 | 解析Java源文件并提取模块单元信息，包括导入、类和方法。 |
+| parser | 6 | 69 | 解析Java源文件并提取模块单元信息，包括导入、类和方法。 |
 | Project Files | 5 | 7 | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
 | scanner | 1 | 5 | 异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。 |
 | utils | 1 | 2 | 将路径分隔符转换为正斜杠以生成POSIX风格路径。 |
@@ -77,8 +73,8 @@
 
 ### graph
 
-- 构建模块、类、方法和资源之间的关系图，包含节点和边。
-- 从模块单元中提取所有资源并去重排序，返回资源节点列表。
+- 根据模块单元和资源节点构建包含模块、类、方法和资源层级的关系图，并返回去重后的节点和边集合。
+- 从模块单元中提取所有资源并去重排序，返回资源节点数组。
 - 构建方法名称到方法单元的索引映射，支持类名限定和多种命名格式。
 - 根据调用字符串和方法索引解析唯一的方法单元，优先精确匹配，其次尝试通过最后一段名称匹配。
 - 根据函数调用名称返回一个数值分数，用于表示该调用的重要性或影响程度。
@@ -96,16 +92,16 @@
 - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
 - 将扫描结果、概览、质量数据和文档路径组装为结构化的 JSON 对象并返回。
 - 将模块单元序列化为包含标识符、路径、语言、导入、摘要以及类和方法的ID列表的普通对象。
-- 将 ClassUnit 对象序列化为包含 id、name、modulePath、location、summary 和 methodIds 的普通对象。
+- 将 ClassUnit 对象序列化为包含 id、name、modulePath、location、summary、resources 和 methodIds 字段的普通对象。
 - 将 MethodUnit 对象序列化为一个包含其所有属性的普通 JSON 对象。
 
 ### parser
 
 - 解析Java源文件并提取模块单元信息，包括导入、类和方法。
 - 从Java源代码文本中提取所有导入语句并返回排序后的唯一导入列表。
-- 从Java源文本中提取类、接口、枚举或记录的定义块，返回包含名称、类型、注解和位置信息的数组。
-- 从Java类块中提取类单元，包括方法列表和类元数据。
-- 从Java类块中提取所有方法块，返回方法定义列表。
+- 从Java源代码中提取类、接口、枚举和记录的定义块，包括注解、声明和代码范围。
+- 从Java类块中提取类单元，包括方法、资源和摘要信息。
+- 从Java类块中提取实体、表和仓库资源标识符。
 
 ### Project Files
 

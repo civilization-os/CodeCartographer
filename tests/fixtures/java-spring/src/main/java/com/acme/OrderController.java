@@ -1,5 +1,8 @@
 package com.acme;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -47,4 +50,12 @@ public class OrderController {
   public OrderContext loadOrderContext(@PathVariable("orderId") int orderId) {
     return orderService.loadContext(orderId);
   }
+}
+
+@Entity
+@Table(name = "orders")
+class OrderEntity {
+}
+
+interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 }
