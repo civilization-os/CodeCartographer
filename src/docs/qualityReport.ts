@@ -114,11 +114,7 @@ function buildChecks(
   ]);
 
   return [
-    {
-      name: "Method summary coverage",
-      status: heuristicCount === 0 ? "pass" : heuristicCount <= 3 ? "warn" : "fail",
-      detail: `${llmCount}/${result.methods.length} methods use LLM summaries; ${heuristicCount} methods use fallback summaries.`
-    },
+    methodSummaryCoverageCheck(result, llmCount, heuristicCount),
     {
       name: "Narrative overview",
       status: isChineseNarrative(narrative.projectOverview.purpose) ? "pass" : "warn",
@@ -160,6 +156,37 @@ function buildChecks(
       detail: `${docs.size} documents generated before quality report.`
     }
   ];
+}
+
+function methodSummaryCoverageCheck(
+  result: AnalysisResult,
+  llmCount: number,
+  heuristicCount: number
+): QualityCheck {
+  const methodCount = result.methods.length;
+  const coverageDetail = `${llmCount}/${methodCount} methods use LLM summaries; ${heuristicCount} methods use fallback summaries.`;
+
+  if (methodCount === 0) {
+    return {
+      name: "Method summary coverage",
+      status: "pass",
+      detail: "No method units were detected, so method summary coverage is not applicable."
+    };
+  }
+
+  if (!result.model?.enabled) {
+    return {
+      name: "Method summary coverage",
+      status: heuristicCount === methodCount ? "warn" : "pass",
+      detail: `LLM analysis is disabled; heuristic summaries are expected. ${coverageDetail}`
+    };
+  }
+
+  return {
+    name: "Method summary coverage",
+    status: heuristicCount === 0 ? "pass" : heuristicCount <= 3 ? "warn" : "fail",
+    detail: coverageDetail
+  };
 }
 
 function calculateScore(checks: QualityCheck[]): number {

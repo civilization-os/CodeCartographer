@@ -1,11 +1,11 @@
 # Change Summary
 
-Compared previous result `2026-06-04T15:34:58.452Z` with current result `2026-06-04T15:36:17.687Z`.
+Compared previous result `2026-06-04T15:36:17.687Z` with current result `2026-06-04T15:44:38.718Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~1
-- Methods: +0 / -0 / ~0
+- Files: +0 / -0 / ~3
+- Methods: +1 / -0 / ~1
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
@@ -13,7 +13,7 @@ Compared previous result `2026-06-04T15:34:58.452Z` with current result `2026-06
 
 ## Added Methods
 
-- 无
+- src/docs/qualityReport.ts: methodSummaryCoverageCheck
 
 ## Removed Methods
 
@@ -21,7 +21,7 @@ Compared previous result `2026-06-04T15:34:58.452Z` with current result `2026-06
 
 ## Modified Methods
 
-- 无
+- src/docs/qualityReport.ts: buildChecks
 
 ## Entrypoints
 

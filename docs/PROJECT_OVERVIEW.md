@@ -2,30 +2,29 @@
 
 Repository path: `/root/project/ai/see_code`
 
-Scan time: `2026-06-04T15:36:17.667Z`
+Scan time: `2026-06-04T15:44:24.648Z`
 
 ## Purpose
 
-该工具分析指定代码仓库，提取模块、方法、类、资源和关系图，并生成工程文档（Markdown 文件）和结构化 JSON 结果。
+该工具对指定代码仓库进行静态分析，提取模块、方法、类、资源和调用关系图，并生成结构化工程文档（Markdown 和 JSON）。
 
 ## Operating Model
 
 1. CLI 入口解析命令行参数，加载项目配置和 LLM 模型配置。
-2. 扫描器递归扫描仓库根目录，过滤排除项和大文件，返回源文件列表。
-3. 解析器根据文件语言（TypeScript/JavaScript/Java）调用对应适配器，提取模块单元（类、方法、导入）。
+2. 扫描器递归遍历仓库目录，过滤排除项和大文件，返回源文件列表。
+3. 解析器根据文件语言（TypeScript/JavaScript）解析源文件，提取模块、类、方法和导入信息。
 4. 分析器为每个仓库操作生成合成方法，构建模块、类、方法和资源之间的关系图。
-5. LLM 模块对每个方法进行语义分析（优先缓存，未缓存则调用 LLM 或启发式方法），更新模块和类的摘要。
-6. 文档生成器将分析结果写入多个 Markdown 文件（索引、概览、架构、模块、业务流等）。
-7. 输出模块将结果写入文件系统（结果 JSON、差异 JSON、变更摘要 Markdown）。
+5. LLM 模块对方法进行语义分析（优先使用缓存，未缓存则调用大语言模型或启发式方法）。
+6. 文档生成器将分析结果写入多个 Markdown 文件和 JSON 结果文件。
 
 ## Key Capabilities
 
-- 支持 TypeScript/JavaScript 和 Java 源代码解析。
-- 自动生成合成方法以覆盖仓库操作（如 DB_READ、DB_WRITE）。
-- 构建静态调用关系图，包含节点（模块、类、方法、资源）和边。
-- 通过 LLM 或启发式规则为每个方法附加语义标签。
-- 生成结构化工程文档（Markdown）和机器可读 JSON 输出。
-- 支持差异比较（buildResultDiff）以追踪变更。
+- 支持 TypeScript 和 JavaScript 源文件的静态解析。
+- 自动生成合成仓库操作方法（CRUD 操作）。
+- 构建模块、类、方法和资源之间的完整关系图。
+- 通过 LLM 或启发式规则为方法附加语义标签。
+- 生成项目概览、架构、模块、业务流和质量报告等工程文档。
+- 支持结果差异比较和变更摘要输出。
 
 ## Primary Areas
 
@@ -55,9 +54,9 @@ Scan time: `2026-06-04T15:36:17.667Z`
 | Markdown documents | 3 |
 | Modules | 35 |
 | Classes | 2 |
-| Method units | 248 |
+| Method units | 249 |
 | External resource nodes | 22 |
-| Graph edges | 577 |
+| Graph edges | 579 |
 
 ## Semantic Analyzer
 

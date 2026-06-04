@@ -22,7 +22,7 @@
 
 | File | Language | Bytes |
 | --- | --- | --- |
-| evaluations/spring-petclinic.md | markdown | 7463 |
+| evaluations/spring-petclinic.md | markdown | 7534 |
 | package.json | json | 865 |
 | README.md | markdown | 7411 |
 | schema/result-diff.schema.json | json | 2493 |
@@ -37,7 +37,7 @@
 | src/docs/docsGenerator.ts | typescript | 24727 |
 | src/docs/markdown.ts | typescript | 734 |
 | src/docs/narrativeComposer.ts | typescript | 11079 |
-| src/docs/qualityReport.ts | typescript | 7362 |
+| src/docs/qualityReport.ts | typescript | 8091 |
 | src/docs/semanticAggregator.ts | typescript | 11392 |
 | src/graph/relationGraphBuilder.ts | typescript | 5983 |
 | src/index.ts | typescript | 4648 |
@@ -54,6 +54,6 @@
 | src/parser/typescriptStructureParser.ts | typescript | 15301 |
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
-| tests/analyzeRepo.test.ts | typescript | 20414 |
+| tests/analyzeRepo.test.ts | typescript | 20975 |
 | tests/schemaContract.test.ts | typescript | 4473 |
 | tsconfig.json | json | 311 |

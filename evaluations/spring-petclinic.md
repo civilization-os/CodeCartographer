@@ -46,7 +46,7 @@ Local evaluation config:
 | Business flows | 17 |
 | Static execution flows | 8 |
 | Resources | 24 |
-| Quality score | 89/100 |
+| Quality score | 96/100 |
 | LLM method summaries | 0/93 |
 | Architecture areas | Configuration, Documentation, model, owner, petclinic, Project Files, system, vet |
 
@@ -138,11 +138,12 @@ structured output.
 
 ## Quality Notes
 
-The 89/100 quality score is reasonable for a no-LLM run. The failing method
-summary coverage check is expected because all 93 method summaries used the
-heuristic fallback. Business flow coverage passed because framework entrypoint
-detection does not require an LLM. Static execution flow coverage now passes
-because class methods with internal call edges are eligible as flow candidates.
+The 96/100 quality score is reasonable for a no-LLM run. Method summary
+coverage is reported as a warning rather than a failure because LLM analysis is
+intentionally disabled and all 93 method summaries use the heuristic fallback.
+Business flow coverage passed because framework entrypoint detection does not
+require an LLM. Static execution flow coverage now passes because class methods
+with internal call edges are eligible as flow candidates.
 
 The generated documents are already useful for route inventory and module
 inspection. The no-LLM narrative quality is still lower than the self-analysis
@@ -150,7 +151,7 @@ run because method summaries use heuristic text, but fixed fallback templates no
 longer leave English operating-model or business-flow fragments in generated
 docs.
 
-The LLM-backed run raises the quality score to 100/100 because all method
+The LLM-backed run raises the quality score from 96/100 to 100/100 because all method
 summaries are LLM-generated and the project narrative is domain-specific.
 
 ## Gaps Found

@@ -250,13 +250,17 @@ test("localizes fallback generated docs without LLM", async () => {
   const docIndexPath = generatedDocs.written.find((docPath) => docPath.endsWith("DOC_INDEX.md"));
   const overviewDocPath = generatedDocs.written.find((docPath) => docPath.endsWith("PROJECT_OVERVIEW.md"));
   const businessFlowsPath = generatedDocs.written.find((docPath) => docPath.endsWith("BUSINESS_FLOWS.md"));
+  const qualityReportPath = generatedDocs.written.find((docPath) => docPath.endsWith("QUALITY_REPORT.md"));
   assert.ok(docIndexPath);
   assert.ok(overviewDocPath);
   assert.ok(businessFlowsPath);
+  assert.ok(qualityReportPath);
 
   const docIndex = await fs.readFile(docIndexPath, "utf8");
+  const qualityReport = await fs.readFile(qualityReportPath, "utf8");
   const combinedDocs = [
     docIndex,
+    qualityReport,
     await fs.readFile(overviewDocPath, "utf8"),
     await fs.readFile(businessFlowsPath, "utf8")
   ].join("\n");
@@ -266,6 +270,10 @@ test("localizes fallback generated docs without LLM", async () => {
   assert.match(docIndex, /PROJECT_OVERVIEW\.md/);
   assert.match(docIndex, /QUALITY_REPORT\.md/);
   assert.match(docIndex, /\.see-code\/result\.json/);
+  const methodCoverage = generatedDocs.quality.checks.find((check) => check.name === "Method summary coverage");
+  assert.equal(methodCoverage?.status, "warn");
+  assert.match(methodCoverage?.detail ?? "", /LLM analysis is disabled/);
+  assert.match(qualityReport, /\| WARN \| Method summary coverage \| LLM analysis is disabled/);
   assert.match(combinedDocs, /Java\/Spring Web 应用/);
   assert.match(combinedDocs, /外部请求从/);
   assert.match(combinedDocs, /数据库相关资源/);
