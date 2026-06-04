@@ -2,6 +2,7 @@ import path from "node:path";
 import { analyzeRepo } from "./analyzer/analyzeRepo.js";
 import { generateDocs } from "./docs/docsGenerator.js";
 import { loadModelConfig, type ModelConfig } from "./llm/modelConfig.js";
+import { writeResultJson } from "./output/resultJsonWriter.js";
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2).filter((arg) => arg !== "--");
@@ -18,7 +19,13 @@ async function main(): Promise<void> {
 
   const rootPath = path.resolve(targetPath);
   const result = await analyzeRepo(rootPath, { modelConfig });
-  const written = await generateDocs(result);
+  const generatedDocs = await generateDocs(result);
+  const resultJson = await writeResultJson({
+    result,
+    overview: generatedDocs.overview,
+    quality: generatedDocs.quality,
+    docs: generatedDocs.written
+  });
 
   console.log(`Analyzed ${result.files.length} files.`);
   console.log(`Extracted ${result.classes.length} classes and ${result.methods.length} method units.`);
@@ -28,8 +35,9 @@ async function main(): Promise<void> {
       ? `LLM semantic analyzer: ${result.model.provider} / ${result.model.model}`
       : "LLM semantic analyzer: disabled, using heuristic summaries."
   );
+  console.log(`Generated result JSON: ${resultJson}`);
   console.log("Generated docs:");
-  for (const file of written) {
+  for (const file of generatedDocs.written) {
     console.log(`- ${file}`);
   }
 }

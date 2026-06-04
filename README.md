@@ -7,7 +7,7 @@
 [![Java](https://img.shields.io/badge/Java-lightweight%20adapter-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Docs Quality](https://img.shields.io/badge/docs%20quality-100%2F100-brightgreen)](docs/QUALITY_REPORT.md)
 
-See Code is a repository semantic understanding engine. The first MVP scans a local project, extracts source units, builds a lightweight relation graph, and writes engineering documentation into `docs/`.
+See Code is a repository semantic understanding engine. The first MVP scans a local project, extracts source units, builds a lightweight relation graph, writes engineering documentation into `docs/`, and emits a machine-readable `.see-code/result.json`.
 
 ## Usage
 
@@ -77,6 +77,9 @@ docs/
   DATA_AND_RESOURCES.md
   MAINTENANCE_GUIDE.md
   QUALITY_REPORT.md
+
+.see-code/
+  result.json
 ```
 
 ## Current Scope
@@ -91,6 +94,7 @@ docs/
 - Generate project-level architecture, entrypoint, and flow documents from aggregated MethodUnit semantics.
 - Generate human-facing engineering docs.
 - Generate a quality report that checks LLM coverage, architecture abstraction, business-flow coverage, template residue, and document size balance.
+- Generate `.see-code/result.json` with schema version, stats, files, modules, classes, methods, graph, semantic overview, and quality summary.
 
 ## Multi-language Direction
 

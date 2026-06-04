@@ -2,18 +2,20 @@
 
 ## System Shape
 
-系统采用分层架构，CLI 层负责参数解析和流程编排，扫描层负责文件遍历和语言检测，解析层通过适配器模式将源文件转换为统一模块单元，图构建层建立关系索引，LLM 层提供语义增强，最终由分析器聚合结果。
+系统采用分层架构，CLI 层负责参数解析与流程编排，分析器层协调扫描、解析、语义增强和关系图构建，输出层负责序列化与持久化。各层通过明确的模块边界解耦，LLM 调用通过工厂模式支持配置化切换。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| CLI 层 | src/index.ts | 解析命令行参数，调用分析流程，输出统计信息和文档。 |
-| 扫描层 | src/scanner/repoScanner.ts | 递归扫描目录，过滤文件，检测语言类型，返回源文件列表。 |
-| 解析层 | src/parser/moduleParser.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts, src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/parserAdapter.ts | 根据文件类型选择适配器，解析源文件为模块单元（导入、类、方法）。 |
-| 图构建层 | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
-| LLM 层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对方法进行语义分析，优先使用缓存，未命中时调用 LLM 或启发式规则。 |
-| 分析器层 | src/analyzer/analyzeRepo.ts | 协调扫描、解析、图构建和语义分析，返回完整的分析结果。 |
+| CLI 层 | src/index.ts | 解析命令行参数，验证参数合法性，编排分析流程，输出日志和结果文件路径。 |
+| 分析器层 | src/analyzer/analyzeRepo.ts | 协调扫描、解析、语义分析和关系图构建，返回完整的分析结果。 |
+| 扫描层 | src/scanner/repoScanner.ts | 递归扫描目录，过滤文件，检测语言类型，返回源文件信息列表。 |
+| 解析层 | src/parser/moduleParser.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts, src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/parserAdapter.ts | 根据文件语言选择适配器，解析源文件为模块单元，包含导入、类和方法的结构化数据。 |
+| 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对方法附加启发式语义标签，通过 LLM 或缓存获取深度语义分析结果，更新模块和类摘要。 |
+| 关系图构建层 | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边，支持调用关系解析。 |
+| 输出层 | src/output/resultJsonWriter.ts | 将分析结果序列化为标准化 JSON 对象，写入 result.json 文件。 |
+| 工具层 | src/utils/path.ts | 提供路径规范化、稳定标识符生成等通用工具函数。 |
 
 ## Critical Paths
 
@@ -21,20 +23,22 @@
 - src/analyzer/analyzeRepo.ts:analyzeRepo
 - src/scanner/repoScanner.ts:scanRepo
 - src/parser/moduleParser.ts:parseModules
-- src/graph/relationGraphBuilder.ts:buildRelationGraph
 - src/llm/methodSemanticAnalyzer.ts:enrichModulesWithMethodSemantics
+- src/graph/relationGraphBuilder.ts:buildRelationGraph
+- src/output/resultJsonWriter.ts:writeResultJson
 
 ## Module Areas
 
 | Area | Module Count | Method Units | Summary |
 | --- | --- | --- | --- |
 | analyzer | 1 | 1 | 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。 |
-| Application | 1 | 4 | 解析命令行参数，执行代码仓库分析并生成文档，输出统计信息。 |
+| Application | 1 | 4 | 解析命令行参数，执行代码仓库分析并生成文档，将结果写入JSON文件并输出日志。 |
 | Configuration | 2 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | core | 1 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | Documentation | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | graph | 1 | 7 | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
 | llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
+| output | 1 | 9 | 将结果数据写入指定目录下的 result.json 文件并返回文件路径。 |
 | parser | 6 | 67 | 解析Java源文件并提取模块单元信息，包括导入、类和方法。 |
 | Project Files | 5 | 10 | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
 | scanner | 1 | 2 | 递归扫描指定根目录下的所有文件，过滤掉忽略的目录、非文件、过大文件及无法识别语言的文件，返回按相对路径排序的源文件信息列表。 |
@@ -46,7 +50,7 @@
 
 ### Application
 
-- 解析命令行参数，执行代码仓库分析并生成文档，输出统计信息。
+- 解析命令行参数，执行代码仓库分析并生成文档，将结果写入JSON文件并输出日志。
 - 解析命令行参数，提取命令、目标路径和模型配置。
 - 验证命令行参数值是否存在且不以'--'开头，否则抛出错误。
 - 打印 see-code 工具的使用说明和命令行参数帮助信息。
@@ -66,6 +70,14 @@
 - 遍历模块列表，为每个方法附加启发式语义标签。
 - 使用大语言模型分析方法的语义信息并返回结构化结果。
 - 解析模型响应，提取内容并验证为方法语义结构后返回标准化结果。
+
+### output
+
+- 将结果数据写入指定目录下的 result.json 文件并返回文件路径。
+- 将扫描结果、概览、质量数据和文档路径组装成标准化的 JSON 对象并返回。
+- 将模块单元序列化为包含标识符、路径、语言、导入、摘要以及类和方法的ID列表的普通对象。
+- 将 ClassUnit 对象序列化为包含 id、name、modulePath、location、summary 和 methodIds 的普通对象。
+- 将 MethodUnit 对象序列化为一个包含其所有属性的普通 JSON 对象。
 
 ### parser
 
@@ -106,9 +118,9 @@
 | routeFromAnnotations | src/parser/javaStructureParser.ts | 从注解列表中解析出HTTP方法和路径，结合类路由前缀生成完整路由。 |
 | extractClassUnit | src/parser/javaStructureParser.ts | 从Java类块中提取类单元，包括方法列表和类元数据。 |
 | extractFrameworkHints | src/parser/javaStructureParser.ts | 从Java类和方法中提取框架相关的注解和模式，生成框架提示列表。 |
+| main | src/index.ts | 解析命令行参数，执行代码仓库分析并生成文档，将结果写入JSON文件并输出日志。 |
 | parseModelResponse | src/llm/methodSemanticAnalyzer.ts | 解析模型响应，提取内容并验证为方法语义结构后返回标准化结果。 |
 | parseJavaModule | src/parser/javaStructureParser.ts | 解析Java源文件并提取模块单元信息，包括导入、类和方法。 |
-| extractMethodBlocks | src/parser/javaStructureParser.ts | 从Java类块中提取所有方法块，返回方法定义的位置和元数据。 |
 
 ## Runtime Resources
 
@@ -116,5 +128,6 @@
 | --- | --- |
 | ENV:ORDER_TABLE | env |
 | ENV:ORDER_TOPIC | env |
+| FILE:result.json | file |
 | HTTP:https://api.deepseek.com | http |
 | HTTP:https://payments.example.com/charge | http |

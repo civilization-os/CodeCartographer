@@ -3,10 +3,23 @@ import { bulletList, heading, table } from "./markdown.js";
 import type { ProjectNarrative } from "./narrativeComposer.js";
 import type { SemanticOverview } from "./semanticAggregator.js";
 
-interface QualityCheck {
+export interface QualityCheck {
   name: string;
   status: "pass" | "warn" | "fail";
   detail: string;
+}
+
+export interface QualitySummary {
+  score: number;
+  pass: number;
+  warn: number;
+  fail: number;
+  methodUnits: number;
+  llmMethodSummaries: number;
+  businessFlows: number;
+  staticExecutionFlows: number;
+  checks: QualityCheck[];
+  recommendations: string[];
 }
 
 export function renderQualityReport(
@@ -15,13 +28,7 @@ export function renderQualityReport(
   narrative: ProjectNarrative,
   docs: Map<string, string>
 ): string {
-  const checks = buildChecks(result, overview, narrative, docs);
-  const score = calculateScore(checks);
-  const statusCounts = {
-    pass: checks.filter((check) => check.status === "pass").length,
-    warn: checks.filter((check) => check.status === "warn").length,
-    fail: checks.filter((check) => check.status === "fail").length
-  };
+  const summary = buildQualitySummary(result, overview, narrative, docs);
 
   return [
     heading(1, "Quality Report"),
@@ -31,14 +38,14 @@ export function renderQualityReport(
     table(
       ["Metric", "Value"],
       [
-        ["Score", `${score}/100`],
-        ["Pass", String(statusCounts.pass)],
-        ["Warn", String(statusCounts.warn)],
-        ["Fail", String(statusCounts.fail)],
-        ["Method units", String(result.methods.length)],
-        ["LLM method summaries", String(result.methods.filter((method) => method.semantic?.analyzer === "llm").length)],
-        ["Business flows", String(overview.businessFlows.length)],
-        ["Static execution flows", String(overview.flows.length)]
+        ["Score", `${summary.score}/100`],
+        ["Pass", String(summary.pass)],
+        ["Warn", String(summary.warn)],
+        ["Fail", String(summary.fail)],
+        ["Method units", String(summary.methodUnits)],
+        ["LLM method summaries", String(summary.llmMethodSummaries)],
+        ["Business flows", String(summary.businessFlows)],
+        ["Static execution flows", String(summary.staticExecutionFlows)]
       ]
     ),
     "",
@@ -46,13 +53,36 @@ export function renderQualityReport(
     "",
     table(
       ["Status", "Check", "Detail"],
-      checks.map((check) => [check.status.toUpperCase(), check.name, check.detail])
+      summary.checks.map((check) => [check.status.toUpperCase(), check.name, check.detail])
     ),
     "",
     heading(2, "Recommendations"),
     "",
-    bulletList(recommendations(checks, overview))
+    bulletList(summary.recommendations)
   ].join("\n");
+}
+
+export function buildQualitySummary(
+  result: AnalysisResult,
+  overview: SemanticOverview,
+  narrative: ProjectNarrative,
+  docs: Map<string, string>
+): QualitySummary {
+  const checks = buildChecks(result, overview, narrative, docs);
+  const score = calculateScore(checks);
+
+  return {
+    score,
+    pass: checks.filter((check) => check.status === "pass").length,
+    warn: checks.filter((check) => check.status === "warn").length,
+    fail: checks.filter((check) => check.status === "fail").length,
+    methodUnits: result.methods.length,
+    llmMethodSummaries: result.methods.filter((method) => method.semantic?.analyzer === "llm").length,
+    businessFlows: overview.businessFlows.length,
+    staticExecutionFlows: overview.flows.length,
+    checks,
+    recommendations: recommendations(checks, overview)
+  };
 }
 
 function buildChecks(

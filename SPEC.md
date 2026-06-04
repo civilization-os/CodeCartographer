@@ -20,6 +20,7 @@
 
 输出：
   项目/docs目录下的人类工程文档
+  项目/.see-code/result.json 机器可读结构化分析结果
 ```
 
 例如：
@@ -33,6 +34,8 @@ project/
       ├─ CALL_GRAPH.md
       ├─ DATA_AND_RESOURCES.md
       └─ QUALITY_REPORT.md
+  └─ .see-code/
+      └─ result.json
 ```
 
 ---

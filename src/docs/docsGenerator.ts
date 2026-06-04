@@ -4,7 +4,11 @@ import type { AnalysisResult, ModuleUnit } from "../core/types.js";
 import type { ModelConfig } from "../llm/modelConfig.js";
 import { bulletList, heading, table } from "./markdown.js";
 import { composeProjectNarrative, type ProjectNarrative } from "./narrativeComposer.js";
-import { renderQualityReport } from "./qualityReport.js";
+import {
+  buildQualitySummary,
+  renderQualityReport,
+  type QualitySummary
+} from "./qualityReport.js";
 import {
   buildSemanticOverview,
   formatMethodName,
@@ -12,7 +16,14 @@ import {
   type SemanticOverview
 } from "./semanticAggregator.js";
 
-export async function generateDocs(result: AnalysisResult): Promise<string[]> {
+export interface GeneratedDocs {
+  written: string[];
+  overview: SemanticOverview;
+  narrative: ProjectNarrative;
+  quality: QualitySummary;
+}
+
+export async function generateDocs(result: AnalysisResult): Promise<GeneratedDocs> {
   const docsDir = path.join(result.rootPath, "docs");
   await fs.mkdir(docsDir, { recursive: true });
   const overview = buildSemanticOverview(result);
@@ -33,6 +44,7 @@ export async function generateDocs(result: AnalysisResult): Promise<string[]> {
     ["DATA_AND_RESOURCES.md", renderDataAndResources(result)],
     ["MAINTENANCE_GUIDE.md", renderMaintenanceGuide(result)]
   ]);
+  const quality = buildQualitySummary(result, overview, narrative, docs);
   docs.set("QUALITY_REPORT.md", renderQualityReport(result, overview, narrative, docs));
 
   const written: string[] = [];
@@ -42,7 +54,12 @@ export async function generateDocs(result: AnalysisResult): Promise<string[]> {
     written.push(outputPath);
   }
 
-  return written;
+  return {
+    written,
+    overview,
+    narrative,
+    quality
+  };
 }
 
 function renderProjectOverview(

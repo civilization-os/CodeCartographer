@@ -43,6 +43,27 @@ Entry: `src/parser/javaStructureParser.ts:354` extractFrameworkHints
 
 - 无
 
+## main
+
+Entry: `src/index.ts:7` main
+
+### Steps
+
+1. main - 解析命令行参数，执行代码仓库分析并生成文档，将结果写入JSON文件并输出日志。
+2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。
+3. parseArgs - 解析命令行参数，提取命令、目标路径和模型配置。
+4. printHelp - 打印 see-code 工具的使用说明和命令行参数帮助信息。
+5. writeResultJson - 将结果数据写入指定目录下的 result.json 文件并返回文件路径。
+6. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
+7. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，包含节点和边。
+8. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
+9. loadModelConfig - 从环境变量中加载并解析LLM模型配置，返回一个ModelConfig对象。
+10. parseModules - 遍历源文件列表，使用适配器解析每个文件并返回模块单元数组，若找不到适配器则生成默认模块单元。
+
+### Resources
+
+- `FILE:result.json`
+
 ## parseJavaModule
 
 Entry: `src/parser/javaStructureParser.ts:76` parseJavaModule
@@ -76,27 +97,6 @@ Entry: `src/parser/typescriptStructureParser.ts:15` parseTypeScriptModule
 8. extractParameters - 从TypeScript AST节点中提取函数或方法的参数信息，包括名称、类型、可选性和默认值。
 9. getLocation - 根据TypeScript AST节点在源文件中的起始和结束位置计算行号范围，并返回包含文件名和行号区间的SourceLocation对象。
 10. hasModifier - 检查 TypeScript AST 节点是否具有指定类型的修饰符。
-
-### Resources
-
-- 无
-
-## main
-
-Entry: `src/index.ts:6` main
-
-### Steps
-
-1. main - 解析命令行参数，执行代码仓库分析并生成文档，输出统计信息。
-2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。
-3. parseArgs - 解析命令行参数，提取命令、目标路径和模型配置。
-4. printHelp - 打印 see-code 工具的使用说明和命令行参数帮助信息。
-5. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
-6. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，包含节点和边。
-7. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
-8. loadModelConfig - 从环境变量中加载并解析LLM模型配置，返回一个ModelConfig对象。
-9. parseModules - 遍历源文件列表，使用适配器解析每个文件并返回模块单元数组，若找不到适配器则生成默认模块单元。
-10. scanRepo - 递归扫描指定根目录下的所有文件，过滤掉忽略的目录、非文件、过大文件及无法识别语言的文件，返回按相对路径排序的源文件信息列表。
 
 ### Resources
 
