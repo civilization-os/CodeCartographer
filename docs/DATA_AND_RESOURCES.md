@@ -11,6 +11,7 @@
 | FILE:CHANGE_SUMMARY.md | file |
 | FILE:config.json | file |
 | FILE:DATA_AND_RESOURCES.md | file |
+| FILE:DOC_INDEX.md | file |
 | FILE:ENTRYPOINTS.md | file |
 | FILE:EXECUTION_FLOWS.md | file |
 | FILE:FILE:method-semantics.json | file |

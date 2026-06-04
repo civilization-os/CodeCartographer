@@ -44,7 +44,9 @@ export async function generateDocs(result: AnalysisResult): Promise<GeneratedDoc
     ["DATA_AND_RESOURCES.md", renderDataAndResources(result)],
     ["MAINTENANCE_GUIDE.md", renderMaintenanceGuide(result)]
   ]);
+  docs.set("DOC_INDEX.md", "");
   const quality = buildQualitySummary(result, overview, narrative, docs);
+  docs.set("DOC_INDEX.md", renderDocIndex(result, overview, narrative, quality, docs));
   docs.set("QUALITY_REPORT.md", renderQualityReport(result, overview, narrative, docs));
 
   const written: string[] = [];
@@ -60,6 +62,88 @@ export async function generateDocs(result: AnalysisResult): Promise<GeneratedDoc
     narrative,
     quality
   };
+}
+
+function renderDocIndex(
+  result: AnalysisResult,
+  overview: SemanticOverview,
+  narrative: ProjectNarrative,
+  quality: QualitySummary,
+  docs: Map<string, string>
+): string {
+  const sourceFiles = result.files.filter(
+    (file) => file.language === "typescript" || file.language === "javascript" || file.language === "java"
+  );
+  const externalResources = result.resources.filter(
+    (resource) => !isInternalResource(resource.name)
+  );
+  const docRows = [
+    ["PROJECT_OVERVIEW.md", "项目目标、运行模型、规模指标和生成产物总览。"],
+    ["ARCHITECTURE.md", "架构层、模块区域、关键路径和核心热点方法。"],
+    ["BUSINESS_FLOWS.md", "由框架入口驱动的业务流程和资源访问路径。"],
+    ["EXECUTION_FLOWS.md", "由静态调用图推断出的执行路径。"],
+    ["CALL_GRAPH.md", "可解析的仓库内部调用边和 Mermaid 图。"],
+    ["ENTRYPOINTS.md", "框架感知入口和静态入口候选。"],
+    ["DATA_AND_RESOURCES.md", "检测到的数据库、HTTP、文件、环境变量等资源。"],
+    ["MODULES.md", "模块、类、关键方法和高信号方法摘要。"],
+    ["MAINTENANCE_GUIDE.md", "当前分析边界、维护注意事项和仓库文件清单。"],
+    ["QUALITY_REPORT.md", "质量得分、覆盖率、模板残留和输出完整性检查。"],
+    ["CHANGE_SUMMARY.md", "本次分析相对上一版结构化结果的变化。"]
+  ];
+
+  return [
+    heading(1, "Documentation Index"),
+    "",
+    narrative.projectOverview.purpose,
+    "",
+    heading(2, "Snapshot"),
+    "",
+    table(
+      ["Metric", "Value"],
+      [
+        ["Quality score", `${quality.score}/100`],
+        ["Scanned files", String(result.files.length)],
+        ["Source files", String(sourceFiles.length)],
+        ["Modules", String(result.modules.length)],
+        ["Classes", String(result.classes.length)],
+        ["Method units", String(result.methods.length)],
+        ["LLM method summaries", `${quality.llmMethodSummaries}/${quality.methodUnits}`],
+        ["Business flows", String(overview.businessFlows.length)],
+        ["Static execution flows", String(overview.flows.length)],
+        ["External resources", String(externalResources.length)],
+        ["Graph edges", String(result.graph.edges.length)]
+      ]
+    ),
+    "",
+    heading(2, "Recommended Reading Order"),
+    "",
+    numberedList([
+      "`PROJECT_OVERVIEW.md` - 先确认项目目标、运行模型和规模。",
+      "`ARCHITECTURE.md` - 再看模块边界、关键路径和热点方法。",
+      "`BUSINESS_FLOWS.md` / `EXECUTION_FLOWS.md` - 检查业务入口和静态执行路径。",
+      "`DATA_AND_RESOURCES.md` - 追踪数据库、仓储、表、HTTP、文件和环境变量资源。",
+      "`MODULES.md` / `.see-code/result.json` - 需要方法级细节时再深入查看。"
+    ]),
+    "",
+    heading(2, "Document Map"),
+    "",
+    table(
+      ["Document", "Use it for", "Size"],
+      docRows.map(([fileName, description]) => [
+        `[${fileName}](${fileName})`,
+        description,
+        docs.has(fileName) ? `${docs.get(fileName)?.length ?? 0} chars` : "generated later"
+      ])
+    ),
+    "",
+    heading(2, "Machine-readable Outputs"),
+    "",
+    bulletList([
+      "`.see-code/result.json` 保存完整结构化分析结果，包括文件、模块、类、方法、资源、图和语义概览。",
+      "`.see-code/result-diff.json` 保存相对上一版结果的机器可读差异。",
+      "`schema/result.schema.json` 和 `schema/result-diff.schema.json` 定义输出契约。"
+    ])
+  ].join("\n");
 }
 
 function renderProjectOverview(
@@ -149,6 +233,7 @@ function renderProjectOverview(
     heading(2, "Generated Outputs"),
     "",
     bulletList([
+      "`DOC_INDEX.md` 提供文档入口、质量快照、阅读顺序和文档地图。",
       "`PROJECT_OVERVIEW.md` 汇总仓库规模、目标和文档产物。",
       "`ARCHITECTURE.md` 描述模块区域、架构层次和运行时依赖。",
       "`MODULES.md` 列出模块、类、方法、导入和方法语义摘要。",

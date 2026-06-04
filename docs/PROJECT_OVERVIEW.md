@@ -2,29 +2,30 @@
 
 Repository path: `/root/project/ai/see_code`
 
-Scan time: `2026-06-04T15:05:16.147Z`
+Scan time: `2026-06-04T15:36:17.667Z`
 
 ## Purpose
 
-该工具扫描指定代码仓库，提取模块、方法、类、资源和调用关系，生成结构化工程文档（Markdown 和 JSON），并输出分析报告。
+该工具分析指定代码仓库，提取模块、方法、类、资源和关系图，并生成工程文档（Markdown 文件）和结构化 JSON 结果。
 
 ## Operating Model
 
 1. CLI 入口解析命令行参数，加载项目配置和 LLM 模型配置。
-2. 递归扫描仓库文件，过滤排除项和大文件，识别源代码语言。
-3. 解析源文件提取模块单元（类、方法、导入、资源）。
-4. 构建模块、类、方法和资源之间的关系图。
-5. 对每个方法进行语义分析（缓存优先，未命中则调用 LLM 或启发式规则）。
-6. 生成工程文档（项目概览、架构、模块、业务流、质量报告）并写入文件系统。
-7. 将分析结果序列化为 JSON 并输出到控制台和文件。
+2. 扫描器递归扫描仓库根目录，过滤排除项和大文件，返回源文件列表。
+3. 解析器根据文件语言（TypeScript/JavaScript/Java）调用对应适配器，提取模块单元（类、方法、导入）。
+4. 分析器为每个仓库操作生成合成方法，构建模块、类、方法和资源之间的关系图。
+5. LLM 模块对每个方法进行语义分析（优先缓存，未缓存则调用 LLM 或启发式方法），更新模块和类的摘要。
+6. 文档生成器将分析结果写入多个 Markdown 文件（索引、概览、架构、模块、业务流等）。
+7. 输出模块将结果写入文件系统（结果 JSON、差异 JSON、变更摘要 Markdown）。
 
 ## Key Capabilities
 
 - 支持 TypeScript/JavaScript 和 Java 源代码解析。
-- 自动构建静态调用关系图。
-- 通过 LLM 或启发式规则为方法附加语义标签。
-- 生成多维度工程文档（架构、模块、业务流、质量报告）。
-- 支持结果差异比较和变更摘要输出。
+- 自动生成合成方法以覆盖仓库操作（如 DB_READ、DB_WRITE）。
+- 构建静态调用关系图，包含节点（模块、类、方法、资源）和边。
+- 通过 LLM 或启发式规则为每个方法附加语义标签。
+- 生成结构化工程文档（Markdown）和机器可读 JSON 输出。
+- 支持差异比较（buildResultDiff）以追踪变更。
 
 ## Primary Areas
 
@@ -35,7 +36,7 @@ Scan time: `2026-06-04T15:05:16.147Z`
 | config | src/config/projectConfig.ts | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 递归遍历对象并检查是否包含敏感键名，若发现则抛出错误。 判断未知错误是否为 Node.js 的 ErrnoException 类型。 |
 | Configuration | package.json, see-code.config.json, tsconfig.json |  |
 | core | src/core/types.ts |  |
-| docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、模块分组、结构统计、语义分析器配置、扫描配置和生成输出列表。 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。 |
+| docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。 生成文档索引页面，包含项目快照、推荐阅读顺序、文档映射表和机器可读输出列表。 生成项目概览的 Markdown 字符串，包含仓库元数据、目的、能力、模块分组、结构统计、语义分析器配置、扫描配置和输出文件列表。 |
 | Documentation | evaluations/spring-petclinic.md, README.md, SPEC.md |  |
 | graph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 从模块单元中提取所有资源并去重排序，返回资源节点数组。 构建方法名称到方法单元的索引映射，支持类名限定和多种命名格式。 |
 | llm | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 将未知类型的错误对象转换为字符串消息。 遍历模块列表，为每个方法附加启发式语义标签。 |
@@ -54,9 +55,9 @@ Scan time: `2026-06-04T15:05:16.147Z`
 | Markdown documents | 3 |
 | Modules | 35 |
 | Classes | 2 |
-| Method units | 247 |
-| External resource nodes | 21 |
-| Graph edges | 557 |
+| Method units | 248 |
+| External resource nodes | 22 |
+| Graph edges | 577 |
 
 ## Semantic Analyzer
 
@@ -79,6 +80,7 @@ Scan time: `2026-06-04T15:05:16.147Z`
 
 ## Generated Outputs
 
+- `DOC_INDEX.md` 提供文档入口、质量快照、阅读顺序和文档地图。
 - `PROJECT_OVERVIEW.md` 汇总仓库规模、目标和文档产物。
 - `ARCHITECTURE.md` 描述模块区域、架构层次和运行时依赖。
 - `MODULES.md` 列出模块、类、方法、导入和方法语义摘要。

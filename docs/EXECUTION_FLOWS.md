@@ -31,7 +31,7 @@ Entry: `src/index.ts:8` main
 
 1. main - 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。
 2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
-3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。
+3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。
 4. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。
 5. loadProjectConfig - 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。
 6. parseArgs - 解析命令行参数，提取命令、目标路径和环境变量覆盖值。
@@ -47,6 +47,7 @@ Entry: `src/index.ts:8` main
 - `FILE:CALL_GRAPH.md`
 - `FILE:CHANGE_SUMMARY.md`
 - `FILE:DATA_AND_RESOURCES.md`
+- `FILE:DOC_INDEX.md`
 - `FILE:ENTRYPOINTS.md`
 - `FILE:EXECUTION_FLOWS.md`
 - `FILE:MAINTENANCE_GUIDE.md`
@@ -145,7 +146,7 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 
 1. generateFixtureOutput - 在临时目录中复制Java Spring测试夹具，执行仓库分析和文档生成，并将结果写入JSON文件。
 2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
-3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。
+3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。
 4. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
 5. addSyntheticRepositoryMethods - 为每个仓库操作生成合成方法并注入到对应的类和模块中。
 6. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
@@ -161,6 +162,7 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 - `FILE:CALL_GRAPH.md`
 - `FILE:CHANGE_SUMMARY.md`
 - `FILE:DATA_AND_RESOURCES.md`
+- `FILE:DOC_INDEX.md`
 - `FILE:ENTRYPOINTS.md`
 - `FILE:EXECUTION_FLOWS.md`
 - `FILE:MAINTENANCE_GUIDE.md`

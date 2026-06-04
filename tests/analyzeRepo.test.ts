@@ -247,16 +247,25 @@ test("localizes fallback generated docs without LLM", async () => {
     modelConfig: noLlmConfig
   });
   const generatedDocs = await generateDocs(result);
+  const docIndexPath = generatedDocs.written.find((docPath) => docPath.endsWith("DOC_INDEX.md"));
   const overviewDocPath = generatedDocs.written.find((docPath) => docPath.endsWith("PROJECT_OVERVIEW.md"));
   const businessFlowsPath = generatedDocs.written.find((docPath) => docPath.endsWith("BUSINESS_FLOWS.md"));
+  assert.ok(docIndexPath);
   assert.ok(overviewDocPath);
   assert.ok(businessFlowsPath);
 
+  const docIndex = await fs.readFile(docIndexPath, "utf8");
   const combinedDocs = [
+    docIndex,
     await fs.readFile(overviewDocPath, "utf8"),
     await fs.readFile(businessFlowsPath, "utf8")
   ].join("\n");
 
+  assert.match(docIndex, /# Documentation Index/);
+  assert.match(docIndex, /Recommended Reading Order/);
+  assert.match(docIndex, /PROJECT_OVERVIEW\.md/);
+  assert.match(docIndex, /QUALITY_REPORT\.md/);
+  assert.match(docIndex, /\.see-code\/result\.json/);
   assert.match(combinedDocs, /Java\/Spring Web 应用/);
   assert.match(combinedDocs, /外部请求从/);
   assert.match(combinedDocs, /数据库相关资源/);
@@ -394,6 +403,7 @@ test("writes structured result JSON for analyzer output", async () => {
   assert.equal(json.stats.methods, result.methods.length);
   assert.equal(json.quality.methodUnits, result.methods.length);
   assert.ok(json.quality.score >= 60);
+  assert.ok(json.docs.includes("docs/DOC_INDEX.md"));
   assert.ok(json.docs.includes("docs/QUALITY_REPORT.md"));
 
   const create = json.methods.find((method) => method.name === "create");

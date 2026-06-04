@@ -209,6 +209,7 @@ function maxDocLength(docs: Map<string, string>): number {
 
 function hasRequiredDocs(docs: Map<string, string>): boolean {
   return [
+    "DOC_INDEX.md",
     "PROJECT_OVERVIEW.md",
     "ARCHITECTURE.md",
     "MODULES.md",

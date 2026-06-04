@@ -22,9 +22,9 @@
 
 | File | Language | Bytes |
 | --- | --- | --- |
-| evaluations/spring-petclinic.md | markdown | 7269 |
+| evaluations/spring-petclinic.md | markdown | 7463 |
 | package.json | json | 865 |
-| README.md | markdown | 5583 |
+| README.md | markdown | 7411 |
 | schema/result-diff.schema.json | json | 2493 |
 | schema/result.schema.json | json | 4702 |
 | scripts/secret-scan.mjs | javascript | 1382 |
@@ -34,10 +34,10 @@
 | src/analyzer/syntheticRepositoryMethods.ts | typescript | 6639 |
 | src/config/projectConfig.ts | typescript | 2238 |
 | src/core/types.ts | typescript | 3744 |
-| src/docs/docsGenerator.ts | typescript | 20920 |
+| src/docs/docsGenerator.ts | typescript | 24727 |
 | src/docs/markdown.ts | typescript | 734 |
 | src/docs/narrativeComposer.ts | typescript | 11079 |
-| src/docs/qualityReport.ts | typescript | 7342 |
+| src/docs/qualityReport.ts | typescript | 7362 |
 | src/docs/semanticAggregator.ts | typescript | 11392 |
 | src/graph/relationGraphBuilder.ts | typescript | 5983 |
 | src/index.ts | typescript | 4648 |
@@ -54,6 +54,6 @@
 | src/parser/typescriptStructureParser.ts | typescript | 15301 |
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
-| tests/analyzeRepo.test.ts | typescript | 19903 |
+| tests/analyzeRepo.test.ts | typescript | 20414 |
 | tests/schemaContract.test.ts | typescript | 4473 |
 | tsconfig.json | json | 311 |

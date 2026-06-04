@@ -13,6 +13,17 @@ GitHub description:
 
 > Static code intelligence for generating architecture docs, call graphs, business flows, and structured repository maps with optional LLM-powered method understanding.
 
+## Why
+
+Most repository documentation starts from files and folders. CodeCartographer starts from code units, framework entrypoints, calls, resources, and generated execution paths. The goal is to produce documentation that is useful to humans and structured context that is useful to automation.
+
+Use it when you need to:
+
+- Understand an unfamiliar TypeScript, JavaScript, or Java/Spring repository.
+- Generate architecture docs and call graphs from source instead of hand-written summaries.
+- Trace controller, service, repository, entity, and resource usage paths.
+- Produce machine-readable JSON context for downstream agents, checks, and documentation workflows.
+
 ## Quick Start
 
 ```bash
@@ -86,10 +97,11 @@ LLM semantic results are cached in `.see-code/cache/method-semantics.json`. Disa
 SEE_CODE_LLM_CACHE=0 pnpm analyze -- .
 ```
 
-Generated files:
+## What It Generates
 
 ```text
 docs/
+  DOC_INDEX.md
   PROJECT_OVERVIEW.md
   ARCHITECTURE.md
   MODULES.md
@@ -110,6 +122,27 @@ schema/
   result.schema.json
   result-diff.schema.json
 ```
+
+`DOC_INDEX.md` is the best starting point. It links the generated documents, shows the quality snapshot, and recommends a reading order.
+
+## Real-project Snapshot
+
+Spring PetClinic is used as an ignored external evaluation project.
+
+| Metric | PetClinic with DeepSeek |
+| --- | ---: |
+| Scanned files | 33 |
+| Classes | 25 |
+| Method units | 93 |
+| Graph nodes | 175 |
+| Graph edges | 201 |
+| Business flows | 17 |
+| Static execution flows | 8 |
+| Resources | 24 |
+| LLM method summaries | 93/93 |
+| Quality score | 100/100 |
+
+The generated PetClinic docs resolve Spring MVC routes, JPA entities, repository interfaces, table resources, controller flows, domain-object calls, and synthetic Spring Data operations such as `OwnerRepository#save`.
 
 ## Current Scope
 
@@ -140,4 +173,10 @@ Java support:
 - Add framework metadata for Spring MVC, scheduled jobs, repositories, Kafka listeners, and resource access.
 - Feed the same MethodUnit semantic analyzer, relation graph builder, and docs generator.
 
-Tree-sitter and LangGraph are planned follow-up adapters.
+## Roadmap
+
+- Add chained Java expression and generic collection element inference.
+- Expand synthetic Spring Data operation modeling for paginated, sorted, and batch operations.
+- Add a second real-world Java project with a deeper service layer to validate cross-layer calls.
+- Add tree-sitter adapters for higher-fidelity Java and broader language support.
+- Add LangGraph orchestration once the deterministic parser and graph contracts are stable.
