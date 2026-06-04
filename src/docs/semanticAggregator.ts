@@ -181,16 +181,73 @@ function inferJavaGroupName(parts: string[]): string {
 
 function inferPurpose(modules: ModuleUnit[]): string {
   const sourceModules = modules.filter((module) => module.methods.length > 0);
-  const methodSummaries = sourceModules
-    .flatMap((module) => module.methods)
-    .slice(0, 8)
-    .map((method) => method.summary);
+  const methods = sourceModules.flatMap((module) => module.methods);
 
-  if (methodSummaries.length === 0) {
+  if (methods.length === 0) {
     return "该仓库包含项目文档和配置文件。";
   }
 
-  return "该仓库实现代码分析与文档生成流水线：扫描源文件、抽取模块和方法结构、增强方法语义、构建关系图，并写出工程文档。";
+  const languages = new Set(sourceModules.map((module) => module.language));
+  const imports = modules.flatMap((module) => module.imports);
+  const resources = collectResourceNames(modules);
+  const entityNames = resources
+    .filter((resource) => resource.startsWith("ENTITY:"))
+    .map((resource) => resource.slice("ENTITY:".length))
+    .filter((name) => !["BaseEntity", "NamedEntity"].includes(name));
+  const repositoryCount = resources.filter((resource) => resource.startsWith("REPOSITORY:")).length;
+  const databaseCount = resources.filter((resource) =>
+    /^(DB_READ|DB_WRITE|DB_DELETE|ENTITY|REPOSITORY|TABLE):/.test(resource)
+  ).length;
+  const httpEntrypointCount = methods.filter((method) =>
+    method.entrypointHints.some((hint) => hint.kind === "http_route")
+  ).length;
+  const cliEntrypointCount = methods.filter((method) =>
+    method.entrypointHints.some((hint) => hint.kind === "cli")
+  ).length;
+  const hasSpring = imports.some((item) => item.startsWith("org.springframework")) ||
+    methods.some((method) => method.frameworkHints.some((hint) => hint.framework?.startsWith("spring")));
+  const domainGroups = [...new Set(modules.map(inferGroupName))]
+    .filter((name) => !["Configuration", "Documentation", "Project Files", "Java Application"].includes(name))
+    .slice(0, 5);
+  const domainSubject = entityNames.length > 0
+    ? `${formatChineseList(entityNames.slice(0, 5))} 等领域对象`
+    : `${formatChineseList(domainGroups)} 等模块`;
+
+  if (languages.has("java") && (hasSpring || httpEntrypointCount > 0)) {
+    const persistence = databaseCount > 0
+      ? `，并通过 ${repositoryCount > 0 ? `${repositoryCount} 个仓储接口和 ` : ""}${databaseCount} 个数据库资源完成持久化访问`
+      : "";
+    return `该仓库是一个 Java/Spring Web 应用，围绕${domainSubject}提供 ${httpEntrypointCount} 个 HTTP 入口、控制器流程和业务交互${persistence}。`;
+  }
+
+  if (languages.has("java")) {
+    return `该仓库是一个 Java 工程，围绕 ${domainSubject} 组织类、方法和资源访问逻辑。`;
+  }
+
+  if (languages.has("typescript") || languages.has("javascript")) {
+    const entrypointText = cliEntrypointCount > 0
+      ? `，包含 ${cliEntrypointCount} 个 CLI 入口`
+      : "";
+    return `该仓库是一个 TypeScript/JavaScript 工程，围绕 ${formatChineseList(domainGroups)} 等模块组织源码结构、调用关系和资源访问${entrypointText}。`;
+  }
+
+  return `该仓库包含 ${formatChineseList([...languages])} 源码，当前扫描到 ${methods.length} 个方法单元和 ${resources.length} 个资源。`;
+}
+
+function collectResourceNames(modules: ModuleUnit[]): string[] {
+  return [
+    ...new Set([
+      ...modules.flatMap((module) => module.classes).flatMap((classUnit) => classUnit.resources),
+      ...modules.flatMap((module) => module.methods).flatMap((method) => method.resources)
+    ])
+  ].sort();
+}
+
+function formatChineseList(items: string[]): string {
+  if (items.length === 0) {
+    return "核心";
+  }
+  return items.join("、");
 }
 
 function summarizeGroup(name: string, modules: ModuleUnit[]): string {

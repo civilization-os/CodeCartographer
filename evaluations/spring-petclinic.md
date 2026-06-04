@@ -40,14 +40,14 @@ Local evaluation config:
 | Scanned files | 33 |
 | Source files | 30 |
 | Classes | 25 |
-| Method units | 87 |
-| Graph nodes | 168 |
-| Graph edges | 161 |
+| Method units | 92 |
+| Graph nodes | 174 |
+| Graph edges | 175 |
 | Business flows | 17 |
 | Static execution flows | 8 |
-| Resources | 23 |
+| Resources | 24 |
 | Quality score | 89/100 |
-| LLM method summaries | 0/87 |
+| LLM method summaries | 0/92 |
 | Architecture areas | Configuration, Documentation, model, owner, petclinic, Project Files, system, vet |
 
 The run generated the full document set, `.see-code/result.json`, and
@@ -58,11 +58,11 @@ The run generated the full document set, `.see-code/result.json`, and
 | Metric | Value |
 | --- | --- |
 | Quality score | 100/100 |
-| LLM method summaries | 87/87 |
+| LLM method summaries | 92/92 |
 | Business flows | 17 |
 | Static execution flows | 8 |
-| Resources | 23 |
-| Largest document | 52950 characters |
+| Resources | 24 |
+| Largest document | 54954 characters |
 
 The LLM-backed run produced project-level narrative that correctly describes
 PetClinic as a Spring Boot pet clinic management application with owner, pet,
@@ -85,7 +85,7 @@ structured output.
 
 - Project configuration worked as intended: build output, tests, Maven wrapper
   files, and analysis output stayed out of the scan.
-- Java parsing covered the main Spring application shape: 25 classes and 87
+- Java parsing covered the main Spring application shape: 25 classes and 92
   method units were extracted from 30 Java source files.
 - Spring MVC route extraction was useful. The analyzer produced 17
   framework-aware business flows, including owner, pet, visit, system, and vet
@@ -100,16 +100,21 @@ structured output.
 - Java class methods now participate in static execution flow detection. The
   run produced 8 static execution flows, including owner, pet, visit, cache, and
   controller helper paths.
+- Java interface and repository method declarations are now parsed as method
+  units, so repository targets such as `OwnerRepository#findById`,
+  `PetTypeRepository#findPetTypes`, and `VetRepository#findAll` appear in module
+  docs and call graphs.
 - Repository interfaces, JPA entities, mapped superclasses, and table names now
-  appear as first-class database resources. `DATA_AND_RESOURCES.md` lists 23
+  appear as first-class database resources. `DATA_AND_RESOURCES.md` lists 24
   resources, including `ENTITY:Owner`, `REPOSITORY:OwnerRepository`, and
   `TABLE:owners`.
 - Repository call intent is inferred at method level for common read and write
-  operations. Business flows now surface examples such as
-  `DB_READ:owners.findById`, `DB_READ:vetRepository.findAll`, and
-  `DB_WRITE:owners.save`.
-- No-LLM fallback narratives are localized for generated operating-model and
-  business-flow text.
+  operations, and field receiver types are used to bind calls back to repository
+  interfaces. Business flows now surface examples such as
+  `DB_READ:OwnerRepository.findById`, `DB_READ:VetRepository.findAll`, and
+  `DB_WRITE:OwnerRepository.save`.
+- No-LLM fallback narratives are localized and target-project aware for
+  generated purpose, operating-model, and business-flow text.
 - Repository cleanliness held: external project files remain ignored, and the
   generated evaluation output is not tracked.
 - Structured outputs stayed available for downstream checks even without LLM
@@ -120,7 +125,7 @@ structured output.
 ## Quality Notes
 
 The 89/100 quality score is reasonable for a no-LLM run. The failing method
-summary coverage check is expected because all 87 method summaries used the
+summary coverage check is expected because all 92 method summaries used the
 heuristic fallback. Business flow coverage passed because framework entrypoint
 detection does not require an LLM. Static execution flow coverage now passes
 because class methods with internal call edges are eligible as flow candidates.
@@ -136,17 +141,18 @@ summaries are LLM-generated and the project narrative is domain-specific.
 
 ## Gaps Found
 
-- Java call resolution still does not perform full type inference, so arbitrary
-  field-injected collaborators and repository interface methods remain shallow.
-- Repository intent is name-based and conservative; it does not yet bind calls
-  back to the exact repository interface or entity type.
+- Java call resolution now handles declared field receiver types, but it still
+  does not perform full local-variable, generic, or inherited-method type
+  inference.
+- Repository intent is still name-based and conservative; inherited Spring Data
+  methods such as `save` are represented as database resources even when no
+  explicit repository method declaration exists in source.
 
 ## Recommended Next Work
 
-1. Improve Java call resolution for same-class calls, field-injected
-   collaborators, repository interfaces, and simple service/controller helper
-   methods.
-2. Bind repository call resources back to repository interfaces and entity/table
-   resources where the injected field type can be inferred.
+1. Add local-variable and return-type inference for common Java expressions so
+   chained calls and helper-created collaborators can resolve beyond fields.
+2. Model inherited Spring Data repository methods explicitly, linking operations
+   such as `save` to repository and entity resources even without declarations.
 3. Add a second real-world Java project with service-layer code to validate
    repository binding and collaborator call resolution beyond PetClinic.

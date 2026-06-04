@@ -34,6 +34,10 @@ public class OrderController {
     return orderService.create(request);
   }
 
+  private OrderEntity loadOrder(String externalId) {
+    return orderRepository.findByExternalId(externalId);
+  }
+
   @Scheduled(cron = "0 0 * * * *")
   public void reconcile() {
     orderService.reconcile();
@@ -61,4 +65,21 @@ class OrderEntity {
 }
 
 interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
+  OrderEntity findByExternalId(String externalId);
+}
+
+class OrderService {
+  public OrderDto create(CreateOrderRequest request) {
+    return new OrderDto();
+  }
+
+  public void reconcile() {
+  }
+
+  public void consume(String payload) {
+  }
+
+  public OrderContext loadContext(int orderId) {
+    return new OrderContext();
+  }
 }

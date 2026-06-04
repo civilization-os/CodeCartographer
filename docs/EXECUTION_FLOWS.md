@@ -2,6 +2,27 @@
 
 执行流由静态调用图推断：入口候选通常没有已解析的内部调用者，并且至少调用了一个仓库内部方法。当前结果代表工程执行路径，不等同于完整运行时链路。
 
+## extractClassUnit
+
+Entry: `src/parser/javaStructureParser.ts:142` extractClassUnit
+
+### Steps
+
+1. extractClassUnit - 从Java源代码块中提取类单元，包括方法、资源和字段类型信息。
+2. buildMethodUnit - 构建一个方法单元对象，包含从Java源代码中提取的调用、资源、框架提示和入口点提示等信息。
+3. extractClassResources - 从Java类块中提取实体、表和仓库资源标识符。
+4. extractFieldTypes - 从Java类定义中提取字段名和类型，返回映射表。
+5. extractMethodBlocks - 从Java类块中提取所有方法块，包括有方法体和抽象方法声明。
+6. locationFromOffsets - 根据文件路径、行索引和偏移量范围计算并返回源代码位置信息。
+7. requestMappingPath - 从注解列表中提取RequestMapping注解的路径值。
+8. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
+9. summarizeClass - 生成Java类的中文摘要字符串，包含类名、类型、方法数量和关联资源。
+10. annotationAttribute - 从注解字符串中提取指定属性的值。
+
+### Resources
+
+- 无
+
 ## main
 
 Entry: `src/index.ts:8` main
@@ -35,20 +56,20 @@ Entry: `src/index.ts:8` main
 - `FILE:result-diff.json`
 - `FILE:result.json`
 
-## extractClassUnit
+## parseJavaModule
 
-Entry: `src/parser/javaStructureParser.ts:136` extractClassUnit
+Entry: `src/parser/javaStructureParser.ts:82` parseJavaModule
 
 ### Steps
 
-1. extractClassUnit - 从Java类块中提取类单元，包括方法、资源和摘要信息。
-2. buildMethodUnit - 根据给定的源代码、掩码文本、行索引、模块路径、类块和方法块等信息，构建并返回一个包含方法元数据（如名称、签名、调用、资源、框架提示等）的 MethodUnit 对象。
-3. extractClassResources - 从Java类块中提取实体、表和仓库资源标识符。
-4. extractMethodBlocks - 从Java类块中提取所有方法块，返回方法定义列表。
-5. locationFromOffsets - 根据文件路径、行索引和偏移量范围计算并返回源代码位置信息。
-6. requestMappingPath - 从注解列表中提取RequestMapping注解的路径值。
-7. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
-8. summarizeClass - 生成Java类的中文摘要字符串，包含类名、类型、方法数量和关联资源。
+1. parseJavaModule - 解析Java源文件并提取模块单元信息，包括类、方法和导入。
+2. buildClassResourceIndex - 构建类名到资源列表的映射索引。
+3. buildLineIndex - 根据源代码文本构建行索引，记录每行起始字符位置。
+4. extractClassBlocks - 从Java源代码中提取类、接口、枚举和记录的定义块，包括注解、声明和代码范围。
+5. maskJavaSource - 将Java源代码中的注释和字符串字面量替换为空格，返回脱敏后的文本。
+6. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
+7. extractClassResources - 从Java类块中提取实体、表和仓库资源标识符。
+8. findMatchingBrace - 从指定起始位置开始，在字符串中查找与左花括号匹配的右花括号的索引。
 9. annotationAttribute - 从注解字符串中提取指定属性的值。
 10. annotationByName - 根据名称在注解字符串数组中查找匹配的注解。
 
@@ -58,7 +79,7 @@ Entry: `src/parser/javaStructureParser.ts:136` extractClassUnit
 
 ## extractFrameworkHints
 
-Entry: `src/parser/javaStructureParser.ts:434` extractFrameworkHints
+Entry: `src/parser/javaStructureParser.ts:516` extractFrameworkHints
 
 ### Steps
 
@@ -71,23 +92,6 @@ Entry: `src/parser/javaStructureParser.ts:434` extractFrameworkHints
 7. annotationName - 从注解字符串中提取注解名称。
 8. joinRoutePaths - 拼接路由路径前缀与路径，去除空段和重复斜杠，并确保结果以斜杠开头。
 9. requestMappingMethod - 从Spring注解中提取HTTP请求方法并转换为小写，默认返回'all'。
-
-### Resources
-
-- 无
-
-## parseJavaModule
-
-Entry: `src/parser/javaStructureParser.ts:77` parseJavaModule
-
-### Steps
-
-1. parseJavaModule - 解析Java源文件并提取模块单元信息，包括导入、类和方法。
-2. buildLineIndex - 根据源代码文本构建行索引，记录每行起始字符位置。
-3. extractClassBlocks - 从Java源代码中提取类、接口、枚举和记录的定义块，包括注解、声明和代码范围。
-4. maskJavaSource - 将Java源代码中的注释和字符串字面量替换为空格，返回脱敏后的文本。
-5. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
-6. findMatchingBrace - 从指定起始位置开始，在字符串中查找与左花括号匹配的右花括号的索引。
 
 ### Resources
 

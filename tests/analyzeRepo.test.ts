@@ -76,7 +76,8 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
   assert.deepEqual(result.classes.map((classUnit) => classUnit.name), [
     "OrderController",
     "OrderEntity",
-    "OrderRepository"
+    "OrderRepository",
+    "OrderService"
   ]);
 
   const create = result.methods.find((method) => method.name === "create");
@@ -123,10 +124,31 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
 
   const validateAndCreate = result.methods.find((method) => method.name === "validateAndCreate");
   assert.ok(validateAndCreate);
-  assert.ok(validateAndCreate.resources.includes("DB_WRITE:orderRepository.save"));
+  assert.ok(validateAndCreate.calls.includes("OrderService.create"));
+  assert.ok(validateAndCreate.resources.includes("DB_WRITE:OrderRepository.save"));
+  assert.ok(validateAndCreate.resources.includes("REPOSITORY:OrderRepository"));
+  assert.ok(validateAndCreate.resources.includes("ENTITY:OrderEntity"));
+  assert.ok(validateAndCreate.resources.includes("TABLE:orders"));
   assert.ok(
     result.graph.edges.some(
-      (edge) => edge.from === validateAndCreate.id && edge.kind === "writes" && edge.label === "DB_WRITE:orderRepository.save"
+      (edge) => edge.from === validateAndCreate.id && edge.kind === "writes" && edge.label === "DB_WRITE:OrderRepository.save"
+    )
+  );
+  assert.ok(
+    result.graph.edges.some(
+      (edge) => edge.from === validateAndCreate.id && edge.kind === "calls" && edge.label === "OrderService.create"
+    )
+  );
+
+  const loadOrder = result.methods.find((method) => method.name === "loadOrder");
+  const findByExternalId = result.methods.find((method) => method.className === "OrderRepository" && method.name === "findByExternalId");
+  assert.ok(loadOrder);
+  assert.ok(findByExternalId);
+  assert.ok(loadOrder.calls.includes("OrderRepository.findByExternalId"));
+  assert.ok(loadOrder.resources.includes("DB_READ:OrderRepository.findByExternalId"));
+  assert.ok(
+    result.graph.edges.some(
+      (edge) => edge.from === loadOrder.id && edge.to === findByExternalId.id && edge.kind === "calls"
     )
   );
 
@@ -164,7 +186,11 @@ test("builds static execution flows from Java class methods", async () => {
   const createFlow = overview.flows.find((flow) => flow.name === "OrderController#create");
 
   assert.ok(createFlow);
-  assert.deepEqual(createFlow.steps.map((method) => method.name), ["create", "validateAndCreate"]);
+  assert.deepEqual(createFlow.steps.map((method) => `${method.className}#${method.name}`), [
+    "OrderController#create",
+    "OrderController#validateAndCreate",
+    "OrderService#create"
+  ]);
 });
 
 test("localizes fallback generated docs without LLM", async () => {
@@ -186,7 +212,11 @@ test("localizes fallback generated docs without LLM", async () => {
     await fs.readFile(businessFlowsPath, "utf8")
   ].join("\n");
 
-  assert.match(combinedDocs, /CLI 接收目标仓库路径和模型配置/);
+  assert.match(combinedDocs, /Java\/Spring Web 应用/);
+  assert.match(combinedDocs, /外部请求从/);
+  assert.match(combinedDocs, /数据库相关资源/);
+  assert.doesNotMatch(combinedDocs, /代码分析与文档生成流水线/);
+  assert.doesNotMatch(combinedDocs, /CLI 接收目标仓库路径和模型配置/);
   assert.doesNotMatch(combinedDocs, /The CLI receives/);
   assert.doesNotMatch(combinedDocs, /starts at/);
   assert.doesNotMatch(combinedDocs, /expands through resolved call edges/);

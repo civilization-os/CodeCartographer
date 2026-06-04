@@ -79,13 +79,7 @@ function fallbackNarrative(
   return {
     projectOverview: {
       purpose: overview.purpose,
-      operatingModel: [
-        "CLI 接收目标仓库路径和模型配置。",
-        "扫描器收集受支持的源文件，并排除生成目录、缓存目录和用户配置的排除项。",
-        "解析适配器把不同语言的源文件转换为统一的模块、类和方法单元。",
-        "语义分析器为方法补充摘要、职责、资源和框架线索。",
-        "关系图构建器和文档聚合器生成工程文档与结构化结果。"
-      ],
+      operatingModel: fallbackOperatingModel(result, overview),
       keyCapabilities: overview.moduleGroups
         .filter((group) => group.responsibilities.length > 0)
         .map((group) => `${group.name}: ${group.responsibilities[0]}`)
@@ -109,9 +103,38 @@ function fallbackNarrative(
     risksAndBoundaries: [
       "调用图解析是静态分析结果，不执行完整类型推断。",
       "业务流依赖框架入口提示，未识别入口的流程不会被强行生成。",
-      "当前 TypeScript 和 JavaScript 解析通过 TypeScript compiler AST 适配器完成。"
+      "当前支持 TypeScript、JavaScript 和 Java 的静态结构抽取；跨语言运行时行为仍以静态线索为准。"
     ]
   };
+}
+
+function fallbackOperatingModel(
+  result: AnalysisResult,
+  overview: SemanticOverview
+): string[] {
+  const httpFlowCount = overview.businessFlows.filter((flow) => flow.entrypointHint.kind === "http_route").length;
+  const staticFlowCount = overview.flows.length;
+  const databaseResources = result.resources.filter((resource) => resource.kind === "database");
+  const modelModules = overview.moduleGroups
+    .filter((group) => group.modules.some((module) => module.language === "java" || module.language === "typescript" || module.language === "javascript"))
+    .slice(0, 4)
+    .map((group) => group.name);
+
+  const steps: string[] = [];
+  if (httpFlowCount > 0) {
+    steps.push(`外部请求从 ${httpFlowCount} 个框架识别的 HTTP 入口进入控制器或处理方法。`);
+  }
+  if (staticFlowCount > 0) {
+    steps.push(`入口方法沿 ${staticFlowCount} 条静态执行流调用内部方法，形成可追踪的处理路径。`);
+  }
+  if (databaseResources.length > 0) {
+    steps.push(`业务方法通过 ${databaseResources.length} 个数据库相关资源读取或写入实体、表和仓储接口。`);
+  }
+  if (modelModules.length > 0) {
+    steps.push(`${modelModules.join("、")} 等模块共同承载领域模型、入口处理和支撑逻辑。`);
+  }
+  steps.push("`.see-code/result.json` 保留完整模块、类、方法、资源和调用图，Markdown 文档面向人工阅读展示关键路径。");
+  return steps;
 }
 
 function buildNarrativeContext(

@@ -2,26 +2,25 @@
 
 ## System Shape
 
-系统采用分层架构，由 CLI 入口层、扫描解析层、图构建层、语义分析层、文档生成层和输出层组成。各层通过明确的接口和数据结构协作，数据流从文件扫描开始，经解析、图构建、语义增强，最终生成文档和 JSON 输出。
+系统采用分层架构，自底向上依次为扫描层、解析层、分析层、文档生成层和输出层。扫描层负责文件遍历和语言识别；解析层将源文件转换为结构化模块单元；分析层构建关系图并执行语义增强；文档生成层将分析结果渲染为 Markdown；输出层序列化结果并写入文件系统。LLM 模块作为可选的外部语义分析服务。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| CLI 入口层 | src/index.ts | 解析命令行参数，加载配置，编排分析流程，输出结果。 |
-| 扫描解析层 | src/scanner/repoScanner.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts, src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts | 递归扫描文件，根据语言选择解析器，提取模块、类、方法、资源。 |
-| 图构建层 | src/graph/relationGraphBuilder.ts | 基于解析结果构建模块、类、方法、资源之间的关系图，生成节点和边集合。 |
-| 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对每个方法进行语义分析，优先使用缓存，未缓存则调用 LLM 或启发式规则，更新模块和类摘要。 |
-| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果和语义概览组装为多份 Markdown 文档（项目概览、架构、模块、业务流、质量报告）。 |
-| 输出层 | src/output/resultJsonWriter.ts | 将扫描结果、文档路径、差异报告序列化为 JSON 并写入文件系统。 |
-| 配置层 | src/config/projectConfig.ts | 从指定路径加载项目配置文件，支持敏感键检测和错误处理。 |
+| 扫描层 | src/scanner/repoScanner.ts | 递归扫描目录，过滤排除项和大文件，按扩展名识别语言类型，返回源文件信息列表。 |
+| 解析层 | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 将源文件文本解析为模块单元，提取导入、类、方法、资源和字段类型信息。 |
+| 分析层 | src/analyzer/analyzeRepo.ts, src/graph/relationGraphBuilder.ts, src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts | 协调扫描和解析结果，构建关系图，执行语义分析（缓存+LLM+启发式），生成最终分析结果。 |
+| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果渲染为多份 Markdown 文档，包含概览、架构、模块、业务流和质量报告。 |
+| 输出层 | src/output/resultJsonWriter.ts | 将分析结果序列化为 JSON，写入文件系统，生成差异报告和变更摘要。 |
+| 配置与入口层 | src/index.ts, src/config/projectConfig.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 解析 CLI 参数，加载项目配置和 LLM 模型配置，协调各层执行流程。 |
 
 ## Critical Paths
 
 - src/index.ts:main
 - src/analyzer/analyzeRepo.ts:analyzeRepo
-- src/scanner/repoScanner.ts:scanRepo
-- src/parser/typescriptStructureParser.ts:extractCallableUnit
+- src/scanner/repoScanner.ts:scanDirectory
+- src/parser/moduleParser.ts:parseModule
 - src/graph/relationGraphBuilder.ts:buildRelationGraph
 - src/llm/methodSemanticAnalyzer.ts:enrichModulesWithMethodSemantics
 - src/docs/docsGenerator.ts:generateDocs
@@ -36,12 +35,12 @@
 | config | 1 | 3 | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 |
 | Configuration | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | core | 1 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
-| docs | 5 | 60 | 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 |
+| docs | 5 | 63 | 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 |
 | Documentation | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | graph | 1 | 8 | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 |
 | llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
 | output | 1 | 32 | 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。 |
-| parser | 6 | 72 | 解析Java源文件并提取模块单元信息，包括导入、类和方法。 |
+| parser | 6 | 78 | 解析Java源文件并提取模块单元信息，包括类、方法和导入。 |
 | Project Files | 5 | 7 | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
 | scanner | 1 | 5 | 异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。 |
 | utils | 1 | 2 | 将路径分隔符转换为正斜杠以生成POSIX风格路径。 |
@@ -98,10 +97,10 @@
 
 ### parser
 
-- 解析Java源文件并提取模块单元信息，包括导入、类和方法。
+- 解析Java源文件并提取模块单元信息，包括类、方法和导入。
 - 从Java源代码文本中提取所有导入语句并返回排序后的唯一导入列表。
 - 从Java源代码中提取类、接口、枚举和记录的定义块，包括注解、声明和代码范围。
-- 从Java类块中提取类单元，包括方法、资源和摘要信息。
+- 从Java源代码块中提取类单元，包括方法、资源和字段类型信息。
 - 从Java类块中提取实体、表和仓库资源标识符。
 
 ### Project Files
@@ -138,9 +137,9 @@
 | stableId | src/utils/path.ts | 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。 |
 | enrichModulesWithMethodSemantics | src/llm/methodSemanticAnalyzer.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
 | loadModelConfig | src/llm/modelConfig.ts | 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。 |
+| extractClassUnit | src/parser/javaStructureParser.ts | 从Java源代码块中提取类单元，包括方法、资源和字段类型信息。 |
 | renderBusinessFlows | src/docs/docsGenerator.ts | 根据语义概览和项目叙事生成业务流文档，包含步骤、资源和入口信息，若无业务流则输出占位说明。 |
 | bulletList | src/docs/markdown.ts | 将字符串数组转换为Markdown格式的无序列表，若数组为空则返回默认占位符。 |
-| composeProjectNarrative | src/docs/narrativeComposer.ts | 根据分析结果和语义概览生成项目叙事文档，支持缓存和模型调用降级。 |
 
 ## Runtime Resources
 

@@ -22,7 +22,7 @@
 
 | File | Language | Bytes |
 | --- | --- | --- |
-| evaluations/spring-petclinic.md | markdown | 6049 |
+| evaluations/spring-petclinic.md | markdown | 6534 |
 | package.json | json | 797 |
 | README.md | markdown | 5162 |
 | schema/result-diff.schema.json | json | 2493 |
@@ -35,9 +35,9 @@
 | src/core/types.ts | typescript | 3744 |
 | src/docs/docsGenerator.ts | typescript | 20920 |
 | src/docs/markdown.ts | typescript | 734 |
-| src/docs/narrativeComposer.ts | typescript | 10010 |
+| src/docs/narrativeComposer.ts | typescript | 11079 |
 | src/docs/qualityReport.ts | typescript | 7342 |
-| src/docs/semanticAggregator.ts | typescript | 8579 |
+| src/docs/semanticAggregator.ts | typescript | 11392 |
 | src/graph/relationGraphBuilder.ts | typescript | 5983 |
 | src/index.ts | typescript | 4640 |
 | src/llm/methodSemanticAnalyzer.ts | typescript | 7870 |
@@ -46,13 +46,13 @@
 | src/llm/modelFactory.ts | typescript | 1276 |
 | src/output/resultJsonWriter.ts | typescript | 18630 |
 | src/parser/javaAdapter.ts | typescript | 267 |
-| src/parser/javaStructureParser.ts | typescript | 25769 |
+| src/parser/javaStructureParser.ts | typescript | 30377 |
 | src/parser/moduleParser.ts | typescript | 1060 |
 | src/parser/parserAdapter.ts | typescript | 437 |
 | src/parser/typescriptAdapter.ts | typescript | 304 |
 | src/parser/typescriptStructureParser.ts | typescript | 15301 |
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
-| tests/analyzeRepo.test.ts | typescript | 16502 |
+| tests/analyzeRepo.test.ts | typescript | 17917 |
 | tests/schemaContract.test.ts | typescript | 4473 |
 | tsconfig.json | json | 311 |

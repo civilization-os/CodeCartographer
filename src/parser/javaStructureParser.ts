@@ -39,6 +39,11 @@ interface JavaMethodBlock {
   end: number;
 }
 
+interface JavaFieldInfo {
+  name: string;
+  type: string;
+}
+
 const MODIFIER_WORDS = new Set([
   "public",
   "protected",
@@ -80,8 +85,9 @@ export async function parseJavaModule(file: SourceFileInfo): Promise<ModuleUnit>
   const lineIndex = buildLineIndex(sourceText);
   const imports = extractImports(sourceText);
   const classBlocks = extractClassBlocks(sourceText, masked);
+  const classResourceIndex = buildClassResourceIndex(classBlocks);
   const classes = classBlocks.map((classBlock) =>
-    extractClassUnit(sourceText, masked, lineIndex, file.relativePath, classBlock)
+    extractClassUnit(sourceText, masked, lineIndex, file.relativePath, classBlock, classResourceIndex)
   );
   const methods = classes.flatMap((classUnit) => classUnit.methods);
 
@@ -138,13 +144,25 @@ function extractClassUnit(
   masked: string,
   lineIndex: LineIndex,
   modulePath: string,
-  classBlock: JavaClassBlock
+  classBlock: JavaClassBlock,
+  classResourceIndex: Map<string, string[]>
 ): ClassUnit {
   const methodBlocks = extractMethodBlocks(sourceText, masked, classBlock);
   const classRoutePrefix = requestMappingPath(classBlock.annotations) ?? "";
+  const fieldTypes = extractFieldTypes(sourceText, masked, classBlock);
   const resources = extractClassResources(classBlock);
   const methods = methodBlocks.map((methodBlock) =>
-    buildMethodUnit(sourceText, masked, lineIndex, modulePath, classBlock, methodBlock, classRoutePrefix)
+    buildMethodUnit(
+      sourceText,
+      masked,
+      lineIndex,
+      modulePath,
+      classBlock,
+      methodBlock,
+      classRoutePrefix,
+      fieldTypes,
+      classResourceIndex
+    )
   );
 
   return {
@@ -190,6 +208,10 @@ function extractClassResources(classBlock: JavaClassBlock): string[] {
   }
 
   return [...resources].sort();
+}
+
+function buildClassResourceIndex(classBlocks: JavaClassBlock[]): Map<string, string[]> {
+  return new Map(classBlocks.map((classBlock) => [classBlock.name, extractClassResources(classBlock)]));
 }
 
 function extractMethodBlocks(
@@ -238,6 +260,17 @@ function extractMethodBlocks(
     }
 
     if (depth === 0 && char === ";") {
+      const headerText = sourceText.slice(statementStart, index);
+      const headerMasked = masked.slice(statementStart, index);
+      const parsed = parseMethodHeader(headerText, headerMasked, classBlock.name);
+      if (parsed) {
+        methods.push({
+          ...parsed,
+          start: statementStart + leadingWhitespaceLength(sourceText.slice(statementStart, index)),
+          bodyStart: index,
+          end: index
+        });
+      }
       statementStart = index + 1;
     }
   }
@@ -305,13 +338,15 @@ function buildMethodUnit(
   modulePath: string,
   classBlock: JavaClassBlock,
   methodBlock: JavaMethodBlock,
-  classRoutePrefix: string
+  classRoutePrefix: string,
+  fieldTypes: Map<string, string>,
+  classResourceIndex: Map<string, string[]>
 ): MethodUnit {
   const bodySource = sourceText.slice(methodBlock.bodyStart + 1, methodBlock.end);
   const bodyMasked = masked.slice(methodBlock.bodyStart + 1, methodBlock.end);
   const annotations = [...classBlock.annotations, ...methodBlock.annotations];
-  const calls = extractCalls(bodyMasked);
-  const resources = extractResources(bodySource, annotations);
+  const calls = extractCalls(bodyMasked, fieldTypes);
+  const resources = extractResources(bodySource, annotations, fieldTypes, classResourceIndex);
   const frameworkHints = extractFrameworkHints(
     classBlock,
     methodBlock,
@@ -346,7 +381,7 @@ function buildMethodUnit(
   };
 }
 
-function extractCalls(bodyMasked: string): string[] {
+function extractCalls(bodyMasked: string, fieldTypes: Map<string, string>): string[] {
   const calls = new Set<string>();
   const callPattern = /\b(?:new\s+)?([A-Za-z_$][\w$]*(?:\s*\.\s*[A-Za-z_$][\w$]*)*)\s*\(/g;
 
@@ -354,14 +389,31 @@ function extractCalls(bodyMasked: string): string[] {
     const call = match[1].replace(/\s*\.\s*/g, ".");
     const lastPart = call.split(".").at(-1) ?? call;
     if (!CONTROL_WORDS.has(call) && !CONTROL_WORDS.has(lastPart) && !MODIFIER_WORDS.has(call)) {
-      calls.add(call);
+      calls.add(normalizeReceiverCall(call, fieldTypes));
     }
   }
 
   return [...calls].sort();
 }
 
-function extractResources(bodySource: string, annotations: string[]): string[] {
+function normalizeReceiverCall(call: string, fieldTypes: Map<string, string>): string {
+  const parts = call.split(".");
+  const receiver = parts[0] === "this" ? parts[1] : parts[0];
+  const receiverType = receiver ? fieldTypes.get(receiver) : undefined;
+  if (!receiverType || parts.length < 2) {
+    return call;
+  }
+
+  const methodPath = parts[0] === "this" ? parts.slice(2) : parts.slice(1);
+  return [receiverType, ...methodPath].join(".");
+}
+
+function extractResources(
+  bodySource: string,
+  annotations: string[],
+  fieldTypes: Map<string, string>,
+  classResourceIndex: Map<string, string[]>
+): string[] {
   const resources = new Set<string>();
   const combined = `${annotations.join("\n")}\n${bodySource}`;
 
@@ -388,14 +440,18 @@ function extractResources(bodySource: string, annotations: string[]): string[] {
     resources.add(`ENV:${match[1]}`);
   }
 
-  for (const resource of extractRepositoryOperationResources(combined)) {
+  for (const resource of extractRepositoryOperationResources(combined, fieldTypes, classResourceIndex)) {
     resources.add(resource);
   }
 
   return [...resources].sort();
 }
 
-function extractRepositoryOperationResources(sourceText: string): string[] {
+function extractRepositoryOperationResources(
+  sourceText: string,
+  fieldTypes: Map<string, string>,
+  classResourceIndex: Map<string, string[]>
+): string[] {
   const resources = new Set<string>();
   const repositoryCallPattern =
     /\b(?:this\.)?([A-Za-z_$][\w$]*(?:Repository|Repo|Dao|Mapper|Service|owners|types|vets|vetRepository)?)\.([A-Za-z_$][\w$]*)\s*\(/g;
@@ -403,13 +459,39 @@ function extractRepositoryOperationResources(sourceText: string): string[] {
   for (const match of sourceText.matchAll(repositoryCallPattern)) {
     const owner = match[1];
     const operation = match[2];
+    const ownerType = fieldTypes.get(owner);
+    const resourceOwner = ownerType ?? owner;
     const intent = repositoryOperationIntent(operation);
-    if (!intent || !isPersistenceReceiver(owner)) {
+    if (!intent || (!isPersistenceReceiver(owner) && !isPersistenceReceiver(resourceOwner))) {
       continue;
     }
-    resources.add(`${intent}:${owner}.${operation}`);
+    resources.add(`${intent}:${resourceOwner}.${operation}`);
+    for (const resource of relatedResourcesForType(ownerType, classResourceIndex)) {
+      resources.add(resource);
+    }
   }
 
+  return [...resources].sort();
+}
+
+function relatedResourcesForType(
+  typeName: string | undefined,
+  classResourceIndex: Map<string, string[]>
+): string[] {
+  if (!typeName) {
+    return [];
+  }
+
+  const resources = new Set(classResourceIndex.get(typeName) ?? []);
+  for (const resource of [...resources]) {
+    if (!resource.startsWith("ENTITY:")) {
+      continue;
+    }
+    const entityName = resource.slice("ENTITY:".length);
+    for (const entityResource of classResourceIndex.get(entityName) ?? []) {
+      resources.add(entityResource);
+    }
+  }
   return [...resources].sort();
 }
 
@@ -623,6 +705,80 @@ function parseParameters(parametersText: string): MethodParameter[] {
         type: parts.join(" ").replace(/\s*\.\.\.\s*$/, "...")
       };
     });
+}
+
+function extractFieldTypes(
+  sourceText: string,
+  masked: string,
+  classBlock: JavaClassBlock
+): Map<string, string> {
+  const fields = new Map<string, string>();
+  let statementStart = classBlock.bodyStart + 1;
+
+  for (let index = classBlock.bodyStart + 1; index < classBlock.end; index += 1) {
+    const char = masked[index];
+
+    if (char === "{") {
+      const blockEnd = findMatchingBrace(masked, index);
+      if (blockEnd !== -1) {
+        index = blockEnd;
+        statementStart = blockEnd + 1;
+        continue;
+      }
+    }
+
+    if (char === ";") {
+      const statementText = sourceText.slice(statementStart, index);
+      const statementMasked = masked.slice(statementStart, index);
+      for (const field of parseFieldStatement(statementText, statementMasked)) {
+        fields.set(field.name, field.type);
+      }
+      statementStart = index + 1;
+    }
+  }
+
+  return fields;
+}
+
+function parseFieldStatement(statementText: string, statementMasked: string): JavaFieldInfo[] {
+  const declaration = stripAnnotations(statementMasked)
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!declaration || declaration.includes("(")) {
+    return [];
+  }
+
+  const firstDeclaration = splitTopLevel(declaration, ",")[0];
+  const beforeInitializer = splitTopLevel(firstDeclaration, "=")[0]
+    .replace(/\b(?:public|protected|private|static|final|transient|volatile)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const nameMatch = /([A-Za-z_$][\w$]*)$/.exec(beforeInitializer);
+  if (!nameMatch) {
+    return [];
+  }
+
+  const type = normalizeJavaType(beforeInitializer.slice(0, nameMatch.index).trim());
+  if (!type) {
+    return [];
+  }
+
+  return [
+    {
+      name: nameMatch[1],
+      type
+    }
+  ];
+}
+
+function normalizeJavaType(typeName: string): string {
+  const baseType = typeName
+    .replace(/\[\]$/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .split("<")[0]
+    .trim();
+  return baseType.split(".").at(-1) ?? baseType;
 }
 
 function extractModifiers(prefix: string): string[] {
