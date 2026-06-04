@@ -12,6 +12,12 @@ Run command:
 pnpm analyze -- eval-projects/spring-petclinic --no-llm
 ```
 
+DeepSeek-backed run:
+
+```bash
+pnpm analyze -- eval-projects/spring-petclinic --provider deepseek --model deepseek-chat
+```
+
 Local evaluation config:
 
 ```json
@@ -46,6 +52,29 @@ Local evaluation config:
 
 The run generated the full document set, `.see-code/result.json`, and
 `.see-code/result-diff.json` inside the ignored evaluation project.
+
+## DeepSeek Snapshot
+
+| Metric | Value |
+| --- | --- |
+| Quality score | 100/100 |
+| LLM method summaries | 87/87 |
+| Business flows | 17 |
+| Static execution flows | 8 |
+| Resources | 23 |
+| Largest document | 56757 characters |
+
+The LLM-backed run produced project-level narrative that correctly describes
+PetClinic as a Spring Boot pet clinic management application with owner, pet,
+visit, and vet workflows backed by JPA persistence. Method summaries are much
+more useful than the heuristic fallback, especially for controller validation,
+redirect, and persistence behavior.
+
+One issue surfaced during the LLM run: generated narrative flow names are not
+guaranteed to align one-to-one with framework route names. The docs renderer now
+uses LLM business-flow narrative only on exact flow-name matches; otherwise it
+falls back to deterministic route-local text. This prevents a narrative for one
+route from appearing under another route.
 
 ## What Worked
 
@@ -94,6 +123,9 @@ inspection. The no-LLM narrative quality is still lower than the self-analysis
 run because method summaries use heuristic text, but fixed fallback templates no
 longer leave English operating-model or business-flow fragments in generated
 docs.
+
+The LLM-backed run raises the quality score to 100/100 because all method
+summaries are LLM-generated and the project narrative is domain-specific.
 
 ## Gaps Found
 

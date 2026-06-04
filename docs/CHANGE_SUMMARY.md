@@ -1,22 +1,19 @@
 # Change Summary
 
-Compared previous result `2026-06-04T06:09:57.620Z` with current result `2026-06-04T06:17:29.833Z`.
+Compared previous result `2026-06-04T06:17:29.833Z` with current result `2026-06-04T06:30:20.700Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~5
-- Methods: +4 / -0 / ~3
+- Files: +0 / -0 / ~3
+- Methods: +1 / -0 / ~1
 - Entrypoints: +0 / -0
-- Resources: +3 / -0
+- Resources: +0 / -0
 - Business flows: +0 / -0
 - Quality: 100/100 -> 100/100
 
 ## Added Methods
 
-- src/graph/relationGraphBuilder.ts: relationKindForResource
-- src/parser/javaStructureParser.ts: extractRepositoryOperationResources
-- src/parser/javaStructureParser.ts: repositoryOperationIntent
-- src/parser/javaStructureParser.ts: isPersistenceReceiver
+- src/docs/docsGenerator.ts: matchingNarrativeFlow
 
 ## Removed Methods
 
@@ -24,9 +21,7 @@ Compared previous result `2026-06-04T06:09:57.620Z` with current result `2026-06
 
 ## Modified Methods
 
-- src/graph/relationGraphBuilder.ts: buildRelationGraph
-- src/graph/relationGraphBuilder.ts: resourceKind
-- src/parser/javaStructureParser.ts: extractResources
+- src/docs/docsGenerator.ts: renderBusinessFlows
 
 ## Entrypoints
 
@@ -36,8 +31,6 @@ Compared previous result `2026-06-04T06:09:57.620Z` with current result `2026-06
 
 ## Resources
 
-- Added: ENV:DB_DELETE
-- Added: ENV:DB_READ
-- Added: ENV:DB_WRITE
+- Added: 无
 
 - Removed: 无

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { analyzeRepo } from "../src/analyzer/analyzeRepo.js";
 import { loadProjectConfig } from "../src/config/projectConfig.js";
-import { generateDocs } from "../src/docs/docsGenerator.js";
+import { generateDocs, matchingNarrativeFlow } from "../src/docs/docsGenerator.js";
 import { buildSemanticOverview } from "../src/docs/semanticAggregator.js";
 import { loadModelConfig, type ModelConfig } from "../src/llm/modelConfig.js";
 import {
@@ -190,6 +190,21 @@ test("localizes fallback generated docs without LLM", async () => {
   assert.doesNotMatch(combinedDocs, /The CLI receives/);
   assert.doesNotMatch(combinedDocs, /starts at/);
   assert.doesNotMatch(combinedDocs, /expands through resolved call edges/);
+});
+
+test("matches LLM business flow narratives by name only", () => {
+  const narrative = {
+    flows: [
+      {
+        name: "GET /owners",
+        narrative: "owners list narrative",
+        steps: ["owners list step"]
+      }
+    ]
+  };
+
+  assert.equal(matchingNarrativeFlow("GET /owners/new", narrative), undefined);
+  assert.equal(matchingNarrativeFlow("GET /owners", narrative)?.narrative, "owners list narrative");
 });
 
 test("handles document-only fixtures", async () => {

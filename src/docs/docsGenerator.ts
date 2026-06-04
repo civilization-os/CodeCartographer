@@ -404,10 +404,8 @@ function renderBusinessFlows(
       "",
       "业务流由框架入口提示生成，并沿已解析的调用边扩展。当前版本优先使用 HTTP、消息、定时任务、CLI 等入口提示；没有框架入口时不强行生成业务流。",
       "",
-      ...overview.businessFlows.flatMap((flow, index) => {
-        const narrativeFlow =
-          narrative.flows.find((item) => item.name === flow.name) ??
-          narrative.flows[index];
+      ...overview.businessFlows.flatMap((flow) => {
+        const narrativeFlow = matchingNarrativeFlow(flow.name, narrative);
 
         return [
           heading(2, flow.name),
@@ -460,6 +458,13 @@ function renderBusinessFlows(
     "",
     "在框架适配器提供业务入口前，先使用 `EXECUTION_FLOWS.md` 查看基于调用图的执行路径。"
   ].join("\n");
+}
+
+export function matchingNarrativeFlow(
+  flowName: string,
+  narrative: Pick<ProjectNarrative, "flows">
+): ProjectNarrative["flows"][number] | undefined {
+  return narrative.flows.find((item) => item.name === flowName);
 }
 
 function renderEntrypoints(overview: SemanticOverview): string {
