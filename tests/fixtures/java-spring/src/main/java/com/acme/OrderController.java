@@ -21,6 +21,10 @@ public class OrderController {
   @PostMapping("/orders")
   public OrderDto create(@RequestBody CreateOrderRequest request) {
     System.getenv("ORDER_TOPIC");
+    return validateAndCreate(request);
+  }
+
+  private OrderDto validateAndCreate(CreateOrderRequest request) {
     return orderService.create(request);
   }
 

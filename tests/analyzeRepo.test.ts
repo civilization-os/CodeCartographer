@@ -79,6 +79,7 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
   assert.ok(create);
   assert.equal(create.language, "java");
   assert.equal(create.returnType, "OrderDto");
+  assert.ok(create.calls.includes("validateAndCreate"));
   assert.ok(create.resources.includes("ENV:ORDER_TOPIC"));
   assert.ok(
     create.frameworkHints.some(
@@ -112,6 +113,9 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
   assert.ok(!loadOrderContext.frameworkHints.some((hint) => hint.kind === "http_route"));
   assert.ok(!loadOrderContext.entrypointHints.some((hint) => hint.kind === "http_route"));
   assert.ok(!result.methods.some((method) => method.name === "orderId"));
+
+  const callEdges = result.graph.edges.filter((edge) => edge.kind === "calls");
+  assert.ok(callEdges.some((edge) => edge.label === "validateAndCreate"));
 });
 
 test("groups Java modules by package area instead of source set", async () => {
@@ -123,6 +127,17 @@ test("groups Java modules by package area instead of source set", async () => {
 
   assert.ok(groupNames.includes("acme"));
   assert.ok(!groupNames.includes("main"));
+});
+
+test("builds static execution flows from Java class methods", async () => {
+  const result = await analyzeRepo(path.join(fixturesDir, "java-spring"), {
+    modelConfig: noLlmConfig
+  });
+  const overview = buildSemanticOverview(result);
+  const createFlow = overview.flows.find((flow) => flow.name === "OrderController#create");
+
+  assert.ok(createFlow);
+  assert.deepEqual(createFlow.steps.map((method) => method.name), ["create", "validateAndCreate"]);
 });
 
 test("localizes fallback generated docs without LLM", async () => {

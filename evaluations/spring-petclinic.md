@@ -38,9 +38,9 @@ Local evaluation config:
 | Graph nodes | 145 |
 | Graph edges | 125 |
 | Business flows | 17 |
-| Static execution flows | 0 |
+| Static execution flows | 8 |
 | Resources | 0 |
-| Quality score | 84/100 |
+| Quality score | 89/100 |
 | LLM method summaries | 0/87 |
 | Architecture areas | Configuration, Documentation, model, owner, petclinic, Project Files, system, vet |
 
@@ -63,6 +63,9 @@ The run generated the full document set, `.see-code/result.json`, and
   annotations. The previous `VisitController#id` / `ALL /` false positive is
   gone, and visit creation routes now point to `initNewVisitForm` and
   `processNewVisitForm`.
+- Java class methods now participate in static execution flow detection. The
+  run produced 8 static execution flows, including owner, pet, visit, cache, and
+  controller helper paths.
 - No-LLM fallback narratives are localized for generated operating-model and
   business-flow text.
 - Repository cleanliness held: external project files remain ignored, and the
@@ -72,10 +75,11 @@ The run generated the full document set, `.see-code/result.json`, and
 
 ## Quality Notes
 
-The 84/100 quality score is reasonable for a no-LLM run. The failing method
+The 89/100 quality score is reasonable for a no-LLM run. The failing method
 summary coverage check is expected because all 87 method summaries used the
 heuristic fallback. Business flow coverage passed because framework entrypoint
-detection does not require an LLM.
+detection does not require an LLM. Static execution flow coverage now passes
+because class methods with internal call edges are eligible as flow candidates.
 
 The generated documents are already useful for route inventory and module
 inspection. The no-LLM narrative quality is still lower than the self-analysis
@@ -85,9 +89,8 @@ docs.
 
 ## Gaps Found
 
-- Static execution flows are empty because Java call resolution currently does
-  not connect enough unqualified, field-based, or repository calls back to
-  internal methods.
+- Java call resolution still does not perform full type inference, so
+  field-injected collaborators and repository interface methods remain shallow.
 - Persistence and resource modeling is still shallow. Repository interfaces and
   JPA entities are detected as hints, but they are not yet represented as
   first-class data/resource nodes.

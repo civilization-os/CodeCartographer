@@ -51,16 +51,15 @@ export function buildSemanticOverview(result: AnalysisResult): SemanticOverview 
   const entrypoints = result.methods
     .filter(
       (method) =>
-        !method.className &&
         (incoming.get(method.id) ?? 0) === 0 &&
-        (outgoing.get(method.id) ?? 0) >= 2
+        (outgoing.get(method.id) ?? 0) >= 1
     )
     .sort((a, b) => (outgoing.get(b.id) ?? 0) - (outgoing.get(a.id) ?? 0))
     .slice(0, 12)
     .map((method) => ({
       method,
       fanOut: outgoing.get(method.id) ?? 0,
-      reason: "没有已解析的内部调用者，并且存在已解析的下游调用。"
+      reason: "没有已解析的内部调用者，并且至少存在一个已解析的下游调用。"
     }));
 
   const hotMethods = result.methods
