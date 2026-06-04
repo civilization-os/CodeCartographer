@@ -237,6 +237,7 @@ function renderArchitecture(
 }
 
 function renderModules(modules: ModuleUnit[]): string {
+  const maxMethodRowsPerModule = 8;
   const rows = modules.map((module) => [
     module.path,
     module.language,
@@ -246,7 +247,8 @@ function renderModules(modules: ModuleUnit[]): string {
     module.summary
   ]);
 
-  const sections = modules.flatMap((module) => {
+  const sections = modules.filter(hasModuleDetails).flatMap((module) => {
+    const selectedMethods = selectHighSignalMethods(module.methods, maxMethodRowsPerModule);
     const lines = [
       heading(2, module.path),
       "",
@@ -274,13 +276,21 @@ function renderModules(modules: ModuleUnit[]): string {
     }
 
     if (module.methods.length > 0) {
+      const limitNote =
+        selectedMethods.length < module.methods.length
+          ? [
+              `显示 ${selectedMethods.length}/${module.methods.length} 个高信号方法；完整方法级结构、调用和语义见 \`.see-code/result.json\`。`,
+              ""
+            ]
+          : [];
       lines.push(
         "",
-        heading(3, "Method Units"),
+        heading(3, "Key Method Units"),
         "",
+        ...limitNote,
         table(
           ["Method", "Signature", "Return", "Hints", "Analyzer", "Summary", "Calls", "Location"],
-          module.methods.map((method) => [
+          selectedMethods.map((method) => [
             method.className ? `${method.className}#${method.name}` : method.name,
             `\`${method.signature}\``,
             method.returnType ?? "",
@@ -304,6 +314,38 @@ function renderModules(modules: ModuleUnit[]): string {
     "",
     ...sections
   ].join("\n");
+}
+
+function hasModuleDetails(module: ModuleUnit): boolean {
+  return module.imports.length > 0 || module.classes.length > 0 || module.methods.length > 0;
+}
+
+function selectHighSignalMethods(methods: ModuleUnit["methods"], limit: number): ModuleUnit["methods"] {
+  if (methods.length <= limit) {
+    return methods;
+  }
+
+  return methods
+    .map((method, index) => ({
+      method,
+      index,
+      score: scoreMethodForModuleDocs(method)
+    }))
+    .sort((left, right) => right.score - left.score || left.index - right.index)
+    .slice(0, limit)
+    .sort((left, right) => left.index - right.index)
+    .map((item) => item.method);
+}
+
+function scoreMethodForModuleDocs(method: ModuleUnit["methods"][number]): number {
+  let score = 0;
+  score += method.entrypointHints.length * 6;
+  score += method.frameworkHints.length * 4;
+  score += method.resources.length * 3;
+  score += method.calls.length > 0 ? 2 : 0;
+  score += method.visibility === "public" ? 1 : 0;
+  score += method.semantic?.analyzer === "llm" ? 1 : 0;
+  return score;
 }
 
 function formatMethodHints(method: ModuleUnit["methods"][number]): string {

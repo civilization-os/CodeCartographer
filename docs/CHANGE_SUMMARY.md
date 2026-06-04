@@ -1,11 +1,11 @@
 # Change Summary
 
-Compared previous result `2026-06-04T06:17:29.833Z` with current result `2026-06-04T06:30:20.700Z`.
+Compared previous result `2026-06-04T06:38:16.255Z` with current result `2026-06-04T06:39:18.791Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~3
-- Methods: +1 / -0 / ~1
+- Files: +0 / -0 / ~1
+- Methods: +0 / -0 / ~0
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
@@ -13,7 +13,7 @@ Compared previous result `2026-06-04T06:17:29.833Z` with current result `2026-06
 
 ## Added Methods
 
-- src/docs/docsGenerator.ts: matchingNarrativeFlow
+- 无
 
 ## Removed Methods
 
@@ -21,7 +21,7 @@ Compared previous result `2026-06-04T06:17:29.833Z` with current result `2026-06
 
 ## Modified Methods
 
-- src/docs/docsGenerator.ts: renderBusinessFlows
+- 无
 
 ## Entrypoints
 

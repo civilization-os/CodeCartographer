@@ -62,7 +62,7 @@ The run generated the full document set, `.see-code/result.json`, and
 | Business flows | 17 |
 | Static execution flows | 8 |
 | Resources | 23 |
-| Largest document | 56757 characters |
+| Largest document | 52950 characters |
 
 The LLM-backed run produced project-level narrative that correctly describes
 PetClinic as a Spring Boot pet clinic management application with owner, pet,
@@ -75,6 +75,11 @@ guaranteed to align one-to-one with framework route names. The docs renderer now
 uses LLM business-flow narrative only on exact flow-name matches; otherwise it
 falls back to deterministic route-local text. This prevents a narrative for one
 route from appearing under another route.
+
+The module document now keeps human-facing details focused on high-signal
+methods and points readers to `.see-code/result.json` for the complete method
+inventory. This reduced the largest PetClinic document while preserving the full
+structured output.
 
 ## What Worked
 
@@ -109,6 +114,8 @@ route from appearing under another route.
   generated evaluation output is not tracked.
 - Structured outputs stayed available for downstream checks even without LLM
   summaries.
+- `MODULES.md` now avoids expanding empty modules and limits per-module method
+  tables to high-signal entries, keeping the human document easier to scan.
 
 ## Quality Notes
 
@@ -141,5 +148,5 @@ summaries are LLM-generated and the project narrative is domain-specific.
    methods.
 2. Bind repository call resources back to repository interfaces and entity/table
    resources where the injected field type can be inferred.
-3. Run one DeepSeek-backed evaluation on Spring PetClinic after parser fixes to
-   compare no-LLM structure quality against LLM narrative quality.
+3. Add a second real-world Java project with service-layer code to validate
+   repository binding and collaborator call resolution beyond PetClinic.

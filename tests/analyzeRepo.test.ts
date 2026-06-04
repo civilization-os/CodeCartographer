@@ -207,6 +207,52 @@ test("matches LLM business flow narratives by name only", () => {
   assert.equal(matchingNarrativeFlow("GET /owners", narrative)?.narrative, "owners list narrative");
 });
 
+test("keeps module docs focused on high-signal methods", async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "see-code-module-doc-limit-"));
+  await fs.mkdir(path.join(tempRoot, "src"), { recursive: true });
+  await fs.writeFile(
+    path.join(tempRoot, "src/app.ts"),
+    `
+export function registerRoutes(app: { get(path: string, handler: unknown): void }): void {
+  app.get("/items", listItems);
+}
+
+export function listItems(): string[] {
+  process.env.ITEMS_TABLE;
+  return [];
+}
+
+export function method01(): void {}
+export function method02(): void {}
+export function method03(): void {}
+export function method04(): void {}
+export function method05(): void {}
+export function method06(): void {}
+export function method07(): void {}
+export function method08(): void {}
+export function method09(): void {}
+export function method10(): void {}
+`,
+    "utf8"
+  );
+
+  const result = await analyzeRepo(tempRoot, {
+    modelConfig: noLlmConfig
+  });
+  const generatedDocs = await generateDocs(result);
+  const modulesDocPath = generatedDocs.written.find((docPath) => docPath.endsWith("MODULES.md"));
+  assert.ok(modulesDocPath);
+
+  const modulesDoc = await fs.readFile(modulesDocPath, "utf8");
+  assert.match(modulesDoc, /### Key Method Units/);
+  assert.match(modulesDoc, /显示 8\/12 个高信号方法/);
+  assert.match(modulesDoc, /完整方法级结构、调用和语义见 `.see-code\/result.json`/);
+  assert.match(modulesDoc, /registerRoutes/);
+  assert.match(modulesDoc, /listItems/);
+  assert.doesNotMatch(modulesDoc, /\| method09 \|/);
+  assert.equal(result.methods.length, 12);
+});
+
 test("handles document-only fixtures", async () => {
   const result = await analyzeRepo(path.join(fixturesDir, "docs-only"), {
     modelConfig: noLlmConfig
