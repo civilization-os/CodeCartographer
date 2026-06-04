@@ -24,6 +24,8 @@ pnpm verify
 
 This runs type checking, build, fixture-based analyzer tests, and a local secret scan.
 
+The same command runs in GitHub Actions on pushes and pull requests to `main`.
+
 Run with an LLM provider:
 
 ```bash
