@@ -49,11 +49,11 @@ Entry: `src/index.ts:7` main
 
 ### Steps
 
-1. main - 解析命令行参数，执行代码仓库分析并生成文档，将结果写入JSON文件并输出日志。
+1. main - 解析命令行参数，执行代码仓库分析并生成文档，输出结果到文件。
 2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。
 3. parseArgs - 解析命令行参数，提取命令、目标路径和模型配置。
 4. printHelp - 打印 see-code 工具的使用说明和命令行参数帮助信息。
-5. writeResultJson - 将结果数据写入指定目录下的 result.json 文件并返回文件路径。
+5. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
 6. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
 7. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，包含节点和边。
 8. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
@@ -62,6 +62,8 @@ Entry: `src/index.ts:7` main
 
 ### Resources
 
+- `FILE:CHANGE_SUMMARY.md`
+- `FILE:result-diff.json`
 - `FILE:result.json`
 
 ## parseJavaModule

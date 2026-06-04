@@ -21,6 +21,7 @@
 输出：
   项目/docs目录下的人类工程文档
   项目/.see-code/result.json 机器可读结构化分析结果
+  项目/.see-code/result-diff.json 与上一版分析结果的差异
 ```
 
 例如：
@@ -33,9 +34,11 @@ project/
       ├─ BUSINESS_FLOWS.md
       ├─ CALL_GRAPH.md
       ├─ DATA_AND_RESOURCES.md
-      └─ QUALITY_REPORT.md
+      ├─ QUALITY_REPORT.md
+      └─ CHANGE_SUMMARY.md
   └─ .see-code/
-      └─ result.json
+      ├─ result.json
+      └─ result-diff.json
 ```
 
 ---

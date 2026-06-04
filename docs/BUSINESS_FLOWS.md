@@ -4,7 +4,7 @@
 
 ## main function
 
-用户通过命令行执行 see-code，指定目标路径和可选的模型配置。系统解析参数后，依次执行扫描、解析、语义增强、关系图构建和结果写入，最终输出 result.json 文件路径。
+用户通过 CLI 执行 see-code，系统扫描仓库、解析源文件、构建关系图、增强语义并输出文档。
 
 | Field | Value |
 | --- | --- |
@@ -16,21 +16,22 @@
 
 ### Steps
 
-1. main 函数解析命令行参数，验证目标路径和模型配置。
-2. 调用 analyzeRepo 函数，传入目标路径和模型配置。
-3. scanRepo 递归扫描目录，返回源文件信息列表。
-4. parseModules 遍历源文件，根据语言选择适配器解析为模块单元。
-5. enrichModulesWithMethodSemantics 对每个方法附加启发式标签，并通过 LLM 或缓存获取语义分析结果。
-6. buildRelationGraph 构建模块、类、方法和资源的关系图。
-7. writeResultJson 将结果序列化为 JSON 并写入 result.json 文件。
+1. main 函数解析命令行参数（目标路径、模型配置），调用 analyzeRepo。
+2. analyzeRepo 调用 repoScanner 递归扫描目录，返回源文件列表。
+3. moduleParser 遍历源文件，通过语言适配器解析为 ModuleUnit 数组。
+4. relationGraphBuilder 从模块单元中提取调用关系和资源引用，构建关系图。
+5. methodSemanticAnalyzer 对每个方法执行语义分析（缓存优先，LLM 或启发式补充），更新模块和类摘要。
+6. resultJsonWriter 将结果组装为标准化 JSON，写入 result.json、result-diff.json、CHANGE_SUMMARY.md。
 
 ### Resources
 
+- `FILE:CHANGE_SUMMARY.md`
+- `FILE:result-diff.json`
 - `FILE:result.json`
 
 ## POST /api/orders
 
-系统遍历所有模块中的方法，优先检查缓存中是否存在语义分析结果。若缓存命中则直接使用，否则调用 LLM 模型进行分析，解析响应后更新缓存，并更新模块和类的摘要。
+对未缓存的方法，调用 LLM API 获取语义标签，解析响应并更新模块摘要。
 
 | Field | Value |
 | --- | --- |
@@ -42,13 +43,11 @@
 
 ### Steps
 
-1. 遍历模块列表中的每个方法。
-2. 检查 methodSemanticCache 中是否存在该方法 ID 的缓存结果。
-3. 若缓存命中，直接使用缓存结果更新方法语义。
-4. 若缓存未命中，调用 modelFactory 创建 LLM 模型实例。
-5. 调用 LLM 模型分析方法的语义，获取结构化响应。
-6. parseModelResponse 解析响应内容，验证为方法语义结构。
-7. 将结果写入缓存，并更新模块和类的摘要。
+1. enrichModulesWithMethodSemantics 遍历模块列表，对每个方法检查 methodSemanticCache。
+2. 缓存命中则直接使用缓存结果；未命中则调用 modelFactory 创建 LLM 实例。
+3. LLM 实例发送方法代码和上下文到 DeepSeek API，接收结构化响应。
+4. 解析响应内容，验证为 MethodSemantic 结构，提取语义标签（如 HTTP 路由、定时任务）。
+5. 更新方法单元的语义字段，并更新所属模块和类的摘要文本。
 
 ### Resources
 
@@ -58,7 +57,7 @@
 
 ## Spring scheduled job
 
-系统从所有模块单元中提取资源节点，构建方法名称到方法单元的索引映射，然后根据调用字符串解析调用关系，生成包含节点和边的图结构。
+将扫描结果、关系图、语义标签组装为标准化 JSON，并写入文件系统。
 
 | Field | Value |
 | --- | --- |
@@ -70,12 +69,10 @@
 
 ### Steps
 
-1. 从所有模块单元中提取资源列表，去重排序后生成资源节点。
-2. 构建方法名称到方法单元的索引映射，支持类名限定和多种命名格式。
-3. 遍历所有方法，解析方法体内的调用字符串。
-4. 根据调用字符串和方法索引解析目标方法单元，优先精确匹配，其次尝试最后一段名称匹配。
-5. 为每个调用关系生成边，包含调用方、被调用方和调用分数。
-6. 返回包含节点和边的图结构。
+1. writeResultJson 接收分析结果对象（包含模块、类、方法、关系图、入口点）。
+2. 调用 buildResultDiff 比较当前结果与历史结果（若存在），生成差异报告。
+3. 序列化模块单元、类单元、方法单元为普通 JSON 对象。
+4. 将结果 JSON 写入 result.json，差异 JSON 写入 result-diff.json，变更摘要写入 CHANGE_SUMMARY.md。
 
 ### Resources
 

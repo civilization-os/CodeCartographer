@@ -125,13 +125,13 @@ test("writes structured result JSON for analyzer output", async () => {
     modelConfig: noLlmConfig
   });
   const generatedDocs = await generateDocs(result);
-  const outputPath = await writeResultJson({
+  const output = await writeResultJson({
     result,
     overview: generatedDocs.overview,
     quality: generatedDocs.quality,
     docs: generatedDocs.written
   });
-  const json = JSON.parse(await fs.readFile(outputPath, "utf8")) as {
+  const json = JSON.parse(await fs.readFile(output.resultPath, "utf8")) as {
     schemaVersion: number;
     stats: {
       methods: number;
@@ -186,4 +186,75 @@ test("writes structured result JSON for analyzer output", async () => {
     )
   );
   assert.ok(json.semanticOverview.businessFlows.length >= 3);
+});
+
+test("writes result diff against the previous structured output", async () => {
+  const fixturePath = path.join(fixturesDir, "typescript-basic");
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "see-code-result-diff-"));
+  await fs.cp(fixturePath, tempRoot, { recursive: true });
+
+  const firstResult = await analyzeRepo(tempRoot, {
+    modelConfig: noLlmConfig
+  });
+  const firstDocs = await generateDocs(firstResult);
+  const firstOutput = await writeResultJson({
+    result: firstResult,
+    overview: firstDocs.overview,
+    quality: firstDocs.quality,
+    docs: firstDocs.written
+  });
+  const baselineDiff = JSON.parse(await fs.readFile(firstOutput.diffPath, "utf8")) as {
+    baseline: boolean;
+  };
+  assert.equal(baselineDiff.baseline, true);
+
+  await fs.appendFile(
+    path.join(tempRoot, "src/app.ts"),
+    `
+
+export function cancelOrder(id: string): string {
+  process.env.ORDER_CANCEL_TOPIC;
+  return id;
+}
+`,
+    "utf8"
+  );
+
+  const secondResult = await analyzeRepo(tempRoot, {
+    modelConfig: noLlmConfig
+  });
+  const secondDocs = await generateDocs(secondResult);
+  const secondOutput = await writeResultJson({
+    result: secondResult,
+    overview: secondDocs.overview,
+    quality: secondDocs.quality,
+    docs: secondDocs.written
+  });
+  const diff = JSON.parse(await fs.readFile(secondOutput.diffPath, "utf8")) as {
+    baseline: boolean;
+    summary: {
+      addedMethods: number;
+      modifiedFiles: number;
+      addedResources: number;
+    };
+    changes: {
+      methods: {
+        added: Array<{
+          name: string;
+        }>;
+      };
+      resources: {
+        added: string[];
+      };
+    };
+  };
+  const changeSummary = await fs.readFile(secondOutput.changeSummaryPath, "utf8");
+
+  assert.equal(diff.baseline, false);
+  assert.equal(diff.summary.addedMethods, 1);
+  assert.equal(diff.summary.modifiedFiles, 1);
+  assert.equal(diff.summary.addedResources, 1);
+  assert.ok(diff.changes.methods.added.some((method) => method.name === "cancelOrder"));
+  assert.ok(diff.changes.resources.added.includes("ENV:ORDER_CANCEL_TOPIC"));
+  assert.match(changeSummary, /cancelOrder/);
 });

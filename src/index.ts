@@ -20,7 +20,7 @@ async function main(): Promise<void> {
   const rootPath = path.resolve(targetPath);
   const result = await analyzeRepo(rootPath, { modelConfig });
   const generatedDocs = await generateDocs(result);
-  const resultJson = await writeResultJson({
+  const output = await writeResultJson({
     result,
     overview: generatedDocs.overview,
     quality: generatedDocs.quality,
@@ -35,7 +35,9 @@ async function main(): Promise<void> {
       ? `LLM semantic analyzer: ${result.model.provider} / ${result.model.model}`
       : "LLM semantic analyzer: disabled, using heuristic summaries."
   );
-  console.log(`Generated result JSON: ${resultJson}`);
+  console.log(`Generated result JSON: ${output.resultPath}`);
+  console.log(`Generated result diff: ${output.diffPath}`);
+  console.log(`Generated change summary: ${output.changeSummaryPath}`);
   console.log("Generated docs:");
   for (const file of generatedDocs.written) {
     console.log(`- ${file}`);

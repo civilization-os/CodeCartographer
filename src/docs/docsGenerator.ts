@@ -146,7 +146,11 @@ function renderProjectOverview(
       "`CALL_GRAPH.md` 用 Mermaid 渲染已解析的仓库内部调用关系。",
       "`ENTRYPOINTS.md` 列出框架感知入口和静态入口候选。",
       "`DATA_AND_RESOURCES.md` 列出检测到的数据与外部资源。",
-      "`MAINTENANCE_GUIDE.md` 记录当前分析边界和维护注意事项。"
+      "`MAINTENANCE_GUIDE.md` 记录当前分析边界和维护注意事项。",
+      "`QUALITY_REPORT.md` 汇总文档质量、LLM 覆盖率和模板残留检查。",
+      "`CHANGE_SUMMARY.md` 汇总本次分析相对上一版结构化结果的变化。",
+      "`.see-code/result.json` 保存机器可读的完整结构化分析结果。",
+      "`.see-code/result-diff.json` 保存机器可读的增量差异结果。"
     ])
   ].join("\n");
 }
