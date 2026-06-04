@@ -2,37 +2,37 @@
 
 Repository path: `/root/project/ai/see_code`
 
-Scan time: `2026-06-04T15:55:09.377Z`
+Scan time: `2026-06-04T16:07:03.678Z`
 
 ## Purpose
 
-该工具扫描指定代码仓库，提取模块、方法、类、资源和调用关系，生成结构化工程文档和JSON结果，支持TypeScript和Java项目。
+CodeCartographer 是一个静态代码分析工具，用于扫描指定代码仓库，提取模块、方法、类、资源和调用关系图，并生成结构化工程文档（Markdown 格式）和 JSON 结果文件。
 
 ## Operating Model
 
-1. CLI入口解析参数，加载项目配置和LLM模型配置。
-2. 扫描仓库文件，过滤排除项和大文件，按语言分类。
-3. 解析源文件提取模块、类、方法和导入信息。
-4. 构建关系图（节点和边），包含模块、类、方法和资源之间的引用。
-5. 对每个方法进行语义分析，优先使用缓存，未缓存则通过LLM或启发式规则补充。
-6. 生成多个Markdown文档（概览、架构、模块、业务流等）并写入文件系统。
-7. 输出结果JSON、差异JSON和变更摘要到指定目录。
+1. 用户通过 CLI 子命令（analyze、init、doctor、interactive）启动工具。
+2. 工具递归扫描目标目录，过滤排除项和大文件，识别 TypeScript/JavaScript 或 Java 源文件。
+3. 解析器将源文件转换为模块单元（ModuleUnit），包含类、方法、导入和资源引用。
+4. 关系图构建器从模块单元中提取节点和边，生成调用关系图。
+5. LLM 模块对方法进行语义分析（支持缓存和启发式回退），为方法附加语义标签。
+6. 文档生成器将分析结果写入多个 Markdown 文件（项目概览、架构、模块、业务流程等），并输出结果 JSON 和差异 JSON。
 
 ## Key Capabilities
 
-- 递归扫描仓库文件并自动检测语言类型。
-- 解析Java和TypeScript源文件的结构（类、方法、导入、资源）。
-- 构建模块-类-方法-资源的关系图。
-- 通过LLM或启发式规则为方法附加语义标签。
-- 生成完整的工程文档集（架构、模块、业务流、质量报告）。
-- 支持结果差异比较和变更摘要输出。
+- 支持 TypeScript/JavaScript 和 Java 两种语言的静态解析。
+- 生成模块、类、方法、资源和调用关系的完整关系图。
+- 通过 LLM 或启发式规则为方法附加语义标签。
+- 输出结构化工程文档（Markdown）和机器可读 JSON 结果。
+- 支持配置排除规则、最大文件大小和 LLM 模型参数。
+- 提供交互式命令引导用户完成初始化、诊断和分析流程。
 
 ## Primary Areas
 
 | Area | Modules | Responsibilities |
 | --- | --- | --- |
 | analyzer | src/analyzer/analyzeRepo.ts, src/analyzer/syntheticRepositoryMethods.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。 为每个仓库操作生成合成方法并注入到对应的类和模块中。 |
-| Application | src/index.ts | 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。 解析命令行参数，提取命令、目标路径和环境变量覆盖值。 验证命令行参数值是否存在且不以'--'开头，否则抛出错误。 |
+| Application | src/index.ts | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 打印 CodeCartographer 工具的帮助信息，包括用法、命令、选项和环境变量说明。 |
+| cli | src/cli/analyzeCommand.ts, src/cli/args.ts, src/cli/doctorCommand.ts, src/cli/initCommand.ts, src/cli/interactiveCommand.ts | 执行代码仓库分析命令，加载配置，调用分析引擎，生成文档并输出结果。 解析命令行参数并返回结构化的 CliOptions 对象，包含命令、目标路径、环境变量覆盖、排除列表等配置。 将字符串或未定义值标准化为有效的ModelProvider枚举值，若无效则抛出错误。 |
 | config | src/config/projectConfig.ts | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 递归遍历对象并检查是否包含敏感键名，若发现则抛出错误。 判断未知错误是否为 Node.js 的 ErrnoException 类型。 |
 | Configuration | package.json, see-code.config.json, tsconfig.json |  |
 | core | src/core/types.ts |  |
@@ -42,7 +42,7 @@ Scan time: `2026-06-04T15:55:09.377Z`
 | llm | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 将未知类型的错误对象转换为字符串消息。 遍历模块列表，为每个方法附加启发式语义标签。 |
 | output | src/output/resultJsonWriter.ts | 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。 将扫描结果、概览、质量数据和文档路径组装为结构化的 JSON 对象并返回。 将模块单元序列化为包含标识符、路径、语言、导入、摘要以及类和方法的ID列表的普通对象。 |
 | parser | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 解析Java源文件并提取模块单元信息，包括类、方法和导入。 从Java源代码文本中提取所有导入语句并返回排序后的唯一导入列表。 从Java源代码中提取类、接口、枚举和记录的定义块，包括注解、声明和代码范围。 |
-| Project Files | schema/result-diff.schema.json, schema/result.schema.json, scripts/secret-scan.mjs, tests/analyzeRepo.test.ts, tests/schemaContract.test.ts | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 读取相对于仓库根目录的 JSON 文件并返回解析后的数据。 异步读取指定路径的JSON文件并解析为泛型类型。 |
+| Project Files | schema/result-diff.schema.json, schema/result.schema.json, scripts/secret-scan.mjs, tests/analyzeRepo.test.ts, tests/cli.test.ts, tests/schemaContract.test.ts | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 读取相对于仓库根目录的 JSON 文件并返回解析后的数据。 异步读取指定路径的JSON文件并解析为泛型类型。 |
 | scanner | src/scanner/repoScanner.ts | 异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。 检查文件路径或名称是否匹配任意一个排除模式。 判断给定相对路径或文件名是否匹配排除模式（支持通配符）。 |
 | utils | src/utils/path.ts | 将路径分隔符转换为正斜杠以生成POSIX风格路径。 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。 |
 
@@ -50,14 +50,14 @@ Scan time: `2026-06-04T15:55:09.377Z`
 
 | Metric | Count |
 | --- | --- |
-| Scanned files | 36 |
-| Source files | 27 |
+| Scanned files | 42 |
+| Source files | 33 |
 | Markdown documents | 4 |
-| Modules | 36 |
+| Modules | 42 |
 | Classes | 2 |
-| Method units | 250 |
+| Method units | 267 |
 | External resource nodes | 22 |
-| Graph edges | 583 |
+| Graph edges | 627 |
 
 ## Semantic Analyzer
 

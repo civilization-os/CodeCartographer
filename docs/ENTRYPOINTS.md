@@ -6,14 +6,14 @@
 
 | Method | Module | Kind | Protocol | Route/Topic | Summary |
 | --- | --- | --- | --- | --- | --- |
-| main | src/index.ts | cli | cli | main function | 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。 |
+| main | src/index.ts | cli | cli | main function | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 |
 
 ## Static Entrypoint Candidates
 
 | Method | Module | Fan-out | Reason | Summary |
 | --- | --- | --- | --- | --- |
 | extractClassUnit | src/parser/javaStructureParser.ts | 9 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 从Java源代码中提取类单元，包括方法、字段、资源和路由前缀，并构建ClassUnit对象。 |
-| main | src/index.ts | 7 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。 |
+| main | src/index.ts | 7 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 |
 | extractFrameworkHints | src/parser/javaStructureParser.ts | 6 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 从Java类和方法注解中提取框架相关的路由、定时任务、消息消费者、持久化和环境配置提示。 |
 | parseJavaModule | src/parser/javaStructureParser.ts | 5 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 解析Java源文件并提取模块单元信息，包括类、方法和导入。 |
 | parseTypeScriptModule | src/parser/typescriptStructureParser.ts | 4 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 解析 TypeScript 或 JavaScript 源文件，提取导入、类、函数和变量函数单元，并返回模块单元对象。 |

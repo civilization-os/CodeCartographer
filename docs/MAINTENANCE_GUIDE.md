@@ -24,8 +24,8 @@
 | --- | --- | --- |
 | evaluations/book-social-network.md | markdown | 5560 |
 | evaluations/spring-petclinic.md | markdown | 7538 |
-| package.json | json | 865 |
-| README.md | markdown | 7848 |
+| package.json | json | 921 |
+| README.md | markdown | 8449 |
 | schema/result-diff.schema.json | json | 2493 |
 | schema/result.schema.json | json | 4702 |
 | scripts/secret-scan.mjs | javascript | 1382 |
@@ -33,6 +33,11 @@
 | SPEC.md | markdown | 8956 |
 | src/analyzer/analyzeRepo.ts | typescript | 2188 |
 | src/analyzer/syntheticRepositoryMethods.ts | typescript | 6639 |
+| src/cli/analyzeCommand.ts | typescript | 2233 |
+| src/cli/args.ts | typescript | 3970 |
+| src/cli/doctorCommand.ts | typescript | 3034 |
+| src/cli/initCommand.ts | typescript | 1968 |
+| src/cli/interactiveCommand.ts | typescript | 4878 |
 | src/config/projectConfig.ts | typescript | 2238 |
 | src/core/types.ts | typescript | 3744 |
 | src/docs/docsGenerator.ts | typescript | 24727 |
@@ -41,7 +46,7 @@
 | src/docs/qualityReport.ts | typescript | 8091 |
 | src/docs/semanticAggregator.ts | typescript | 11392 |
 | src/graph/relationGraphBuilder.ts | typescript | 5983 |
-| src/index.ts | typescript | 4648 |
+| src/index.ts | typescript | 3014 |
 | src/llm/methodSemanticAnalyzer.ts | typescript | 7870 |
 | src/llm/methodSemanticCache.ts | typescript | 2602 |
 | src/llm/modelConfig.ts | typescript | 3937 |
@@ -56,5 +61,6 @@
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
 | tests/analyzeRepo.test.ts | typescript | 22398 |
+| tests/cli.test.ts | typescript | 2827 |
 | tests/schemaContract.test.ts | typescript | 4473 |
 | tsconfig.json | json | 311 |

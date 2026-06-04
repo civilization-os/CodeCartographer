@@ -1,11 +1,11 @@
 # Change Summary
 
-Compared previous result `2026-06-04T15:44:38.718Z` with current result `2026-06-04T15:55:22.820Z`.
+Compared previous result `2026-06-04T16:05:32.093Z` with current result `2026-06-04T16:07:17.406Z`.
 
 ## Summary
 
-- Files: +1 / -0 / ~4
-- Methods: +1 / -0 / ~2
+- Files: +0 / -0 / ~1
+- Methods: +1 / -0 / ~1
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
@@ -13,7 +13,7 @@ Compared previous result `2026-06-04T15:44:38.718Z` with current result `2026-06
 
 ## Added Methods
 
-- src/parser/javaStructureParser.ts: isRepositoryClass
+- src/cli/interactiveCommand.ts: askSecret
 
 ## Removed Methods
 
@@ -21,8 +21,7 @@ Compared previous result `2026-06-04T15:44:38.718Z` with current result `2026-06
 
 ## Modified Methods
 
-- src/parser/javaStructureParser.ts: extractClassResources
-- src/parser/javaStructureParser.ts: extractFrameworkHints
+- src/cli/interactiveCommand.ts: runInteractiveCommand
 
 ## Entrypoints
 

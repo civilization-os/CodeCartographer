@@ -16,30 +16,18 @@ main function 从 main 入口开始，沿调用图展开执行步骤。
 
 ### Steps
 
-1. main - 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。
-2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
-3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。
-4. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。
-5. loadProjectConfig - 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。
-6. parseArgs - 解析命令行参数，提取命令、目标路径和环境变量覆盖值。
-7. printHelp - 打印命令行帮助信息，展示使用方法和配置选项。
-8. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
-9. addSyntheticRepositoryMethods - 为每个仓库操作生成合成方法并注入到对应的类和模块中。
-10. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
+1. main - 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。
+2. normalizeProvider - 将字符串或未定义值标准化为有效的ModelProvider枚举值，若无效则抛出错误。
+3. parseCliArgs - 解析命令行参数并返回结构化的 CliOptions 对象，包含命令、目标路径、环境变量覆盖、排除列表等配置。
+4. printHelp - 打印 CodeCartographer 工具的帮助信息，包括用法、命令、选项和环境变量说明。
+5. runAnalyzeCommand - 执行代码仓库分析命令，加载配置，调用分析引擎，生成文档并输出结果。
+6. runDoctorCommand - 运行医生诊断命令，收集并输出所有检查结果，若有失败项则设置退出码为1。
+7. runInitCommand - 初始化项目配置并写入文件，同时输出提示信息。
+8. runInteractiveCommand - 通过交互式命令行引导用户配置并依次执行初始化、诊断和分析命令。
+9. commandFrom - 根据输入字符串或默认值返回对应的 CLI 命令类型。
+10. parsePositiveInteger - 解析命令行参数中的正整数，若无效则抛出错误。
 
 ### Resources
 
-- `FILE:ARCHITECTURE.md`
-- `FILE:BUSINESS_FLOWS.md`
-- `FILE:CALL_GRAPH.md`
-- `FILE:CHANGE_SUMMARY.md`
-- `FILE:DATA_AND_RESOURCES.md`
 - `FILE:DOC_INDEX.md`
-- `FILE:ENTRYPOINTS.md`
-- `FILE:EXECUTION_FLOWS.md`
-- `FILE:MAINTENANCE_GUIDE.md`
-- `FILE:MODULES.md`
-- `FILE:PROJECT_OVERVIEW.md`
 - `FILE:QUALITY_REPORT.md`
-- `FILE:result-diff.json`
-- `FILE:result.json`

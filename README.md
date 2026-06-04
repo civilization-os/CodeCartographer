@@ -26,6 +26,18 @@ Use it when you need to:
 
 ## Quick Start
 
+Interactive setup:
+
+```bash
+pnpm install
+pnpm dev --
+```
+
+The default CLI opens a guided flow for choosing the project path, LLM provider,
+safe config generation, doctor checks, and analysis.
+
+Command mode:
+
 ```bash
 pnpm install
 pnpm analyze -- .
@@ -40,6 +52,22 @@ pnpm verify
 This runs type checking, build, fixture-based analyzer tests, and a local secret scan.
 
 The same command runs in GitHub Actions on pushes and pull requests to `main`.
+
+After building, the package exposes a `codecartographer` binary:
+
+```bash
+pnpm build
+node dist/index.js help
+```
+
+The intended command shape for published usage is:
+
+```bash
+codecartographer
+codecartographer init /path/to/repo --provider deepseek --model deepseek-chat
+codecartographer doctor /path/to/repo
+codecartographer analyze /path/to/repo --provider deepseek --model deepseek-chat
+```
 
 Run with an LLM provider:
 

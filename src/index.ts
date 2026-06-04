@@ -1,136 +1,78 @@
-import path from "node:path";
-import { analyzeRepo } from "./analyzer/analyzeRepo.js";
-import { loadProjectConfig } from "./config/projectConfig.js";
-import { generateDocs } from "./docs/docsGenerator.js";
-import { loadModelConfig } from "./llm/modelConfig.js";
-import { writeResultJson } from "./output/resultJsonWriter.js";
+#!/usr/bin/env node
+import { runAnalyzeCommand } from "./cli/analyzeCommand.js";
+import { parseCliArgs, normalizeProvider } from "./cli/args.js";
+import { runDoctorCommand } from "./cli/doctorCommand.js";
+import { runInitCommand } from "./cli/initCommand.js";
+import { runInteractiveCommand } from "./cli/interactiveCommand.js";
 
 async function main(): Promise<void> {
-  const args = process.argv.slice(2).filter((arg) => arg !== "--");
-  const { command, targetPath, envOverrides } = parseArgs(args);
+  const options = parseCliArgs(process.argv.slice(2));
 
-  if (command === "help" || command === "--help" || command === "-h") {
-    printHelp();
-    return;
+  switch (options.command) {
+    case "interactive":
+      await runInteractiveCommand();
+      return;
+    case "analyze":
+      await runAnalyzeCommand({
+        targetPath: options.targetPath,
+        envOverrides: options.envOverrides
+      });
+      return;
+    case "init":
+      await runInitCommand({
+        targetPath: options.targetPath,
+        provider: normalizeProvider(options.envOverrides.SEE_CODE_LLM_PROVIDER),
+        model: options.envOverrides.SEE_CODE_LLM_MODEL,
+        baseUrl: options.envOverrides.SEE_CODE_LLM_BASE_URL,
+        excludes: options.excludes,
+        maxFileBytes: options.maxFileBytes,
+        force: options.force
+      });
+      return;
+    case "doctor":
+      await runDoctorCommand({
+        targetPath: options.targetPath,
+        envOverrides: options.envOverrides
+      });
+      return;
+    case "help":
+      printHelp();
+      return;
   }
-
-  if (command !== "analyze") {
-    throw new Error(`Unknown command: ${command}`);
-  }
-
-  const rootPath = path.resolve(targetPath);
-  const projectConfig = await loadProjectConfig(rootPath);
-  const modelConfig = loadModelConfig({ ...process.env, ...envOverrides }, projectConfig.config.llm);
-  const result = await analyzeRepo(rootPath, {
-    modelConfig,
-    scanConfig: projectConfig.config.scan,
-    configPath: projectConfig.configPath
-  });
-  const generatedDocs = await generateDocs(result);
-  const output = await writeResultJson({
-    result,
-    overview: generatedDocs.overview,
-    quality: generatedDocs.quality,
-    docs: generatedDocs.written
-  });
-
-  console.log(`Analyzed ${result.files.length} files.`);
-  console.log(`Extracted ${result.classes.length} classes and ${result.methods.length} method units.`);
-  console.log(`Built graph with ${result.graph.nodes.length} nodes and ${result.graph.edges.length} edges.`);
-  console.log(
-    result.model?.enabled
-      ? `LLM semantic analyzer: ${result.model.provider} / ${result.model.model}`
-      : "LLM semantic analyzer: disabled, using heuristic summaries."
-  );
-  console.log(`Project config: ${projectConfig.configPath ?? "not found"}`);
-  console.log(`Generated result JSON: ${output.resultPath}`);
-  console.log(`Generated result diff: ${output.diffPath}`);
-  console.log(`Generated change summary: ${output.changeSummaryPath}`);
-  console.log("Generated docs:");
-  for (const file of generatedDocs.written) {
-    console.log(`- ${file}`);
-  }
-}
-
-function parseArgs(args: string[]): {
-  command: string;
-  targetPath: string;
-  envOverrides: NodeJS.ProcessEnv;
-} {
-  const positional: string[] = [];
-  const overrides: NodeJS.ProcessEnv = {};
-
-  for (let index = 0; index < args.length; index += 1) {
-    const arg = args[index];
-    const next = args[index + 1];
-
-    switch (arg) {
-      case "--provider":
-        overrides.SEE_CODE_LLM_PROVIDER = requireValue(arg, next);
-        index += 1;
-        break;
-      case "--model":
-        overrides.SEE_CODE_LLM_MODEL = requireValue(arg, next);
-        index += 1;
-        break;
-      case "--base-url":
-        overrides.SEE_CODE_LLM_BASE_URL = requireValue(arg, next);
-        index += 1;
-        break;
-      case "--api-key":
-        overrides.SEE_CODE_LLM_API_KEY = requireValue(arg, next);
-        index += 1;
-        break;
-      case "--llm-limit":
-        overrides.SEE_CODE_LLM_LIMIT = requireValue(arg, next);
-        index += 1;
-        break;
-      case "--no-llm-cache":
-        overrides.SEE_CODE_LLM_CACHE = "0";
-        break;
-      case "--llm":
-        overrides.SEE_CODE_LLM_PROVIDER = "deepseek";
-        break;
-      case "--no-llm":
-        overrides.SEE_CODE_LLM_PROVIDER = "none";
-        break;
-      default:
-        positional.push(arg);
-        break;
-    }
-  }
-
-  const [command = "analyze", targetPath = "."] = positional;
-  return {
-    command,
-    targetPath,
-    envOverrides: overrides
-  };
-}
-
-function requireValue(flag: string, value: string | undefined): string {
-  if (!value || value.startsWith("--")) {
-    throw new Error(`${flag} requires a value.`);
-  }
-  return value;
 }
 
 function printHelp(): void {
   console.log(`CodeCartographer
 
 Usage:
-  pnpm analyze -- <repo-path>
-  pnpm dev -- analyze <repo-path>
+  codecartographer
+  codecartographer analyze [repo-path] [options]
+  codecartographer init [repo-path] [options]
+  codecartographer doctor [repo-path] [options]
 
-LLM providers:
+Commands:
+  analyze              Analyze a repository and generate docs plus .see-code JSON.
+  init                 Create a safe see-code.config.json without API keys.
+  doctor               Check target path, config, and local LLM settings.
+  help                 Show this help.
+
+Analyze options:
   --provider none|deepseek|openai|anthropic|openai-compatible|anthropic-compatible
   --model <model-name>
   --base-url <compatible-api-base-url>
   --api-key <key>
-  --llm-limit <count>    Max uncached methods to send to the LLM in this run
-  --no-llm-cache         Disable MethodUnit semantic cache
-  --llm                 Shortcut for --provider deepseek
-  --no-llm              Disable LLM calls
+  --llm-limit <count>       Max uncached methods to send to the LLM in this run
+  --no-llm-cache            Disable MethodUnit semantic cache
+  --llm                     Shortcut for --provider deepseek
+  --no-llm                  Disable LLM calls
+
+Init options:
+  --provider <provider>     Store non-sensitive provider defaults
+  --model <model-name>      Store non-sensitive model default
+  --base-url <url>          Store non-sensitive compatible API base URL
+  --exclude <glob>          Add a project exclude rule; repeatable
+  --max-file-bytes <bytes>  Set scan file size limit
+  --force                   Overwrite existing see-code.config.json
 
 Environment:
   SEE_CODE_LLM_PROVIDER=deepseek
