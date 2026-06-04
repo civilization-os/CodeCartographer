@@ -77,7 +77,8 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
     "OrderController",
     "OrderEntity",
     "OrderRepository",
-    "OrderService"
+    "OrderService",
+    "OrderDto"
   ]);
 
   const create = result.methods.find((method) => method.name === "create");
@@ -152,6 +153,33 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
     )
   );
 
+  const serviceCreate = result.methods.find((method) => method.className === "OrderService" && method.name === "create");
+  const markCreated = result.methods.find((method) => method.className === "OrderEntity" && method.name === "markCreated");
+  const toDto = result.methods.find((method) => method.className === "OrderService" && method.name === "toDto");
+  const touch = result.methods.find((method) => method.className === "OrderDto" && method.name === "touch");
+  assert.ok(serviceCreate);
+  assert.ok(markCreated);
+  assert.ok(toDto);
+  assert.ok(touch);
+  assert.ok(serviceCreate.calls.includes("OrderEntity.markCreated"));
+  assert.ok(serviceCreate.calls.includes("OrderDto.touch"));
+  assert.ok(serviceCreate.calls.includes("toDto"));
+  assert.ok(
+    result.graph.edges.some(
+      (edge) => edge.from === serviceCreate.id && edge.to === markCreated.id && edge.kind === "calls"
+    )
+  );
+  assert.ok(
+    result.graph.edges.some(
+      (edge) => edge.from === serviceCreate.id && edge.to === touch.id && edge.kind === "calls"
+    )
+  );
+  assert.ok(
+    result.graph.edges.some(
+      (edge) => edge.from === serviceCreate.id && edge.to === toDto.id && edge.kind === "calls"
+    )
+  );
+
   const entityClass = result.classes.find((classUnit) => classUnit.name === "OrderEntity");
   const repositoryClass = result.classes.find((classUnit) => classUnit.name === "OrderRepository");
   assert.ok(entityClass);
@@ -189,7 +217,10 @@ test("builds static execution flows from Java class methods", async () => {
   assert.deepEqual(createFlow.steps.map((method) => `${method.className}#${method.name}`), [
     "OrderController#create",
     "OrderController#validateAndCreate",
-    "OrderService#create"
+    "OrderService#create",
+    "OrderDto#touch",
+    "OrderEntity#markCreated",
+    "OrderService#toDto"
   ]);
 });
 

@@ -62,6 +62,8 @@ public class OrderController {
 @Entity
 @Table(name = "orders")
 class OrderEntity {
+  public void markCreated() {
+  }
 }
 
 interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
@@ -70,6 +72,14 @@ interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 
 class OrderService {
   public OrderDto create(CreateOrderRequest request) {
+    OrderEntity entity = new OrderEntity();
+    entity.markCreated();
+    var dto = toDto(entity);
+    dto.touch();
+    return dto;
+  }
+
+  private OrderDto toDto(OrderEntity entity) {
     return new OrderDto();
   }
 
@@ -81,5 +91,10 @@ class OrderService {
 
   public OrderContext loadContext(int orderId) {
     return new OrderContext();
+  }
+}
+
+class OrderDto {
+  public void touch() {
   }
 }

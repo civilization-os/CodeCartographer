@@ -12,7 +12,7 @@
 
 | Method | Module | Fan-out | Reason | Summary |
 | --- | --- | --- | --- | --- |
-| extractClassUnit | src/parser/javaStructureParser.ts | 8 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 从Java源代码块中提取类单元，包括方法、资源和字段类型信息。 |
+| extractClassUnit | src/parser/javaStructureParser.ts | 9 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 从Java源代码中提取类单元，包括方法、字段、资源和路由前缀，并构建ClassUnit对象。 |
 | main | src/index.ts | 7 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。 |
 | parseJavaModule | src/parser/javaStructureParser.ts | 5 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 解析Java源文件并提取模块单元信息，包括类、方法和导入。 |
 | extractFrameworkHints | src/parser/javaStructureParser.ts | 5 | 没有已解析的内部调用者，并且至少存在一个已解析的下游调用。 | 从Java类和方法中提取框架相关的注解和模式，生成框架提示列表。 |

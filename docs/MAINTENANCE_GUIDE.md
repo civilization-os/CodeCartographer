@@ -22,7 +22,7 @@
 
 | File | Language | Bytes |
 | --- | --- | --- |
-| evaluations/spring-petclinic.md | markdown | 6534 |
+| evaluations/spring-petclinic.md | markdown | 6957 |
 | package.json | json | 797 |
 | README.md | markdown | 5162 |
 | schema/result-diff.schema.json | json | 2493 |
@@ -46,13 +46,13 @@
 | src/llm/modelFactory.ts | typescript | 1276 |
 | src/output/resultJsonWriter.ts | typescript | 18630 |
 | src/parser/javaAdapter.ts | typescript | 267 |
-| src/parser/javaStructureParser.ts | typescript | 30377 |
+| src/parser/javaStructureParser.ts | typescript | 34062 |
 | src/parser/moduleParser.ts | typescript | 1060 |
 | src/parser/parserAdapter.ts | typescript | 437 |
 | src/parser/typescriptAdapter.ts | typescript | 304 |
 | src/parser/typescriptStructureParser.ts | typescript | 15301 |
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
-| tests/analyzeRepo.test.ts | typescript | 17917 |
+| tests/analyzeRepo.test.ts | typescript | 19211 |
 | tests/schemaContract.test.ts | typescript | 4473 |
 | tsconfig.json | json | 311 |

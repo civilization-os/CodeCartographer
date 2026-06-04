@@ -42,7 +42,7 @@ Local evaluation config:
 | Classes | 25 |
 | Method units | 92 |
 | Graph nodes | 174 |
-| Graph edges | 175 |
+| Graph edges | 192 |
 | Business flows | 17 |
 | Static execution flows | 8 |
 | Resources | 24 |
@@ -62,7 +62,7 @@ The run generated the full document set, `.see-code/result.json`, and
 | Business flows | 17 |
 | Static execution flows | 8 |
 | Resources | 24 |
-| Largest document | 54954 characters |
+| Largest document | 55011 characters |
 
 The LLM-backed run produced project-level narrative that correctly describes
 PetClinic as a Spring Boot pet clinic management application with owner, pet,
@@ -113,6 +113,11 @@ structured output.
   interfaces. Business flows now surface examples such as
   `DB_READ:OwnerRepository.findById`, `DB_READ:VetRepository.findAll`, and
   `DB_WRITE:OwnerRepository.save`.
+- Java method bodies now infer receiver types from method parameters, explicit
+  local variables, basic `var` initializers, and same-class method return types.
+  PetClinic graph edges increased to 192 because domain object calls such as
+  `Owner.addPet`, `Pet.getBirthDate`, `Pet.setType`, and `Visit.getDate` now
+  resolve to internal method nodes.
 - No-LLM fallback narratives are localized and target-project aware for
   generated purpose, operating-model, and business-flow text.
 - Repository cleanliness held: external project files remain ignored, and the
@@ -141,17 +146,17 @@ summaries are LLM-generated and the project narrative is domain-specific.
 
 ## Gaps Found
 
-- Java call resolution now handles declared field receiver types, but it still
-  does not perform full local-variable, generic, or inherited-method type
-  inference.
+- Java call resolution now handles fields, parameters, explicit locals, and
+  basic `var` return-type inference, but it still does not perform full chained
+  expression, generic collection element, or inherited-method type inference.
 - Repository intent is still name-based and conservative; inherited Spring Data
   methods such as `save` are represented as database resources even when no
   explicit repository method declaration exists in source.
 
 ## Recommended Next Work
 
-1. Add local-variable and return-type inference for common Java expressions so
-   chained calls and helper-created collaborators can resolve beyond fields.
+1. Add chained expression and generic collection element inference so calls like
+   `owner.getPets().add(...)` and stream/map pipelines can resolve more deeply.
 2. Model inherited Spring Data repository methods explicitly, linking operations
    such as `save` to repository and entity resources even without declarations.
 3. Add a second real-world Java project with service-layer code to validate

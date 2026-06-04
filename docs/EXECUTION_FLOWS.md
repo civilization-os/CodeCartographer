@@ -4,20 +4,20 @@
 
 ## extractClassUnit
 
-Entry: `src/parser/javaStructureParser.ts:142` extractClassUnit
+Entry: `src/parser/javaStructureParser.ts:144` extractClassUnit
 
 ### Steps
 
-1. extractClassUnit - 从Java源代码块中提取类单元，包括方法、资源和字段类型信息。
-2. buildMethodUnit - 构建一个方法单元对象，包含从Java源代码中提取的调用、资源、框架提示和入口点提示等信息。
-3. extractClassResources - 从Java类块中提取实体、表和仓库资源标识符。
-4. extractFieldTypes - 从Java类定义中提取字段名和类型，返回映射表。
-5. extractMethodBlocks - 从Java类块中提取所有方法块，包括有方法体和抽象方法声明。
-6. locationFromOffsets - 根据文件路径、行索引和偏移量范围计算并返回源代码位置信息。
-7. requestMappingPath - 从注解列表中提取RequestMapping注解的路径值。
-8. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
-9. summarizeClass - 生成Java类的中文摘要字符串，包含类名、类型、方法数量和关联资源。
-10. annotationAttribute - 从注解字符串中提取指定属性的值。
+1. extractClassUnit - 从Java源代码中提取类单元，包括方法、字段、资源和路由前缀，并构建ClassUnit对象。
+2. buildMethodReturnTypeIndex - 构建方法返回类型索引，将每个方法名称及其带类名前缀的变体映射到唯一的返回类型。
+3. buildMethodUnit - 构建一个方法单元对象，包含方法元数据、调用、资源、框架提示和摘要。
+4. extractClassResources - 从Java类块中提取实体、表和仓库资源标识符。
+5. extractFieldTypes - 从Java类定义中提取字段名和类型，返回映射表。
+6. extractMethodBlocks - 从Java类块中提取所有方法块，包括有方法体和抽象方法声明。
+7. locationFromOffsets - 根据文件路径、行索引和偏移量范围计算并返回源代码位置信息。
+8. requestMappingPath - 从注解列表中提取RequestMapping注解的路径值。
+9. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
+10. summarizeClass - 生成Java类的中文摘要字符串，包含类名、类型、方法数量和关联资源。
 
 ### Resources
 
@@ -58,7 +58,7 @@ Entry: `src/index.ts:8` main
 
 ## parseJavaModule
 
-Entry: `src/parser/javaStructureParser.ts:82` parseJavaModule
+Entry: `src/parser/javaStructureParser.ts:84` parseJavaModule
 
 ### Steps
 
@@ -79,7 +79,7 @@ Entry: `src/parser/javaStructureParser.ts:82` parseJavaModule
 
 ## extractFrameworkHints
 
-Entry: `src/parser/javaStructureParser.ts:516` extractFrameworkHints
+Entry: `src/parser/javaStructureParser.ts:575` extractFrameworkHints
 
 ### Steps
 

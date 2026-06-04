@@ -44,6 +44,8 @@ interface JavaFieldInfo {
   type: string;
 }
 
+type MethodReturnTypeIndex = Map<string, string>;
+
 const MODIFIER_WORDS = new Set([
   "public",
   "protected",
@@ -148,6 +150,7 @@ function extractClassUnit(
   classResourceIndex: Map<string, string[]>
 ): ClassUnit {
   const methodBlocks = extractMethodBlocks(sourceText, masked, classBlock);
+  const methodReturnTypes = buildMethodReturnTypeIndex(classBlock.name, methodBlocks);
   const classRoutePrefix = requestMappingPath(classBlock.annotations) ?? "";
   const fieldTypes = extractFieldTypes(sourceText, masked, classBlock);
   const resources = extractClassResources(classBlock);
@@ -161,7 +164,8 @@ function extractClassUnit(
       methodBlock,
       classRoutePrefix,
       fieldTypes,
-      classResourceIndex
+      classResourceIndex,
+      methodReturnTypes
     )
   );
 
@@ -212,6 +216,37 @@ function extractClassResources(classBlock: JavaClassBlock): string[] {
 
 function buildClassResourceIndex(classBlocks: JavaClassBlock[]): Map<string, string[]> {
   return new Map(classBlocks.map((classBlock) => [classBlock.name, extractClassResources(classBlock)]));
+}
+
+function buildMethodReturnTypeIndex(
+  className: string,
+  methodBlocks: JavaMethodBlock[]
+): MethodReturnTypeIndex {
+  const candidates = new Map<string, Set<string>>();
+
+  for (const methodBlock of methodBlocks) {
+    if (!methodBlock.returnType) {
+      continue;
+    }
+    const returnType = normalizeJavaType(methodBlock.returnType);
+    if (!returnType) {
+      continue;
+    }
+
+    for (const key of [
+      methodBlock.name,
+      `${className}.${methodBlock.name}`,
+      `${className}#${methodBlock.name}`
+    ]) {
+      candidates.set(key, new Set([...(candidates.get(key) ?? []), returnType]));
+    }
+  }
+
+  return new Map(
+    [...candidates.entries()]
+      .filter(([, returnTypes]) => returnTypes.size === 1)
+      .map(([key, returnTypes]) => [key, [...returnTypes][0]])
+  );
 }
 
 function extractMethodBlocks(
@@ -340,13 +375,15 @@ function buildMethodUnit(
   methodBlock: JavaMethodBlock,
   classRoutePrefix: string,
   fieldTypes: Map<string, string>,
-  classResourceIndex: Map<string, string[]>
+  classResourceIndex: Map<string, string[]>,
+  methodReturnTypes: MethodReturnTypeIndex
 ): MethodUnit {
   const bodySource = sourceText.slice(methodBlock.bodyStart + 1, methodBlock.end);
   const bodyMasked = masked.slice(methodBlock.bodyStart + 1, methodBlock.end);
   const annotations = [...classBlock.annotations, ...methodBlock.annotations];
-  const calls = extractCalls(bodyMasked, fieldTypes);
-  const resources = extractResources(bodySource, annotations, fieldTypes, classResourceIndex);
+  const receiverTypes = buildReceiverTypeIndex(methodBlock, bodyMasked, fieldTypes, methodReturnTypes);
+  const calls = extractCalls(bodyMasked, receiverTypes);
+  const resources = extractResources(bodySource, annotations, receiverTypes, classResourceIndex);
   const frameworkHints = extractFrameworkHints(
     classBlock,
     methodBlock,
@@ -406,6 +443,28 @@ function normalizeReceiverCall(call: string, fieldTypes: Map<string, string>): s
 
   const methodPath = parts[0] === "this" ? parts.slice(2) : parts.slice(1);
   return [receiverType, ...methodPath].join(".");
+}
+
+function buildReceiverTypeIndex(
+  methodBlock: JavaMethodBlock,
+  bodyMasked: string,
+  fieldTypes: Map<string, string>,
+  methodReturnTypes: MethodReturnTypeIndex
+): Map<string, string> {
+  const receiverTypes = new Map(fieldTypes);
+
+  for (const parameter of methodBlock.parameters) {
+    const parameterType = parameter.type ? normalizeJavaType(parameter.type) : "";
+    if (parameterType) {
+      receiverTypes.set(parameter.name, parameterType);
+    }
+  }
+
+  for (const [name, type] of extractLocalVariableTypes(bodyMasked, receiverTypes, methodReturnTypes)) {
+    receiverTypes.set(name, type);
+  }
+
+  return receiverTypes;
 }
 
 function extractResources(
@@ -738,6 +797,61 @@ function extractFieldTypes(
   }
 
   return fields;
+}
+
+function extractLocalVariableTypes(
+  bodyMasked: string,
+  receiverTypes: Map<string, string>,
+  methodReturnTypes: MethodReturnTypeIndex
+): Map<string, string> {
+  const variables = new Map<string, string>();
+  const declarationPattern =
+    /(?:^|[;{}\n])\s*(?:final\s+)?([A-Z][A-Za-z_$][\w$]*(?:\s*<[^;=(){}]+>)?(?:\s*\[\])?)\s+([a-z_$][\w$]*)\s*(?==|;|,)/g;
+  const enhancedForPattern =
+    /\bfor\s*\(\s*(?:final\s+)?([A-Z][A-Za-z_$][\w$]*(?:\s*<[^;=(){}]+>)?(?:\s*\[\])?)\s+([a-z_$][\w$]*)\s*:/g;
+  const varCallPattern =
+    /(?:^|[;{}\n])\s*(?:final\s+)?var\s+([a-z_$][\w$]*)\s*=\s*([A-Za-z_$][\w$]*(?:\s*\.\s*[A-Za-z_$][\w$]*)*)\s*\(/g;
+  const varNewPattern =
+    /(?:^|[;{}\n])\s*(?:final\s+)?var\s+([a-z_$][\w$]*)\s*=\s*new\s+([A-Za-z_$][\w$]*(?:\s*<[^;=(){}]+>)?)\s*\(/g;
+
+  for (const match of bodyMasked.matchAll(declarationPattern)) {
+    const type = normalizeJavaType(match[1]);
+    if (type) {
+      variables.set(match[2], type);
+      receiverTypes.set(match[2], type);
+    }
+  }
+
+  for (const match of bodyMasked.matchAll(enhancedForPattern)) {
+    const type = normalizeJavaType(match[1]);
+    if (type) {
+      variables.set(match[2], type);
+      receiverTypes.set(match[2], type);
+    }
+  }
+
+  for (const match of bodyMasked.matchAll(varNewPattern)) {
+    const type = normalizeJavaType(match[2]);
+    if (type) {
+      variables.set(match[1], type);
+      receiverTypes.set(match[1], type);
+    }
+  }
+
+  for (const match of bodyMasked.matchAll(varCallPattern)) {
+    const call = match[2].replace(/\s*\.\s*/g, ".");
+    const normalizedCall = normalizeReceiverCall(call, receiverTypes);
+    const inferredType =
+      methodReturnTypes.get(normalizedCall) ??
+      methodReturnTypes.get(call) ??
+      methodReturnTypes.get(call.split(".").at(-1) ?? call);
+    if (inferredType) {
+      variables.set(match[1], inferredType);
+      receiverTypes.set(match[1], inferredType);
+    }
+  }
+
+  return variables;
 }
 
 function parseFieldStatement(statementText: string, statementMasked: string): JavaFieldInfo[] {
