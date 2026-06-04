@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://see-code.local/schema/result-diff.schema.json",
+  "title": "See Code Analysis Result Diff",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "baseline",
+    "toGeneratedAt",
+    "summary",
+    "changes"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "baseline": {
+      "type": "boolean"
+    },
+    "fromGeneratedAt": {
+      "type": "string"
+    },
+    "toGeneratedAt": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "addedFiles",
+        "removedFiles",
+        "modifiedFiles",
+        "addedMethods",
+        "removedMethods",
+        "modifiedMethods",
+        "addedEntrypoints",
+        "removedEntrypoints",
+        "addedResources",
+        "removedResources",
+        "addedBusinessFlows",
+        "removedBusinessFlows"
+      ],
+      "properties": {
+        "addedFiles": { "type": "number" },
+        "removedFiles": { "type": "number" },
+        "modifiedFiles": { "type": "number" },
+        "addedMethods": { "type": "number" },
+        "removedMethods": { "type": "number" },
+        "modifiedMethods": { "type": "number" },
+        "addedEntrypoints": { "type": "number" },
+        "removedEntrypoints": { "type": "number" },
+        "addedResources": { "type": "number" },
+        "removedResources": { "type": "number" },
+        "addedBusinessFlows": { "type": "number" },
+        "removedBusinessFlows": { "type": "number" },
+        "qualityScoreBefore": { "type": "number" },
+        "qualityScoreAfter": { "type": "number" }
+      }
+    },
+    "changes": {
+      "type": "object",
+      "required": [
+        "files",
+        "methods",
+        "entrypoints",
+        "resources",
+        "businessFlows"
+      ],
+      "properties": {
+        "files": { "$ref": "#/$defs/changeSet" },
+        "methods": { "$ref": "#/$defs/changeSet" },
+        "entrypoints": { "$ref": "#/$defs/changeSet" },
+        "resources": { "$ref": "#/$defs/changeSet" },
+        "businessFlows": { "$ref": "#/$defs/changeSet" }
+      }
+    }
+  },
+  "$defs": {
+    "changeSet": {
+      "type": "object",
+      "required": ["added", "removed", "modified"],
+      "properties": {
+        "added": { "type": "array" },
+        "removed": { "type": "array" },
+        "modified": { "type": "array" }
+      }
+    }
+  }
+}

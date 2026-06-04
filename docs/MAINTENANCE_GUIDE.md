@@ -5,6 +5,7 @@
 - TypeScript and JavaScript are parsed through the TypeScript compiler AST.
 - Java is parsed through a lightweight static parser adapter that extracts classes, methods, annotations, signatures, calls, resources, and common Spring entrypoint hints.
 - `see-code.config.json` can provide minimal non-sensitive configuration for scan excludes, max file size, and LLM defaults.
+- `schema/result.schema.json` and `schema/result-diff.schema.json` publish stable contracts for machine-readable outputs.
 - Parsing is routed through language adapters that emit the shared ModuleUnit, ClassUnit, and MethodUnit structures.
 - MethodUnit includes language-neutral metadata such as parameters, return type, modifiers, annotations/decorators, framework hints, and entrypoint hints.
 - Higher-fidelity Java support can replace the lightweight adapter with tree-sitter or another Java AST backend without changing the semantic analyzer, relation graph builder, or docs generator.
@@ -22,14 +23,16 @@
 | File | Language | Bytes |
 | --- | --- | --- |
 | package.json | json | 797 |
-| README.md | markdown | 5028 |
+| README.md | markdown | 5162 |
+| schema/result-diff.schema.json | json | 2493 |
+| schema/result.schema.json | json | 4702 |
 | scripts/secret-scan.mjs | javascript | 1382 |
 | see-code.config.json | json | 221 |
-| SPEC.md | markdown | 8897 |
+| SPEC.md | markdown | 8983 |
 | src/analyzer/analyzeRepo.ts | typescript | 2076 |
 | src/config/projectConfig.ts | typescript | 2238 |
 | src/core/types.ts | typescript | 3707 |
-| src/docs/docsGenerator.ts | typescript | 19225 |
+| src/docs/docsGenerator.ts | typescript | 19462 |
 | src/docs/markdown.ts | typescript | 734 |
 | src/docs/narrativeComposer.ts | typescript | 9954 |
 | src/docs/qualityReport.ts | typescript | 7158 |
@@ -50,4 +53,5 @@
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
 | tests/analyzeRepo.test.ts | typescript | 10373 |
+| tests/schemaContract.test.ts | typescript | 3265 |
 | tsconfig.json | json | 311 |

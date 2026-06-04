@@ -4,13 +4,15 @@
 | --- | --- | --- | --- | --- | --- |
 | package.json | json | 0 | 0 |  | package.json 包含 0 个类、0 个方法单元和 0 个导入。 |
 | README.md | markdown | 0 | 0 |  | README.md 包含 0 个类、0 个方法单元和 0 个导入。 |
+| schema/result-diff.schema.json | json | 0 | 0 |  | schema/result-diff.schema.json 包含 0 个类、0 个方法单元和 0 个导入。 |
+| schema/result.schema.json | json | 0 | 0 |  | schema/result.schema.json 包含 0 个类、0 个方法单元和 0 个导入。 |
 | scripts/secret-scan.mjs | javascript | 0 | 1 | node:fs/promises, node:path | scripts/secret-scan.mjs 包含 0 个类、1 个方法单元和 2 个导入。 关键方法：递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
 | see-code.config.json | json | 0 | 0 |  | see-code.config.json 包含 0 个类、0 个方法单元和 0 个导入。 |
 | SPEC.md | markdown | 0 | 0 |  | SPEC.md 包含 0 个类、0 个方法单元和 0 个导入。 |
 | src/analyzer/analyzeRepo.ts | typescript | 0 | 2 | ../core/types.js, ../graph/relationGraphBuilder.js, ../llm/methodSemanticAnalyzer.js, ../llm/modelConfig.js, ../parser/moduleParser.js, ../scanner/repoScanner.js | src/analyzer/analyzeRepo.ts 包含 0 个类、2 个方法单元和 7 个导入。 关键方法：分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。 |
 | src/config/projectConfig.ts | typescript | 0 | 3 | node:fs/promises, node:path, zod | src/config/projectConfig.ts 包含 0 个类、3 个方法单元和 3 个导入。 关键方法：从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 递归遍历对象并检查是否包含敏感键名，若发现则抛出错误。 判断未知错误是否为 Node.js 的 ErrnoException 类型。 |
 | src/core/types.ts | typescript | 0 | 0 |  | src/core/types.ts 包含 0 个类、0 个方法单元和 0 个导入。 |
-| src/docs/docsGenerator.ts | typescript | 0 | 13 | ../core/types.js, ../llm/modelConfig.js, ./markdown.js, ./narrativeComposer.js, ./qualityReport.js, ./semanticAggregator.js | src/docs/docsGenerator.ts 包含 0 个类、13 个方法单元和 8 个导入。 关键方法：生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、主要区域、结构统计、语义分析器配置、扫描配置和生成输出列表。 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。 |
+| src/docs/docsGenerator.ts | typescript | 0 | 13 | ../core/types.js, ../llm/modelConfig.js, ./markdown.js, ./narrativeComposer.js, ./qualityReport.js, ./semanticAggregator.js | src/docs/docsGenerator.ts 包含 0 个类、13 个方法单元和 8 个导入。 关键方法：生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、模块分组、结构统计、语义分析器配置、扫描配置和生成输出列表。 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。 |
 | src/docs/markdown.ts | typescript | 0 | 4 |  | src/docs/markdown.ts 包含 0 个类、4 个方法单元和 0 个导入。 关键方法：生成指定级别的 Markdown 标题字符串。 生成 Markdown 表格字符串，包含表头、分隔符和行数据。 将字符串数组转换为Markdown格式的无序列表，若数组为空则返回默认占位符。 |
 | src/docs/narrativeComposer.ts | typescript | 1 | 16 | ../core/types.js, ../llm/modelConfig.js, ../llm/modelFactory.js, ./semanticAggregator.js, node:crypto, node:fs/promises | src/docs/narrativeComposer.ts 包含 1 个类、16 个方法单元和 8 个导入。 关键方法：根据分析结果和语义概览生成项目叙事文档，支持缓存和模型调用降级。 根据分析结果和语义概览生成一个完整的项目叙事结构，包含项目概述、架构、流程和风险边界。 构建用于生成工程文档的叙述上下文对象，聚合分析结果与语义概览中的指标、模块分组、入口点、热点方法和边界说明。 |
 | src/docs/qualityReport.ts | typescript | 0 | 9 | ../core/types.js, ./markdown.js, ./narrativeComposer.js, ./semanticAggregator.js | src/docs/qualityReport.ts 包含 0 个类、9 个方法单元和 4 个导入。 关键方法：根据分析结果、语义概览、项目叙事和文档生成质量报告的字符串表示。 根据分析结果、语义概览、项目叙事和文档生成质量摘要，包含检查项、评分和推荐建议。 根据分析结果、语义概览、项目叙事和文档映射构建一组质量检查项。 |
@@ -31,6 +33,7 @@
 | src/scanner/repoScanner.ts | typescript | 0 | 5 | ../core/types.js, ../utils/path.js, node:fs/promises, node:path | src/scanner/repoScanner.ts 包含 0 个类、5 个方法单元和 4 个导入。 关键方法：异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。 检查文件路径或名称是否匹配任意一个排除模式。 判断给定相对路径或文件名是否匹配排除模式（支持通配符）。 |
 | src/utils/path.ts | typescript | 0 | 2 | node:path | src/utils/path.ts 包含 0 个类、2 个方法单元和 1 个导入。 关键方法：将路径分隔符转换为正斜杠以生成POSIX风格路径。 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。 |
 | tests/analyzeRepo.test.ts | typescript | 0 | 0 | ../src/analyzer/analyzeRepo.js, ../src/config/projectConfig.js, ../src/docs/docsGenerator.js, ../src/llm/modelConfig.js, ../src/output/resultJsonWriter.js, node:assert/strict | tests/analyzeRepo.test.ts 包含 0 个类、0 个方法单元和 11 个导入。 |
+| tests/schemaContract.test.ts | typescript | 0 | 4 | node:assert/strict, node:fs/promises, node:path, node:test, node:url | tests/schemaContract.test.ts 包含 0 个类、4 个方法单元和 5 个导入。 关键方法：从相对于仓库根目录的路径异步读取并解析JSON文件。 递归验证未知值是否符合给定的 JSON Schema 约束，包括常量、类型、必需属性、禁止属性及嵌套属性。 将未知输入转换为对象记录，若非对象或为数组则返回空对象。 |
 | tsconfig.json | json | 0 | 0 |  | tsconfig.json 包含 0 个类、0 个方法单元和 0 个导入。 |
 
 ## package.json
@@ -43,6 +46,20 @@ package.json 包含 0 个类、0 个方法单元和 0 个导入。
 ## README.md
 
 README.md 包含 0 个类、0 个方法单元和 0 个导入。
+
+### Imports
+
+- 无
+## schema/result-diff.schema.json
+
+schema/result-diff.schema.json 包含 0 个类、0 个方法单元和 0 个导入。
+
+### Imports
+
+- 无
+## schema/result.schema.json
+
+schema/result.schema.json 包含 0 个类、0 个方法单元和 0 个导入。
 
 ### Imports
 
@@ -121,7 +138,7 @@ src/core/types.ts 包含 0 个类、0 个方法单元和 0 个导入。
 - 无
 ## src/docs/docsGenerator.ts
 
-src/docs/docsGenerator.ts 包含 0 个类、13 个方法单元和 8 个导入。 关键方法：生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、主要区域、结构统计、语义分析器配置、扫描配置和生成输出列表。 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。
+src/docs/docsGenerator.ts 包含 0 个类、13 个方法单元和 8 个导入。 关键方法：生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、模块分组、结构统计、语义分析器配置、扫描配置和生成输出列表。 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。
 
 ### Imports
 
@@ -139,18 +156,18 @@ src/docs/docsGenerator.ts 包含 0 个类、13 个方法单元和 8 个导入。
 | Method | Signature | Return | Hints | Analyzer | Summary | Calls | Location |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | generateDocs | `generateDocs(result: AnalysisResult): Promise<GeneratedDocs>` | Promise<GeneratedDocs> |  | llm | 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 | buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set, fs.mkdir, fs.writeFile, path.join | src/docs/docsGenerator.ts:26 |
-| renderProjectOverview | `renderProjectOverview(result: AnalysisResult, overview: SemanticOverview, narrative: ProjectNarrative): string` | string |  | llm | 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、主要区域、结构统计、语义分析器配置、扫描配置和生成输出列表。 | String, bulletList, group.modules.map, group.responsibilities.slice, heading, isInternalResource, join, numberedList | src/docs/docsGenerator.ts:65 |
-| renderArchitecture | `renderArchitecture(result: AnalysisResult, overview: SemanticOverview, narrative: ProjectNarrative): string` | string |  | llm | 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。 | String, bulletList, flatMap, formatMethodName, group.modules.reduce, heading, isInternalResource, join | src/docs/docsGenerator.ts:169 |
-| renderModules | `renderModules(modules: ModuleUnit[]): string` | string |  | llm | 将模块列表渲染为包含概览表格和每个模块详细信息的 Markdown 字符串。 | String, bulletList, formatMethodHints, heading, join, lines.join, lines.push, method.calls.slice | src/docs/docsGenerator.ts:238 |
-| formatMethodHints | `formatMethodHints(method: ModuleUnit["methods"][number]): string` | string |  | llm | 将方法的入口点和框架提示信息格式化为逗号分隔的唯一字符串。 | join, method.entrypointHints.map, method.frameworkHints.map | src/docs/docsGenerator.ts:308 |
-| numberedList | `numberedList(items: string[]): string` | string |  | llm | 将字符串数组转换为带编号的列表字符串，若数组为空则返回默认提示。 | items.map, join | src/docs/docsGenerator.ts:321 |
-| renderCallGraph | `renderCallGraph(result: AnalysisResult): string` | string |  | llm | 根据分析结果生成包含Mermaid流程图和调用边表格的调用图文档字符串。 | String, callEdges.forEach, callEdges.map, escapeMermaid, heading, join, labels.get, mermaidLines.push | src/docs/docsGenerator.ts:329 |
-| renderExecutionFlows | `renderExecutionFlows(overview: SemanticOverview): string` | string |  | llm | 根据语义概览生成执行流的文档字符串，包含入口点、步骤和资源信息。 | bulletList, flow.resources.map, flow.steps.map, formatMethodName, heading, join, overview.flows.flatMap | src/docs/docsGenerator.ts:369 |
-| renderBusinessFlows | `renderBusinessFlows(overview: SemanticOverview, narrative: ProjectNarrative): string` | string |  | llm | 根据语义概览和项目叙事生成业务流文档的 Markdown 字符串，包含流程名称、入口信息、步骤列表和资源列表，若无业务流则输出占位说明。 | bulletList, flow.resources.map, flow.steps.map, formatMethodName, heading, join, narrative.flows.find, numberedList | src/docs/docsGenerator.ts:396 |
-| renderEntrypoints | `renderEntrypoints(overview: SemanticOverview): string` | string |  | llm | 生成包含框架感知入口和静态候选入口的文档表格字符串。 | String, formatMethodName, heading, hintedEntrypoints.map, join, overview.businessFlows.map, overview.entrypoints.map, table | src/docs/docsGenerator.ts:464 |
-| renderDataAndResources | `renderDataAndResources(result: AnalysisResult): string` | string |  | llm | 渲染分析结果中的外部数据与资源表格。 | externalResources.map, heading, isInternalResource, join, result.resources.filter, table | src/docs/docsGenerator.ts:505 |
-| renderMaintenanceGuide | `renderMaintenanceGuide(result: AnalysisResult): string` | string |  | llm | 生成维护指南文档，包含分析边界说明和仓库文件清单表格。 | String, bulletList, heading, join, result.files.map, table | src/docs/docsGenerator.ts:520 |
-| escapeMermaid | `escapeMermaid(value: string): string` | string |  | llm | 转义字符串中的双引号以安全嵌入Mermaid图表。 | value.replace | src/docs/docsGenerator.ts:552 |
+| renderProjectOverview | `renderProjectOverview(result: AnalysisResult, overview: SemanticOverview, narrative: ProjectNarrative): string` | string |  | llm | 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、模块分组、结构统计、语义分析器配置、扫描配置和生成输出列表。 | String, bulletList, group.modules.map, group.responsibilities.slice, heading, isInternalResource, join, numberedList | src/docs/docsGenerator.ts:65 |
+| renderArchitecture | `renderArchitecture(result: AnalysisResult, overview: SemanticOverview, narrative: ProjectNarrative): string` | string |  | llm | 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。 | String, bulletList, flatMap, formatMethodName, group.modules.reduce, heading, isInternalResource, join | src/docs/docsGenerator.ts:170 |
+| renderModules | `renderModules(modules: ModuleUnit[]): string` | string |  | llm | 将模块列表渲染为包含概览表格和每个模块详细信息的 Markdown 字符串。 | String, bulletList, formatMethodHints, heading, join, lines.join, lines.push, method.calls.slice | src/docs/docsGenerator.ts:239 |
+| formatMethodHints | `formatMethodHints(method: ModuleUnit["methods"][number]): string` | string |  | llm | 将方法的入口点和框架提示信息格式化为逗号分隔的唯一字符串。 | join, method.entrypointHints.map, method.frameworkHints.map | src/docs/docsGenerator.ts:309 |
+| numberedList | `numberedList(items: string[]): string` | string |  | llm | 将字符串数组转换为带编号的列表字符串，若数组为空则返回默认提示。 | items.map, join | src/docs/docsGenerator.ts:322 |
+| renderCallGraph | `renderCallGraph(result: AnalysisResult): string` | string |  | llm | 根据分析结果生成包含Mermaid流程图和调用边表格的调用图文档字符串。 | String, callEdges.forEach, callEdges.map, escapeMermaid, heading, join, labels.get, mermaidLines.push | src/docs/docsGenerator.ts:330 |
+| renderExecutionFlows | `renderExecutionFlows(overview: SemanticOverview): string` | string |  | llm | 根据语义概览生成执行流的文档字符串，包含入口点、步骤和资源信息。 | bulletList, flow.resources.map, flow.steps.map, formatMethodName, heading, join, overview.flows.flatMap | src/docs/docsGenerator.ts:370 |
+| renderBusinessFlows | `renderBusinessFlows(overview: SemanticOverview, narrative: ProjectNarrative): string` | string |  | llm | 根据语义概览和项目叙事生成业务流文档的 Markdown 字符串，包含流程名称、入口信息、步骤列表和资源列表，若无业务流则输出占位说明。 | bulletList, flow.resources.map, flow.steps.map, formatMethodName, heading, join, narrative.flows.find, numberedList | src/docs/docsGenerator.ts:397 |
+| renderEntrypoints | `renderEntrypoints(overview: SemanticOverview): string` | string |  | llm | 生成包含框架感知入口和静态候选入口的文档表格字符串。 | String, formatMethodName, heading, hintedEntrypoints.map, join, overview.businessFlows.map, overview.entrypoints.map, table | src/docs/docsGenerator.ts:465 |
+| renderDataAndResources | `renderDataAndResources(result: AnalysisResult): string` | string |  | llm | 渲染分析结果中的外部数据与资源表格。 | externalResources.map, heading, isInternalResource, join, result.resources.filter, table | src/docs/docsGenerator.ts:506 |
+| renderMaintenanceGuide | `renderMaintenanceGuide(result: AnalysisResult): string` | string |  | llm | 生成维护指南文档，包含分析边界说明和仓库文件清单表格。 | String, bulletList, heading, join, result.files.map, table | src/docs/docsGenerator.ts:521 |
+| escapeMermaid | `escapeMermaid(value: string): string` | string |  | llm | 转义字符串中的双引号以安全嵌入Mermaid图表。 | value.replace | src/docs/docsGenerator.ts:554 |
 ## src/docs/markdown.ts
 
 src/docs/markdown.ts 包含 0 个类、4 个方法单元和 0 个导入。 关键方法：生成指定级别的 Markdown 标题字符串。 生成 Markdown 表格字符串，包含表头、分隔符和行数据。 将字符串数组转换为Markdown格式的无序列表，若数组为空则返回默认占位符。
@@ -636,6 +653,26 @@ tests/analyzeRepo.test.ts 包含 0 个类、0 个方法单元和 11 个导入。
 - `node:path`
 - `node:test`
 - `node:url`
+## tests/schemaContract.test.ts
+
+tests/schemaContract.test.ts 包含 0 个类、4 个方法单元和 5 个导入。 关键方法：从相对于仓库根目录的路径异步读取并解析JSON文件。 递归验证未知值是否符合给定的 JSON Schema 约束，包括常量、类型、必需属性、禁止属性及嵌套属性。 将未知输入转换为对象记录，若非对象或为数组则返回空对象。
+
+### Imports
+
+- `node:assert/strict`
+- `node:fs/promises`
+- `node:path`
+- `node:test`
+- `node:url`
+
+### Method Units
+
+| Method | Signature | Return | Hints | Analyzer | Summary | Calls | Location |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| readJson | `readJson(relativePath: string): Promise<T>` | Promise<T> |  | llm | 从相对于仓库根目录的路径异步读取并解析JSON文件。 | JSON.parse, fs.readFile, path.join | tests/schemaContract.test.ts:61 |
+| assertSchema | `assertSchema(value: unknown, schema: JsonSchema, pathLabel: string): void` | void |  | llm | 递归验证未知值是否符合给定的 JSON Schema 约束，包括常量、类型、必需属性、禁止属性及嵌套属性。 | Object.entries, assert.deepEqual, assert.equal, assert.ok, assertSchema, objectRecord, typeOf | tests/schemaContract.test.ts:65 |
+| objectRecord | `objectRecord(value: unknown): Record<string, unknown>` | Record<string, unknown> |  | llm | 将未知输入转换为对象记录，若非对象或为数组则返回空对象。 | Array.isArray | tests/schemaContract.test.ts:96 |
+| typeOf | `typeOf(value: unknown): string` | string |  | llm | 返回未知值的类型字符串，区分数组和 null。 | Array.isArray | tests/schemaContract.test.ts:102 |
 ## tsconfig.json
 
 tsconfig.json 包含 0 个类、0 个方法单元和 0 个导入。

@@ -101,6 +101,10 @@ docs/
 .see-code/
   result.json
   result-diff.json
+
+schema/
+  result.schema.json
+  result-diff.schema.json
 ```
 
 ## Current Scope
@@ -118,6 +122,7 @@ docs/
 - Generate a quality report that checks LLM coverage, architecture abstraction, business-flow coverage, template residue, and document size balance.
 - Generate `.see-code/result.json` with schema version, stats, files, modules, classes, methods, graph, semantic overview, and quality summary.
 - Generate `.see-code/result-diff.json` and `docs/CHANGE_SUMMARY.md` by comparing the new analysis with the previous result.
+- Publish JSON schema contracts under `schema/` for machine-readable outputs.
 
 ## Multi-language Direction
 

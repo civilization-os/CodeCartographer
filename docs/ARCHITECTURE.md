@@ -2,28 +2,26 @@
 
 ## System Shape
 
-系统采用分层架构，从上到下依次为应用层、分析层、文档层、LLM 层、输出层、解析层、扫描层和工具层。应用层负责 CLI 入口和参数解析；分析层协调扫描、解析、关系图构建和语义分析；文档层将分析结果渲染为 Markdown；LLM 层提供语义分析能力；输出层负责结果序列化和文件写入；解析层封装语言特定的 AST 解析逻辑；扫描层负责文件遍历和过滤；工具层提供路径处理等通用工具。
+see-code 采用分层架构，包括 CLI 入口层、配置加载层、扫描解析层、图构建层、语义分析层、文档生成层和输出层。各层通过明确的接口和数据结构（types.ts）解耦，核心数据流为：CLI 参数 -> 配置 -> 扫描文件 -> 解析模块 -> 构建关系图 -> 语义分析 -> 生成文档 -> 输出结果。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| Application | src/index.ts | CLI 入口，解析命令行参数，加载配置，协调分析流程，输出结果。 |
-| Analyzer | src/analyzer/analyzeRepo.ts | 协调扫描、解析、关系图构建和语义分析，返回完整分析结果。 |
-| Documentation | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果渲染为 Markdown 文档，包括项目概览、架构文档、模块列表、质量报告和叙事文档。 |
-| LLM | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 管理 LLM 模型配置和工厂，提供方法语义分析能力，支持缓存和启发式降级。 |
-| Output | src/output/resultJsonWriter.ts | 将分析结果序列化为 JSON，写入文件系统，生成差异报告和变更摘要。 |
-| Parser | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 封装语言特定的 AST 解析逻辑，提取模块、类、方法及其元数据。 |
-| Scanner | src/scanner/repoScanner.ts | 递归扫描目录，过滤排除项、大文件和未知语言文件，返回源文件列表。 |
-| Graph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
-| Utils | src/utils/path.ts | 提供路径规范化、稳定标识符生成等通用工具函数。 |
+| CLI 入口层 | src/index.ts | 解析命令行参数，协调整个分析流程，调用分析器、文档生成器和输出器。 |
+| 配置层 | src/config/projectConfig.ts, src/llm/modelConfig.ts | 加载项目配置文件和 LLM 模型配置，提供配置数据给其他层。 |
+| 扫描解析层 | src/scanner/repoScanner.ts, src/parser/moduleParser.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts, src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/parserAdapter.ts | 递归扫描文件系统，过滤文件，解析源代码为模块、类、方法等结构化单元。 |
+| 图构建层 | src/graph/relationGraphBuilder.ts | 基于解析结果构建模块、类、方法和资源之间的调用关系图。 |
+| 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelFactory.ts | 对每个方法进行语义分析，优先使用缓存，未命中则调用 LLM 或启发式方法，更新模块和类的摘要。 |
+| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果和语义信息组装为 Markdown 格式的工程文档（项目概览、架构、模块、质量报告等）。 |
+| 输出层 | src/output/resultJsonWriter.ts | 将分析结果序列化为 JSON 对象，写入文件系统（结果 JSON、差异 JSON、变更摘要 Markdown）。 |
 
 ## Critical Paths
 
 - src/index.ts:main
 - src/analyzer/analyzeRepo.ts:analyzeRepo
-- src/scanner/repoScanner.ts:scanDirectory
-- src/parser/typescriptStructureParser.ts:extractCallableUnit
+- src/scanner/repoScanner.ts:scanRepo
+- src/parser/moduleParser.ts:parseModules
 - src/graph/relationGraphBuilder.ts:buildRelationGraph
 - src/llm/methodSemanticAnalyzer.ts:enrichModulesWithMethodSemantics
 - src/docs/docsGenerator.ts:generateDocs
@@ -44,7 +42,7 @@
 | llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
 | output | 1 | 32 | 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。 |
 | parser | 6 | 67 | 解析Java源文件并提取模块单元信息，包括导入、类和方法。 |
-| Project Files | 2 | 1 | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
+| Project Files | 5 | 5 | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
 | scanner | 1 | 5 | 异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。 |
 | utils | 1 | 2 | 将路径分隔符转换为正斜杠以生成POSIX风格路径。 |
 
@@ -69,7 +67,7 @@
 ### docs
 
 - 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。
-- 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、主要区域、结构统计、语义分析器配置、扫描配置和生成输出列表。
+- 生成项目概览的 Markdown 字符串，包含仓库路径、扫描时间、目的、运营模型、关键能力、模块分组、结构统计、语义分析器配置、扫描配置和生成输出列表。
 - 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。
 - 将模块列表渲染为包含概览表格和每个模块详细信息的 Markdown 字符串。
 - 将方法的入口点和框架提示信息格式化为逗号分隔的唯一字符串。
@@ -109,6 +107,10 @@
 ### Project Files
 
 - 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。
+- 从相对于仓库根目录的路径异步读取并解析JSON文件。
+- 递归验证未知值是否符合给定的 JSON Schema 约束，包括常量、类型、必需属性、禁止属性及嵌套属性。
+- 将未知输入转换为对象记录，若非对象或为数组则返回空对象。
+- 返回未知值的类型字符串，区分数组和 null。
 
 ### scanner
 

@@ -1,19 +1,22 @@
 # Change Summary
 
-Compared previous result `2026-06-04T02:31:00.365Z` with current result `2026-06-04T02:32:22.854Z`.
+Compared previous result `2026-06-04T02:32:22.854Z` with current result `2026-06-04T03:20:50.279Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~1
-- Methods: +0 / -0 / ~1
+- Files: +3 / -0 / ~3
+- Methods: +4 / -0 / ~2
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
-- Quality: 96/100 -> 100/100
+- Quality: 100/100 -> 100/100
 
 ## Added Methods
 
-- 无
+- tests/schemaContract.test.ts: readJson
+- tests/schemaContract.test.ts: assertSchema
+- tests/schemaContract.test.ts: objectRecord
+- tests/schemaContract.test.ts: typeOf
 
 ## Removed Methods
 
@@ -21,7 +24,8 @@ Compared previous result `2026-06-04T02:31:00.365Z` with current result `2026-06
 
 ## Modified Methods
 
-- src/docs/qualityReport.ts: buildChecks
+- src/docs/docsGenerator.ts: renderProjectOverview
+- src/docs/docsGenerator.ts: renderMaintenanceGuide
 
 ## Entrypoints
 

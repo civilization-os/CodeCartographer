@@ -161,7 +161,8 @@ function renderProjectOverview(
       "`QUALITY_REPORT.md` 汇总文档质量、LLM 覆盖率和模板残留检查。",
       "`CHANGE_SUMMARY.md` 汇总本次分析相对上一版结构化结果的变化。",
       "`.see-code/result.json` 保存机器可读的完整结构化分析结果。",
-      "`.see-code/result-diff.json` 保存机器可读的增量差异结果。"
+      "`.see-code/result-diff.json` 保存机器可读的增量差异结果。",
+      "`schema/result.schema.json` 和 `schema/result-diff.schema.json` 定义机器可读输出契约。"
     ])
   ].join("\n");
 }
@@ -527,6 +528,7 @@ function renderMaintenanceGuide(result: AnalysisResult): string {
       "TypeScript and JavaScript are parsed through the TypeScript compiler AST.",
       "Java is parsed through a lightweight static parser adapter that extracts classes, methods, annotations, signatures, calls, resources, and common Spring entrypoint hints.",
       "`see-code.config.json` can provide minimal non-sensitive configuration for scan excludes, max file size, and LLM defaults.",
+      "`schema/result.schema.json` and `schema/result-diff.schema.json` publish stable contracts for machine-readable outputs.",
       "Parsing is routed through language adapters that emit the shared ModuleUnit, ClassUnit, and MethodUnit structures.",
       "MethodUnit includes language-neutral metadata such as parameters, return type, modifiers, annotations/decorators, framework hints, and entrypoint hints.",
       "Higher-fidelity Java support can replace the lightweight adapter with tree-sitter or another Java AST backend without changing the semantic analyzer, relation graph builder, or docs generator.",

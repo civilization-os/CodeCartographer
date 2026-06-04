@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://see-code.local/schema/result.schema.json",
+  "title": "See Code Analysis Result",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "rootPath",
+    "scannedAt",
+    "stats",
+    "docs",
+    "files",
+    "modules",
+    "classes",
+    "methods",
+    "resources",
+    "graph",
+    "semanticOverview",
+    "quality"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "rootPath": {
+      "type": "string"
+    },
+    "scannedAt": {
+      "type": "string"
+    },
+    "model": {
+      "type": "object"
+    },
+    "scan": {
+      "type": "object",
+      "required": ["exclude", "maxFileBytes"],
+      "properties": {
+        "exclude": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "maxFileBytes": {
+          "type": "number"
+        },
+        "configPath": {
+          "type": "string"
+        }
+      }
+    },
+    "stats": {
+      "type": "object",
+      "required": [
+        "files",
+        "sourceFiles",
+        "modules",
+        "classes",
+        "methods",
+        "resources",
+        "graphNodes",
+        "graphEdges",
+        "businessFlows",
+        "staticExecutionFlows"
+      ],
+      "properties": {
+        "files": { "type": "number" },
+        "sourceFiles": { "type": "number" },
+        "modules": { "type": "number" },
+        "classes": { "type": "number" },
+        "methods": { "type": "number" },
+        "resources": { "type": "number" },
+        "graphNodes": { "type": "number" },
+        "graphEdges": { "type": "number" },
+        "businessFlows": { "type": "number" },
+        "staticExecutionFlows": { "type": "number" }
+      }
+    },
+    "docs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["absolutePath", "relativePath", "language", "bytes"],
+        "properties": {
+          "absolutePath": { "type": "string" },
+          "relativePath": { "type": "string" },
+          "language": { "type": "string" },
+          "bytes": { "type": "number" }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "language", "imports", "summary", "classIds", "methodIds"]
+      }
+    },
+    "classes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "modulePath", "location", "summary", "methodIds"]
+      }
+    },
+    "methods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "signature",
+          "modulePath",
+          "location",
+          "language",
+          "parameters",
+          "modifiers",
+          "annotations",
+          "isAsync",
+          "isStatic",
+          "calls",
+          "resources",
+          "frameworkHints",
+          "entrypointHints",
+          "summary",
+          "semantic"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "signature": { "type": "string" },
+          "className": { "type": "string" },
+          "modulePath": { "type": "string" },
+          "language": { "type": "string" },
+          "parameters": { "type": "array" },
+          "modifiers": { "type": "array" },
+          "annotations": { "type": "array" },
+          "isAsync": { "type": "boolean" },
+          "isStatic": { "type": "boolean" },
+          "calls": { "type": "array" },
+          "resources": { "type": "array" },
+          "frameworkHints": { "type": "array" },
+          "entrypointHints": { "type": "array" },
+          "summary": { "type": "string" },
+          "semantic": { "type": "object" }
+        },
+        "not": {
+          "required": ["source"]
+        }
+      }
+    },
+    "resources": {
+      "type": "array"
+    },
+    "graph": {
+      "type": "object",
+      "required": ["nodes", "edges"]
+    },
+    "semanticOverview": {
+      "type": "object",
+      "required": [
+        "purpose",
+        "moduleGroups",
+        "entrypoints",
+        "executionFlows",
+        "businessFlows",
+        "resourceUsage",
+        "hotMethods"
+      ]
+    },
+    "quality": {
+      "type": "object",
+      "required": [
+        "score",
+        "pass",
+        "warn",
+        "fail",
+        "methodUnits",
+        "llmMethodSummaries",
+        "businessFlows",
+        "staticExecutionFlows",
+        "checks",
+        "recommendations"
+      ]
+    }
+  }
+}

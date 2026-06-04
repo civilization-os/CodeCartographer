@@ -40,6 +40,9 @@ project/
   └─ .see-code/
       ├─ result.json
       └─ result-diff.json
+  └─ schema/
+      ├─ result.schema.json
+      └─ result-diff.schema.json
 ```
 
 ---
