@@ -80,11 +80,11 @@ function fallbackNarrative(
     projectOverview: {
       purpose: overview.purpose,
       operatingModel: [
-        "The CLI receives a repository path and model configuration.",
-        "The scanner collects supported source files while excluding generated and cache directories.",
-        "Parser adapters convert source files into language-neutral units.",
-        "The semantic analyzer enriches methods with summaries and metadata.",
-        "The relation graph and aggregators produce engineering documentation."
+        "CLI 接收目标仓库路径和模型配置。",
+        "扫描器收集受支持的源文件，并排除生成目录、缓存目录和用户配置的排除项。",
+        "解析适配器把不同语言的源文件转换为统一的模块、类和方法单元。",
+        "语义分析器为方法补充摘要、职责、资源和框架线索。",
+        "关系图构建器和文档聚合器生成工程文档与结构化结果。"
       ],
       keyCapabilities: overview.moduleGroups
         .filter((group) => group.responsibilities.length > 0)
@@ -103,13 +103,13 @@ function fallbackNarrative(
     },
     flows: overview.businessFlows.map((flow) => ({
       name: flow.name,
-      narrative: `${flow.name} starts at ${flow.entrypoint.modulePath}:${flow.entrypoint.location.startLine} and expands through resolved call edges.`,
+      narrative: `${flow.name} 从 ${flow.entrypoint.modulePath}:${flow.entrypoint.location.startLine} 入口开始，并沿已解析的内部调用边展开。`,
       steps: flow.steps.map((method) => `${method.name}: ${method.summary}`)
     })),
     risksAndBoundaries: [
-      "Call graph resolution is static and does not perform full type inference.",
-      "Business flows depend on framework-aware entrypoint hints.",
-      "Current TypeScript and JavaScript parsing is implemented through the TypeScript compiler AST adapter."
+      "调用图解析是静态分析结果，不执行完整类型推断。",
+      "业务流依赖框架入口提示，未识别入口的流程不会被强行生成。",
+      "当前 TypeScript 和 JavaScript 解析通过 TypeScript compiler AST 适配器完成。"
     ]
   };
 }

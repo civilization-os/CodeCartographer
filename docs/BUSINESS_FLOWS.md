@@ -4,7 +4,7 @@
 
 ## main function
 
-从 CLI 入口开始，依次执行参数解析、配置加载、仓库扫描、源文件解析、关系图构建、语义分析、文档生成和结果输出。
+CLI 入口解析参数后调用 analyzeRepo，该函数依次执行扫描、解析、图构建和语义分析，最后生成文档并输出结果。
 
 | Field | Value |
 | --- | --- |
@@ -16,13 +16,15 @@
 
 ### Steps
 
-1. main 函数解析命令行参数，调用 loadProjectConfig 和 loadModelConfig 加载配置。
-2. analyzeRepo 调用 scanDirectory 递归扫描仓库目录，返回源文件列表。
-3. 遍历源文件，通过 parserAdapter 调用对应语言解析器（TypeScript 或 Java）提取模块单元。
-4. buildRelationGraph 根据模块单元构建关系图，包含节点和边。
-5. enrichModulesWithMethodSemantics 对每个方法执行语义分析，优先使用缓存，未缓存则调用 LLM 或启发式规则。
-6. generateDocs 生成项目概览、架构、模块列表、质量报告等 Markdown 文件。
-7. writeResultJson 将分析结果写入 JSON 文件，并生成差异报告和变更摘要。
+1. parseArgs 解析命令行参数，提取命令、目标路径和环境变量覆盖值。
+2. loadProjectConfig 异步加载项目配置文件，若不存在则返回空配置。
+3. loadModelConfig 从环境变量和项目配置中合并 LLM 模型配置。
+4. analyzeRepo 调用 scanRepo 递归扫描目录，返回源文件列表。
+5. moduleParser 将每个源文件解析为模块单元，包含导入、类和方法。
+6. buildRelationGraph 构建模块、类、方法和资源之间的关系图。
+7. enrichModulesWithMethodSemantics 为每个方法附加语义标签（缓存优先，未命中则调用 LLM 或启发式规则）。
+8. generateDocs 将分析结果渲染为多份 Markdown 文档并写入文件系统。
+9. writeResultJson 将结果序列化为 JSON，写入文件系统并生成差异报告。
 
 ### Resources
 

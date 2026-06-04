@@ -7,6 +7,7 @@ import test from "node:test";
 import { analyzeRepo } from "../src/analyzer/analyzeRepo.js";
 import { loadProjectConfig } from "../src/config/projectConfig.js";
 import { generateDocs } from "../src/docs/docsGenerator.js";
+import { buildSemanticOverview } from "../src/docs/semanticAggregator.js";
 import { loadModelConfig, type ModelConfig } from "../src/llm/modelConfig.js";
 import {
   RESULT_JSON_SCHEMA_VERSION,
@@ -101,6 +102,42 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
   const consume = result.methods.find((method) => method.name === "consume");
   assert.ok(consume);
   assert.ok(consume.entrypointHints.some((hint) => hint.kind === "message_consumer" && hint.path === "order-events"));
+});
+
+test("groups Java modules by package area instead of source set", async () => {
+  const result = await analyzeRepo(path.join(fixturesDir, "java-spring"), {
+    modelConfig: noLlmConfig
+  });
+  const overview = buildSemanticOverview(result);
+  const groupNames = overview.moduleGroups.map((group) => group.name);
+
+  assert.ok(groupNames.includes("acme"));
+  assert.ok(!groupNames.includes("main"));
+});
+
+test("localizes fallback generated docs without LLM", async () => {
+  const fixturePath = path.join(fixturesDir, "java-spring");
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "see-code-localized-docs-"));
+  await fs.cp(fixturePath, tempRoot, { recursive: true });
+
+  const result = await analyzeRepo(tempRoot, {
+    modelConfig: noLlmConfig
+  });
+  const generatedDocs = await generateDocs(result);
+  const overviewDocPath = generatedDocs.written.find((docPath) => docPath.endsWith("PROJECT_OVERVIEW.md"));
+  const businessFlowsPath = generatedDocs.written.find((docPath) => docPath.endsWith("BUSINESS_FLOWS.md"));
+  assert.ok(overviewDocPath);
+  assert.ok(businessFlowsPath);
+
+  const combinedDocs = [
+    await fs.readFile(overviewDocPath, "utf8"),
+    await fs.readFile(businessFlowsPath, "utf8")
+  ].join("\n");
+
+  assert.match(combinedDocs, /CLI 接收目标仓库路径和模型配置/);
+  assert.doesNotMatch(combinedDocs, /The CLI receives/);
+  assert.doesNotMatch(combinedDocs, /starts at/);
+  assert.doesNotMatch(combinedDocs, /expands through resolved call edges/);
 });
 
 test("handles document-only fixtures", async () => {

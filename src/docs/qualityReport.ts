@@ -91,7 +91,7 @@ function buildChecks(
   narrative: ProjectNarrative,
   docs: Map<string, string>
 ): QualityCheck[] {
-const allDocText = [...docs.values()].join("\n");
+  const allDocText = [...docs.values()].join("\n");
   const llmCount = result.methods.filter((method) => method.semantic?.analyzer === "llm").length;
   const heuristicCount = result.methods.filter((method) => method.semantic?.analyzer !== "llm").length;
   const placeholderMatches = countMatches(allDocText, [
@@ -104,7 +104,13 @@ const allDocText = [...docs.values()].join("\n");
     "The graph contains",
     "Flows are inferred",
     "Business flows require",
-    "No resolved internal caller"
+    "No resolved internal caller",
+    "starts at",
+    "expands through resolved call edges",
+    "The CLI receives",
+    "The scanner collects",
+    "Parser adapters convert",
+    "Call graph resolution is static"
   ]);
 
   return [

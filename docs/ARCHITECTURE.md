@@ -2,28 +2,28 @@
 
 ## System Shape
 
-系统采用分层架构，包括 CLI 入口层、分析器层、解析器层、图构建层、LLM 语义分析层、文档生成层和输出层。各层通过明确的模块边界和接口协作，数据流从扫描解析到图构建、语义增强，最终生成文档和 JSON 输出。
+系统采用分层架构，CLI 层负责参数解析和流程编排，分析器层协调扫描、解析、图构建和语义分析，文档层将分析结果渲染为 Markdown，输出层负责序列化和持久化。各层通过类型定义和接口解耦。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| Application | src/index.ts | CLI 入口，解析命令行参数，加载配置，编排分析流程，输出结果。 |
-| analyzer | src/analyzer/analyzeRepo.ts | 协调扫描、解析、图构建和语义分析，返回完整分析结果。 |
-| scanner | src/scanner/repoScanner.ts | 递归扫描目录，过滤排除项和大文件，返回源文件列表。 |
-| parser | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 解析源文件为模块单元，提取导入、类和方法结构。 |
-| graph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
-| llm | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对方法进行语义分析，优先使用缓存，未缓存则调用 LLM 或启发式规则。 |
-| docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 生成项目概览、架构、模块列表、质量报告等 Markdown 文档。 |
-| output | src/output/resultJsonWriter.ts | 将分析结果写入 JSON 文件，生成差异报告和变更摘要。 |
-| config | src/config/projectConfig.ts | 异步加载并解析项目配置文件，返回配置对象或空配置。 |
+| CLI 层 | src/index.ts | 解析命令行参数，加载配置，编排主流程，输出帮助信息。 |
+| 分析器层 | src/analyzer/analyzeRepo.ts | 协调扫描、解析、图构建和语义分析，返回完整的分析结果。 |
+| 扫描层 | src/scanner/repoScanner.ts | 递归扫描目录，过滤排除项和大文件，按语言类型返回源文件列表。 |
+| 解析层 | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 将源文件文本解析为模块、类、方法的结构化单元。 |
+| 图构建层 | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
+| 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 为方法附加语义标签，优先使用缓存，未命中则调用 LLM 或启发式规则。 |
+| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果渲染为多份 Markdown 文档，包括概览、架构、模块、质量报告等。 |
+| 输出层 | src/output/resultJsonWriter.ts | 将分析结果序列化为 JSON，写入文件系统，并生成差异报告。 |
+| 配置层 | src/config/projectConfig.ts | 异步加载并解析项目配置文件，返回配置对象或空配置。 |
 
 ## Critical Paths
 
 - src/index.ts:main
 - src/analyzer/analyzeRepo.ts:analyzeRepo
-- src/scanner/repoScanner.ts:scanDirectory
-- src/parser/moduleParser.ts:parseModule
+- src/scanner/repoScanner.ts:scanRepo
+- src/parser/typescriptStructureParser.ts:extractCallableUnit
 - src/graph/relationGraphBuilder.ts:buildRelationGraph
 - src/llm/methodSemanticAnalyzer.ts:enrichModulesWithMethodSemantics
 - src/docs/docsGenerator.ts:generateDocs
@@ -38,7 +38,7 @@
 | config | 1 | 3 | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 |
 | Configuration | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | core | 1 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
-| docs | 5 | 55 | 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 |
+| docs | 5 | 56 | 生成工程文档，将分析结果写入指定目录的多个 Markdown 文件并返回写入路径及摘要信息。 |
 | Documentation | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | graph | 1 | 7 | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
 | llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |

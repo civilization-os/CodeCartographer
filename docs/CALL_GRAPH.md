@@ -262,447 +262,450 @@ flowchart TD
   N85_A["groupModules"]
   N85_B["summarizeResponsibilities"]
   N85_A --> N85_B
-  N86_A["buildFlows"]
-  N86_B["formatMethodName"]
+  N86_A["inferGroupName"]
+  N86_B["inferJavaGroupName"]
   N86_A --> N86_B
   N87_A["buildFlows"]
-  N87_B["walkFlow"]
+  N87_B["formatMethodName"]
   N87_A --> N87_B
-  N88_A["buildResourceUsage"]
-  N88_B["isInternalResource"]
+  N88_A["buildFlows"]
+  N88_B["walkFlow"]
   N88_A --> N88_B
-  N89_A["buildRelationGraph"]
-  N89_B["buildMethodNameIndex"]
+  N89_A["buildResourceUsage"]
+  N89_B["isInternalResource"]
   N89_A --> N89_B
   N90_A["buildRelationGraph"]
-  N90_B["dedupeEdges"]
+  N90_B["buildMethodNameIndex"]
   N90_A --> N90_B
   N91_A["buildRelationGraph"]
-  N91_B["resolveCallTarget"]
+  N91_B["dedupeEdges"]
   N91_A --> N91_B
   N92_A["buildRelationGraph"]
-  N92_B["scoreCall"]
+  N92_B["resolveCallTarget"]
   N92_A --> N92_B
   N93_A["buildRelationGraph"]
-  N93_B["stableId"]
+  N93_B["scoreCall"]
   N93_A --> N93_B
-  N94_A["extractResources"]
-  N94_B["resourceKind"]
+  N94_A["buildRelationGraph"]
+  N94_B["stableId"]
   N94_A --> N94_B
   N95_A["extractResources"]
-  N95_B["stableId"]
+  N95_B["resourceKind"]
   N95_A --> N95_B
-  N96_A["main"]
-  N96_B["analyzeRepo"]
+  N96_A["extractResources"]
+  N96_B["stableId"]
   N96_A --> N96_B
   N97_A["main"]
-  N97_B["generateDocs"]
+  N97_B["analyzeRepo"]
   N97_A --> N97_B
   N98_A["main"]
-  N98_B["loadModelConfig"]
+  N98_B["generateDocs"]
   N98_A --> N98_B
   N99_A["main"]
-  N99_B["loadProjectConfig"]
+  N99_B["loadModelConfig"]
   N99_A --> N99_B
   N100_A["main"]
-  N100_B["parseArgs"]
+  N100_B["loadProjectConfig"]
   N100_A --> N100_B
   N101_A["main"]
-  N101_B["printHelp"]
+  N101_B["parseArgs"]
   N101_A --> N101_B
   N102_A["main"]
-  N102_B["writeResultJson"]
+  N102_B["printHelp"]
   N102_A --> N102_B
-  N103_A["parseArgs"]
-  N103_B["requireValue"]
+  N103_A["main"]
+  N103_B["writeResultJson"]
   N103_A --> N103_B
-  N104_A["enrichModulesWithMethodSemantics"]
-  N104_B["MethodSemanticCache#open"]
+  N104_A["parseArgs"]
+  N104_B["requireValue"]
   N104_A --> N104_B
   N105_A["enrichModulesWithMethodSemantics"]
-  N105_B["analyzeMethodWithLlm"]
+  N105_B["MethodSemanticCache#open"]
   N105_A --> N105_B
   N106_A["enrichModulesWithMethodSemantics"]
-  N106_B["createChatModel"]
+  N106_B["analyzeMethodWithLlm"]
   N106_A --> N106_B
   N107_A["enrichModulesWithMethodSemantics"]
-  N107_B["formatError"]
+  N107_B["createChatModel"]
   N107_A --> N107_B
   N108_A["enrichModulesWithMethodSemantics"]
-  N108_B["heuristicSemantic"]
+  N108_B["formatError"]
   N108_A --> N108_B
   N109_A["enrichModulesWithMethodSemantics"]
-  N109_B["mapWithConcurrency"]
+  N109_B["heuristicSemantic"]
   N109_A --> N109_B
   N110_A["enrichModulesWithMethodSemantics"]
-  N110_B["summarizeModuleFromMethods"]
+  N110_B["mapWithConcurrency"]
   N110_A --> N110_B
-  N111_A["attachHeuristicSemantics"]
-  N111_B["heuristicSemantic"]
+  N111_A["enrichModulesWithMethodSemantics"]
+  N111_B["summarizeModuleFromMethods"]
   N111_A --> N111_B
-  N112_A["analyzeMethodWithLlm"]
-  N112_B["buildPrompt"]
+  N112_A["attachHeuristicSemantics"]
+  N112_B["heuristicSemantic"]
   N112_A --> N112_B
   N113_A["analyzeMethodWithLlm"]
-  N113_B["parseModelResponse"]
+  N113_B["buildPrompt"]
   N113_A --> N113_B
-  N114_A["parseModelResponse"]
-  N114_B["normalizeSemantic"]
+  N114_A["analyzeMethodWithLlm"]
+  N114_B["parseModelResponse"]
   N114_A --> N114_B
-  N115_A["buildPrompt"]
-  N115_B["trimSource"]
+  N115_A["parseModelResponse"]
+  N115_B["normalizeSemantic"]
   N115_A --> N115_B
-  N116_A["loadModelConfig"]
-  N116_B["defaultBaseUrl"]
+  N116_A["buildPrompt"]
+  N116_B["trimSource"]
   N116_A --> N116_B
   N117_A["loadModelConfig"]
-  N117_B["defaultModel"]
+  N117_B["defaultBaseUrl"]
   N117_A --> N117_B
   N118_A["loadModelConfig"]
-  N118_B["getApiKey"]
+  N118_B["defaultModel"]
   N118_A --> N118_B
   N119_A["loadModelConfig"]
-  N119_B["parseInteger"]
+  N119_B["getApiKey"]
   N119_A --> N119_B
   N120_A["loadModelConfig"]
-  N120_B["parseNumber"]
+  N120_B["parseInteger"]
   N120_A --> N120_B
   N121_A["loadModelConfig"]
-  N121_B["parseOptionalInteger"]
+  N121_B["parseNumber"]
   N121_A --> N121_B
-  N122_A["writeResultJson"]
-  N122_B["buildResultDiff"]
+  N122_A["loadModelConfig"]
+  N122_B["parseOptionalInteger"]
   N122_A --> N122_B
   N123_A["writeResultJson"]
-  N123_B["renderChangeSummary"]
+  N123_B["buildResultDiff"]
   N123_A --> N123_B
   N124_A["writeResultJson"]
-  N124_B["toResultJson"]
+  N124_B["renderChangeSummary"]
   N124_A --> N124_B
-  N125_A["toResultJson"]
-  N125_B["toPosixPath"]
+  N125_A["writeResultJson"]
+  N125_B["toResultJson"]
   N125_A --> N125_B
-  N126_A["serializeEntrypoint"]
-  N126_B["methodRef"]
+  N126_A["toResultJson"]
+  N126_B["toPosixPath"]
   N126_A --> N126_B
-  N127_A["serializeFlow"]
+  N127_A["serializeEntrypoint"]
   N127_B["methodRef"]
   N127_A --> N127_B
-  N128_A["serializeBusinessFlow"]
+  N128_A["serializeFlow"]
   N128_B["methodRef"]
   N128_A --> N128_B
-  N129_A["methodRef"]
-  N129_B["formatMethodName"]
+  N129_A["serializeBusinessFlow"]
+  N129_B["methodRef"]
   N129_A --> N129_B
-  N130_A["buildResultDiff"]
-  N130_B["businessFlows"]
+  N130_A["methodRef"]
+  N130_B["formatMethodName"]
   N130_A --> N130_B
   N131_A["buildResultDiff"]
-  N131_B["diffByKey"]
+  N131_B["businessFlows"]
   N131_A --> N131_B
   N132_A["buildResultDiff"]
-  N132_B["emptyBaselineDiff"]
+  N132_B["diffByKey"]
   N132_A --> N132_B
   N133_A["buildResultDiff"]
-  N133_B["entrypoints"]
+  N133_B["emptyBaselineDiff"]
   N133_A --> N133_B
   N134_A["buildResultDiff"]
-  N134_B["files"]
+  N134_B["entrypoints"]
   N134_A --> N134_B
   N135_A["buildResultDiff"]
-  N135_B["methods"]
+  N135_B["files"]
   N135_A --> N135_B
   N136_A["buildResultDiff"]
-  N136_B["qualityScore"]
+  N136_B["methods"]
   N136_A --> N136_B
   N137_A["buildResultDiff"]
-  N137_B["resources"]
+  N137_B["qualityScore"]
   N137_A --> N137_B
   N138_A["buildResultDiff"]
-  N138_B["stableStringify"]
+  N138_B["resources"]
   N138_A --> N138_B
   N139_A["buildResultDiff"]
-  N139_B["stringField"]
+  N139_B["stableStringify"]
   N139_A --> N139_B
-  N140_A["emptyBaselineDiff"]
-  N140_B["emptyChangeSet"]
+  N140_A["buildResultDiff"]
+  N140_B["stringField"]
   N140_A --> N140_B
   N141_A["emptyBaselineDiff"]
-  N141_B["qualityScore"]
+  N141_B["emptyChangeSet"]
   N141_A --> N141_B
   N142_A["emptyBaselineDiff"]
-  N142_B["stringField"]
+  N142_B["qualityScore"]
   N142_A --> N142_B
-  N143_A["files"]
-  N143_B["arrayField"]
+  N143_A["emptyBaselineDiff"]
+  N143_B["stringField"]
   N143_A --> N143_B
   N144_A["files"]
-  N144_B["numberValue"]
+  N144_B["arrayField"]
   N144_A --> N144_B
   N145_A["files"]
-  N145_B["stringValue"]
+  N145_B["numberValue"]
   N145_A --> N145_B
-  N146_A["methods"]
-  N146_B["arrayField"]
+  N146_A["files"]
+  N146_B["stringValue"]
   N146_A --> N146_B
   N147_A["methods"]
-  N147_B["stringValue"]
+  N147_B["arrayField"]
   N147_A --> N147_B
-  N148_A["entrypoints"]
-  N148_B["arrayField"]
+  N148_A["methods"]
+  N148_B["stringValue"]
   N148_A --> N148_B
   N149_A["entrypoints"]
-  N149_B["methods"]
+  N149_B["arrayField"]
   N149_A --> N149_B
   N150_A["entrypoints"]
-  N150_B["stringValue"]
+  N150_B["methods"]
   N150_A --> N150_B
-  N151_A["resources"]
-  N151_B["arrayField"]
+  N151_A["entrypoints"]
+  N151_B["stringValue"]
   N151_A --> N151_B
-  N152_A["businessFlows"]
+  N152_A["resources"]
   N152_B["arrayField"]
   N152_A --> N152_B
   N153_A["businessFlows"]
-  N153_B["objectField"]
+  N153_B["arrayField"]
   N153_A --> N153_B
-  N154_A["renderChangeSummary"]
-  N154_B["renderEntrypointList"]
+  N154_A["businessFlows"]
+  N154_B["objectField"]
   N154_A --> N154_B
   N155_A["renderChangeSummary"]
-  N155_B["renderMethodList"]
+  N155_B["renderEntrypointList"]
   N155_A --> N155_B
   N156_A["renderChangeSummary"]
-  N156_B["renderStringChange"]
+  N156_B["renderMethodList"]
   N156_A --> N156_B
-  N157_A["qualityScore"]
-  N157_B["numberValue"]
+  N157_A["renderChangeSummary"]
+  N157_B["renderStringChange"]
   N157_A --> N157_B
   N158_A["qualityScore"]
-  N158_B["objectField"]
+  N158_B["numberValue"]
   N158_A --> N158_B
-  N159_A["stringField"]
-  N159_B["stringValue"]
+  N159_A["qualityScore"]
+  N159_B["objectField"]
   N159_A --> N159_B
-  N160_A["stableStringify"]
-  N160_B["stableStringify"]
+  N160_A["stringField"]
+  N160_B["stringValue"]
   N160_A --> N160_B
-  N161_A["parseJavaModule"]
-  N161_B["buildLineIndex"]
+  N161_A["stableStringify"]
+  N161_B["stableStringify"]
   N161_A --> N161_B
   N162_A["parseJavaModule"]
-  N162_B["extractClassBlocks"]
+  N162_B["buildLineIndex"]
   N162_A --> N162_B
   N163_A["parseJavaModule"]
-  N163_B["maskJavaSource"]
+  N163_B["extractClassBlocks"]
   N163_A --> N163_B
   N164_A["parseJavaModule"]
-  N164_B["stableId"]
+  N164_B["maskJavaSource"]
   N164_A --> N164_B
-  N165_A["extractClassBlocks"]
-  N165_B["findMatchingBrace"]
+  N165_A["parseJavaModule"]
+  N165_B["stableId"]
   N165_A --> N165_B
-  N166_A["extractClassUnit"]
-  N166_B["buildMethodUnit"]
+  N166_A["extractClassBlocks"]
+  N166_B["findMatchingBrace"]
   N166_A --> N166_B
   N167_A["extractClassUnit"]
-  N167_B["extractMethodBlocks"]
+  N167_B["buildMethodUnit"]
   N167_A --> N167_B
   N168_A["extractClassUnit"]
-  N168_B["locationFromOffsets"]
+  N168_B["extractMethodBlocks"]
   N168_A --> N168_B
   N169_A["extractClassUnit"]
-  N169_B["requestMappingPath"]
+  N169_B["locationFromOffsets"]
   N169_A --> N169_B
   N170_A["extractClassUnit"]
-  N170_B["stableId"]
+  N170_B["requestMappingPath"]
   N170_A --> N170_B
-  N171_A["extractMethodBlocks"]
-  N171_B["findMatchingBrace"]
+  N171_A["extractClassUnit"]
+  N171_B["stableId"]
   N171_A --> N171_B
   N172_A["extractMethodBlocks"]
-  N172_B["leadingWhitespaceLength"]
+  N172_B["findMatchingBrace"]
   N172_A --> N172_B
   N173_A["extractMethodBlocks"]
-  N173_B["parseMethodHeader"]
+  N173_B["leadingWhitespaceLength"]
   N173_A --> N173_B
-  N174_A["parseMethodHeader"]
-  N174_B["parseParameters"]
+  N174_A["extractMethodBlocks"]
+  N174_B["parseMethodHeader"]
   N174_A --> N174_B
   N175_A["parseMethodHeader"]
-  N175_B["stripAnnotations"]
+  N175_B["parseParameters"]
   N175_A --> N175_B
-  N176_A["buildMethodUnit"]
-  N176_B["locationFromOffsets"]
+  N176_A["parseMethodHeader"]
+  N176_B["stripAnnotations"]
   N176_A --> N176_B
   N177_A["buildMethodUnit"]
-  N177_B["stableId"]
+  N177_B["locationFromOffsets"]
   N177_A --> N177_B
-  N178_A["extractResources"]
-  N178_B["extractStringLiterals"]
+  N178_A["buildMethodUnit"]
+  N178_B["stableId"]
   N178_A --> N178_B
-  N179_A["extractFrameworkHints"]
-  N179_B["annotationAttribute"]
+  N179_A["extractResources"]
+  N179_B["extractStringLiterals"]
   N179_A --> N179_B
   N180_A["extractFrameworkHints"]
-  N180_B["annotationByName"]
+  N180_B["annotationAttribute"]
   N180_A --> N180_B
   N181_A["extractFrameworkHints"]
-  N181_B["firstAnnotationString"]
+  N181_B["annotationByName"]
   N181_A --> N181_B
   N182_A["extractFrameworkHints"]
-  N182_B["hasAnnotation"]
+  N182_B["firstAnnotationString"]
   N182_A --> N182_B
   N183_A["extractFrameworkHints"]
-  N183_B["routeFromAnnotations"]
+  N183_B["hasAnnotation"]
   N183_A --> N183_B
-  N184_A["extractEntrypointHints"]
-  N184_B["hasAnnotation"]
+  N184_A["extractFrameworkHints"]
+  N184_B["routeFromAnnotations"]
   N184_A --> N184_B
-  N185_A["routeFromAnnotations"]
-  N185_B["annotationAttribute"]
+  N185_A["extractEntrypointHints"]
+  N185_B["hasAnnotation"]
   N185_A --> N185_B
   N186_A["routeFromAnnotations"]
-  N186_B["annotationName"]
+  N186_B["annotationAttribute"]
   N186_A --> N186_B
   N187_A["routeFromAnnotations"]
-  N187_B["firstAnnotationString"]
+  N187_B["annotationName"]
   N187_A --> N187_B
   N188_A["routeFromAnnotations"]
-  N188_B["joinRoutePaths"]
+  N188_B["firstAnnotationString"]
   N188_A --> N188_B
   N189_A["routeFromAnnotations"]
-  N189_B["requestMappingMethod"]
+  N189_B["joinRoutePaths"]
   N189_A --> N189_B
-  N190_A["requestMappingPath"]
-  N190_B["annotationAttribute"]
+  N190_A["routeFromAnnotations"]
+  N190_B["requestMappingMethod"]
   N190_A --> N190_B
   N191_A["requestMappingPath"]
-  N191_B["annotationName"]
+  N191_B["annotationAttribute"]
   N191_A --> N191_B
   N192_A["requestMappingPath"]
-  N192_B["firstAnnotationString"]
+  N192_B["annotationName"]
   N192_A --> N192_B
-  N193_A["parseParameters"]
-  N193_B["splitTopLevel"]
+  N193_A["requestMappingPath"]
+  N193_B["firstAnnotationString"]
   N193_A --> N193_B
   N194_A["parseParameters"]
-  N194_B["stripAnnotations"]
+  N194_B["splitTopLevel"]
   N194_A --> N194_B
-  N195_A["hasAnnotation"]
-  N195_B["annotationName"]
+  N195_A["parseParameters"]
+  N195_B["stripAnnotations"]
   N195_A --> N195_B
-  N196_A["annotationByName"]
+  N196_A["hasAnnotation"]
   N196_B["annotationName"]
   N196_A --> N196_B
-  N197_A["locationFromOffsets"]
-  N197_B["lineNumberAt"]
+  N197_A["annotationByName"]
+  N197_B["annotationName"]
   N197_A --> N197_B
-  N198_A["parseModules"]
-  N198_B["findParserAdapter"]
+  N198_A["locationFromOffsets"]
+  N198_B["lineNumberAt"]
   N198_A --> N198_B
   N199_A["parseModules"]
-  N199_B["stableId"]
+  N199_B["findParserAdapter"]
   N199_A --> N199_B
-  N200_A["parseTypeScriptModule"]
-  N200_B["extractFunctionUnit"]
+  N200_A["parseModules"]
+  N200_B["stableId"]
   N200_A --> N200_B
   N201_A["parseTypeScriptModule"]
-  N201_B["extractVariableFunctionUnit"]
+  N201_B["extractFunctionUnit"]
   N201_A --> N201_B
   N202_A["parseTypeScriptModule"]
-  N202_B["stableId"]
+  N202_B["extractVariableFunctionUnit"]
   N202_A --> N202_B
   N203_A["parseTypeScriptModule"]
-  N203_B["summarizeModule"]
+  N203_B["stableId"]
   N203_A --> N203_B
-  N204_A["extractClassUnit"]
-  N204_B["extractCallableUnit"]
+  N204_A["parseTypeScriptModule"]
+  N204_B["summarizeModule"]
   N204_A --> N204_B
   N205_A["extractClassUnit"]
-  N205_B["getLocation"]
+  N205_B["extractCallableUnit"]
   N205_A --> N205_B
   N206_A["extractClassUnit"]
-  N206_B["stableId"]
+  N206_B["getLocation"]
   N206_A --> N206_B
-  N207_A["extractFunctionUnit"]
-  N207_B["extractCallableUnit"]
+  N207_A["extractClassUnit"]
+  N207_B["stableId"]
   N207_A --> N207_B
-  N208_A["extractVariableFunctionUnit"]
+  N208_A["extractFunctionUnit"]
   N208_B["extractCallableUnit"]
   N208_A --> N208_B
-  N209_A["extractCallableUnit"]
-  N209_B["buildSignature"]
+  N209_A["extractVariableFunctionUnit"]
+  N209_B["extractCallableUnit"]
   N209_A --> N209_B
   N210_A["extractCallableUnit"]
-  N210_B["extractParameters"]
+  N210_B["buildSignature"]
   N210_A --> N210_B
   N211_A["extractCallableUnit"]
-  N211_B["getLocation"]
+  N211_B["extractParameters"]
   N211_A --> N211_B
   N212_A["extractCallableUnit"]
-  N212_B["hasModifier"]
+  N212_B["getLocation"]
   N212_A --> N212_B
   N213_A["extractCallableUnit"]
-  N213_B["isJavaScriptFile"]
+  N213_B["hasModifier"]
   N213_A --> N213_B
   N214_A["extractCallableUnit"]
-  N214_B["stableId"]
+  N214_B["isJavaScriptFile"]
   N214_A --> N214_B
-  N215_A["extractVisibility"]
-  N215_B["hasModifier"]
+  N215_A["extractCallableUnit"]
+  N215_B["stableId"]
   N215_A --> N215_B
-  N216_A["extractCalls"]
-  N216_B["formatCallExpression"]
+  N216_A["extractVisibility"]
+  N216_B["hasModifier"]
   N216_A --> N216_B
-  N217_A["extractFrameworkHints"]
-  N217_B["literalText"]
+  N217_A["extractCalls"]
+  N217_B["formatCallExpression"]
   N217_A --> N217_B
   N218_A["extractFrameworkHints"]
-  N218_B["parseHttpRouteCall"]
+  N218_B["literalText"]
   N218_A --> N218_B
-  N219_A["extractEntrypointHints"]
+  N219_A["extractFrameworkHints"]
   N219_B["parseHttpRouteCall"]
   N219_A --> N219_B
-  N220_A["parseHttpRouteCall"]
-  N220_B["literalText"]
+  N220_A["extractEntrypointHints"]
+  N220_B["parseHttpRouteCall"]
   N220_A --> N220_B
-  N221_A["scanRepo"]
-  N221_B["detectLanguage"]
+  N221_A["parseHttpRouteCall"]
+  N221_B["literalText"]
   N221_A --> N221_B
   N222_A["scanRepo"]
-  N222_B["matchesAnyExclude"]
+  N222_B["detectLanguage"]
   N222_A --> N222_B
   N223_A["scanRepo"]
-  N223_B["toPosixPath"]
+  N223_B["matchesAnyExclude"]
   N223_A --> N223_B
-  N224_A["matchesAnyExclude"]
-  N224_B["matchesExclude"]
+  N224_A["scanRepo"]
+  N224_B["toPosixPath"]
   N224_A --> N224_B
-  N225_A["matchesExclude"]
-  N225_B["escapeRegex"]
+  N225_A["matchesAnyExclude"]
+  N225_B["matchesExclude"]
   N225_A --> N225_B
   N226_A["matchesExclude"]
-  N226_B["toPosixPath"]
+  N226_B["escapeRegex"]
   N226_A --> N226_B
-  N227_A["readJson"]
-  N227_B["readJsonAt"]
+  N227_A["matchesExclude"]
+  N227_B["toPosixPath"]
   N227_A --> N227_B
-  N228_A["generateFixtureOutput"]
-  N228_B["analyzeRepo"]
+  N228_A["readJson"]
+  N228_B["readJsonAt"]
   N228_A --> N228_B
   N229_A["generateFixtureOutput"]
-  N229_B["generateDocs"]
+  N229_B["analyzeRepo"]
   N229_A --> N229_B
   N230_A["generateFixtureOutput"]
-  N230_B["writeResultJson"]
+  N230_B["generateDocs"]
   N230_A --> N230_B
-  N231_A["assertSchema"]
-  N231_B["assertSchema"]
+  N231_A["generateFixtureOutput"]
+  N231_B["writeResultJson"]
   N231_A --> N231_B
   N232_A["assertSchema"]
-  N232_B["typeOf"]
+  N232_B["assertSchema"]
   N232_A --> N232_B
+  N233_A["assertSchema"]
+  N233_B["typeOf"]
+  N233_A --> N233_B
 ```
 
 ## Edges
@@ -795,6 +798,7 @@ flowchart TD
 | groupModules | inferGroupName | inferGroupName | 1 |
 | groupModules | summarizeGroup | summarizeGroup | 1 |
 | groupModules | summarizeResponsibilities | summarizeResponsibilities | 1 |
+| inferGroupName | inferJavaGroupName | inferJavaGroupName | 1 |
 | buildFlows | formatMethodName | formatMethodName | 1 |
 | buildFlows | walkFlow | walkFlow | 1 |
 | buildResourceUsage | isInternalResource | isInternalResource | 1 |

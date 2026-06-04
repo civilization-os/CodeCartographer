@@ -148,6 +148,9 @@ function inferGroupName(module: ModuleUnit): string {
   if (module.language === "markdown") {
     return "Documentation";
   }
+  if (module.language === "java") {
+    return inferJavaGroupName(parts);
+  }
   if (parts[0] === "src" && parts.length > 2) {
     return parts[1];
   }
@@ -155,6 +158,26 @@ function inferGroupName(module: ModuleUnit): string {
     return "Application";
   }
   return "Project Files";
+}
+
+function inferJavaGroupName(parts: string[]): string {
+  for (let index = 0; index < parts.length - 3; index += 1) {
+    const isJavaSourceRoot =
+      parts[index] === "src" &&
+      (parts[index + 1] === "main" || parts[index + 1] === "test") &&
+      parts[index + 2] === "java";
+    if (!isJavaSourceRoot) {
+      continue;
+    }
+
+    const packageParts = parts.slice(index + 3, -1);
+    if (packageParts.length > 0) {
+      return packageParts.at(-1) ?? "Java";
+    }
+    return parts[index + 1] === "test" ? "Java Tests" : "Java Application";
+  }
+
+  return parts.length > 1 ? parts[parts.length - 2] : "Java";
 }
 
 function inferPurpose(modules: ModuleUnit[]): string {
