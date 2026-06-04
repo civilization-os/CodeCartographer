@@ -3,3 +3,11 @@ dist/
 .see-code/
 .DS_Store
 *.log
+
+# External evaluation projects
+eval-projects/
+external-projects/
+spring-petclinic/
+cleanarchitecture/
+mall/
+dubbo-samples/
