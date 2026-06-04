@@ -20,8 +20,9 @@
 
 | File | Language | Bytes |
 | --- | --- | --- |
-| package.json | json | 626 |
-| README.md | markdown | 3049 |
+| package.json | json | 797 |
+| README.md | markdown | 3981 |
+| scripts/secret-scan.mjs | javascript | 1382 |
 | SPEC.md | markdown | 8407 |
 | src/analyzer/analyzeRepo.ts | typescript | 1517 |
 | src/core/types.ts | typescript | 3575 |
@@ -36,7 +37,12 @@
 | src/parser/moduleParser.ts | typescript | 1060 |
 | src/parser/parserAdapter.ts | typescript | 437 |
 | src/parser/typescriptAdapter.ts | typescript | 304 |
-| src/parser/typescriptStructureParser.ts | typescript | 15170 |
+| src/parser/typescriptStructureParser.ts | typescript | 15282 |
 | src/scanner/repoScanner.ts | typescript | 2057 |
 | src/utils/path.ts | typescript | 284 |
+| tests/analyzeRepo.test.ts | typescript | 3638 |
+| tests/fixtures/docs-only/package.json | json | 53 |
+| tests/fixtures/docs-only/README.md | markdown | 76 |
+| tests/fixtures/java-spring/src/main/java/com/acme/OrderController.java | java | 992 |
+| tests/fixtures/typescript-basic/src/app.ts | typescript | 820 |
 | tsconfig.json | json | 311 |

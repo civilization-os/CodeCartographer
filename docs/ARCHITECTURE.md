@@ -2,19 +2,18 @@
 
 ## System Shape
 
-系统采用分层架构，从上到下依次为 CLI 入口层、分析编排层、语义分析层、关系图构建层、解析层和扫描层。各层通过模块化接口协作，数据流单向传递。
+系统采用分层架构，CLI 层负责参数解析和流程编排，扫描层负责文件遍历和语言检测，解析层通过适配器模式将源文件转换为统一模块单元，图构建层建立关系索引，LLM 层提供语义增强，最终由分析器聚合结果。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| Application | src/index.ts | 解析命令行参数，编排分析流程，输出结果和统计信息。 |
-| Analyzer | src/analyzer/analyzeRepo.ts | 协调扫描、解析、关系图构建和语义分析，返回完整分析结果。 |
-| LLM | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 管理 LLM 模型配置和工厂，执行方法语义分析，维护缓存。 |
-| Graph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
-| Parser | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 根据文件类型选择适配器，解析源文件为模块单元（导入、类、方法）。 |
-| Scanner | src/scanner/repoScanner.ts | 递归扫描目录，过滤文件，返回源文件信息列表。 |
-| Utils | src/utils/path.ts | 提供路径规范化和稳定标识符生成工具。 |
+| CLI 层 | src/index.ts | 解析命令行参数，调用分析流程，输出统计信息和文档。 |
+| 扫描层 | src/scanner/repoScanner.ts | 递归扫描目录，过滤文件，检测语言类型，返回源文件列表。 |
+| 解析层 | src/parser/moduleParser.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts, src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/parserAdapter.ts | 根据文件类型选择适配器，解析源文件为模块单元（导入、类、方法）。 |
+| 图构建层 | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
+| LLM 层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对方法进行语义分析，优先使用缓存，未命中时调用 LLM 或启发式规则。 |
+| 分析器层 | src/analyzer/analyzeRepo.ts | 协调扫描、解析、图构建和语义分析，返回完整的分析结果。 |
 
 ## Critical Paths
 
@@ -33,10 +32,11 @@
 | Application | 1 | 4 | 解析命令行参数，执行代码仓库分析并生成文档，输出统计信息。 |
 | Configuration | 2 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | core | 1 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
-| Documentation | 2 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
+| Documentation | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | graph | 1 | 7 | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
 | llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
-| parser | 6 | 66 | 解析Java源文件并提取模块单元信息，包括导入、类和方法。 |
+| parser | 6 | 67 | 解析Java源文件并提取模块单元信息，包括导入、类和方法。 |
+| Project Files | 5 | 10 | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
 | scanner | 1 | 2 | 递归扫描指定根目录下的所有文件，过滤掉忽略的目录、非文件、过大文件及无法识别语言的文件，返回按相对路径排序的源文件信息列表。 |
 | utils | 1 | 2 | 将路径分隔符转换为正斜杠以生成POSIX风格路径。 |
 
@@ -75,6 +75,14 @@
 - 从Java类块中提取类单元，包括方法列表和类元数据。
 - 从Java类块中提取所有方法块，返回方法定义的位置和元数据。
 
+### Project Files
+
+- 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。
+- 构造函数注入OrderService依赖。
+- 处理创建订单的HTTP POST请求，调用订单服务并返回订单数据传输对象。
+- 定时触发订单对账任务，委托给订单服务执行对账逻辑。
+- 从Kafka主题'order-events'消费消息并委托给orderService处理。
+
 ### scanner
 
 - 递归扫描指定根目录下的所有文件，过滤掉忽略的目录、非文件、过大文件及无法识别语言的文件，返回按相对路径排序的源文件信息列表。
@@ -89,11 +97,11 @@
 
 | Method | Module | Summary |
 | --- | --- | --- |
+| extractCallableUnit | src/parser/typescriptStructureParser.ts | 从TypeScript AST节点提取可调用单元的所有元数据并组装为MethodUnit对象。 |
 | stableId | src/utils/path.ts | 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。 |
 | analyzeRepo | src/analyzer/analyzeRepo.ts | 分析指定代码仓库，提取模块、方法、类、资源及关系图，并返回分析结果。 |
 | enrichModulesWithMethodSemantics | src/llm/methodSemanticAnalyzer.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
 | loadModelConfig | src/llm/modelConfig.ts | 从环境变量中加载并解析LLM模型配置，返回一个ModelConfig对象。 |
-| extractCallableUnit | src/parser/typescriptStructureParser.ts | 从TypeScript源文件中提取可调用单元（函数、方法、构造函数、箭头函数或函数表达式）并构建MethodUnit对象。 |
 | buildRelationGraph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
 | routeFromAnnotations | src/parser/javaStructureParser.ts | 从注解列表中解析出HTTP方法和路径，结合类路由前缀生成完整路由。 |
 | extractClassUnit | src/parser/javaStructureParser.ts | 从Java类块中提取类单元，包括方法列表和类元数据。 |
@@ -106,4 +114,7 @@
 
 | Resource | Kind |
 | --- | --- |
+| ENV:ORDER_TABLE | env |
+| ENV:ORDER_TOPIC | env |
 | HTTP:https://api.deepseek.com | http |
+| HTTP:https://payments.example.com/charge | http |

@@ -16,6 +16,14 @@ pnpm install
 pnpm analyze -- .
 ```
 
+Run the local verification suite:
+
+```bash
+pnpm verify
+```
+
+This runs type checking, build, fixture-based analyzer tests, and a local secret scan.
+
 Run with an LLM provider:
 
 ```bash
@@ -74,6 +82,7 @@ docs/
 - Scan local repositories.
 - Parse TypeScript and JavaScript with the TypeScript compiler AST through a parser adapter.
 - Parse Java with a lightweight static parser adapter that extracts classes, methods, annotations, calls, resources, and common Spring entrypoint hints.
+- Validate parser behavior with fixture-based TypeScript, Java Spring, and document-only tests.
 - Extract `MethodUnit` and `ClassUnit` records.
 - Build a basic relation graph.
 - Optionally enrich method summaries through LangChain chat model adapters.

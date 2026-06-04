@@ -167,7 +167,7 @@ function extractCallableUnit(
     className,
     modulePath,
     location: getLocation(sourceFile, node),
-    language: sourceFile.fileName.endsWith(".js") || sourceFile.fileName.endsWith(".jsx") ? "javascript" : "typescript",
+    language: isJavaScriptFile(sourceFile.fileName) ? "javascript" : "typescript",
     parameters: extractParameters(sourceFile, node),
     returnType: extractReturnType(sourceFile, node),
     visibility: extractVisibility(node),
@@ -538,6 +538,10 @@ function summarizeMethod(name: string, calls: string[], resources: string[]): st
     parts.push(`touches ${resources.slice(0, 5).join(", ")}`);
   }
   return `${parts.join("; ")}.`;
+}
+
+function isJavaScriptFile(fileName: string): boolean {
+  return [".js", ".jsx", ".mjs", ".cjs"].some((extension) => fileName.endsWith(extension));
 }
 
 function summarizeModule(

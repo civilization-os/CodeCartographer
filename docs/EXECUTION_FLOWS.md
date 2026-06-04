@@ -71,7 +71,7 @@ Entry: `src/parser/typescriptStructureParser.ts:15` parseTypeScriptModule
 3. extractVariableFunctionUnit - 从TypeScript源文件中提取变量函数单元，通过调用extractCallableUnit生成MethodUnit。
 4. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
 5. summarizeModule - 生成一个描述模块路径、类数量、方法数量和导入数量的中文字符串。
-6. extractCallableUnit - 从TypeScript源文件中提取可调用单元（函数、方法、构造函数、箭头函数或函数表达式）并构建MethodUnit对象。
+6. extractCallableUnit - 从TypeScript AST节点提取可调用单元的所有元数据并组装为MethodUnit对象。
 7. buildSignature - 根据给定的函数声明节点和名称，生成包含参数列表和返回类型的函数签名字符串。
 8. extractParameters - 从TypeScript AST节点中提取函数或方法的参数信息，包括名称、类型、可选性和默认值。
 9. getLocation - 根据TypeScript AST节点在源文件中的起始和结束位置计算行号范围，并返回包含文件名和行号区间的SourceLocation对象。
@@ -109,12 +109,13 @@ Entry: `src/parser/typescriptStructureParser.ts:96` extractClassUnit
 ### Steps
 
 1. extractClassUnit - 从 TypeScript 类声明中提取类单元信息，包括类名、方法列表和位置。
-2. extractCallableUnit - 从TypeScript源文件中提取可调用单元（函数、方法、构造函数、箭头函数或函数表达式）并构建MethodUnit对象。
+2. extractCallableUnit - 从TypeScript AST节点提取可调用单元的所有元数据并组装为MethodUnit对象。
 3. getLocation - 根据TypeScript AST节点在源文件中的起始和结束位置计算行号范围，并返回包含文件名和行号区间的SourceLocation对象。
 4. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
 5. buildSignature - 根据给定的函数声明节点和名称，生成包含参数列表和返回类型的函数签名字符串。
 6. extractParameters - 从TypeScript AST节点中提取函数或方法的参数信息，包括名称、类型、可选性和默认值。
 7. hasModifier - 检查 TypeScript AST 节点是否具有指定类型的修饰符。
+8. isJavaScriptFile - 判断给定文件名是否具有JavaScript文件扩展名。
 
 ### Resources
 
