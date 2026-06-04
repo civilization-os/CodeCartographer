@@ -2,6 +2,8 @@ package com.acme;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +32,15 @@ public class OrderController {
   @KafkaListener(topics = "order-events")
   public void consume(String payload) {
     orderService.consume(payload);
+  }
+
+  /**
+   * Called before each @RequestMapping method.
+   * @param orderId order identifier
+   * @return order context
+   */
+  @ModelAttribute("orderContext")
+  public OrderContext loadOrderContext(@PathVariable("orderId") int orderId) {
+    return orderService.loadContext(orderId);
   }
 }

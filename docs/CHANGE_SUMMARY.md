@@ -1,11 +1,11 @@
 # Change Summary
 
-Compared previous result `2026-06-04T05:47:20.480Z` with current result `2026-06-04T05:52:35.148Z`.
+Compared previous result `2026-06-04T05:52:35.148Z` with current result `2026-06-04T05:57:13.445Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~6
-- Methods: +1 / -0 / ~4
+- Files: +0 / -0 / ~3
+- Methods: +2 / -2 / ~1
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
@@ -13,18 +13,17 @@ Compared previous result `2026-06-04T05:47:20.480Z` with current result `2026-06
 
 ## Added Methods
 
-- src/docs/semanticAggregator.ts: inferJavaGroupName
+- src/parser/javaStructureParser.ts: parseMethodHeader
+- src/parser/javaStructureParser.ts: extractAnnotations
 
 ## Removed Methods
 
-- 无
+- src/parser/javaStructureParser.ts: parseMethodHeader
+- src/parser/javaStructureParser.ts: extractAnnotations
 
 ## Modified Methods
 
-- src/docs/docsGenerator.ts: renderMaintenanceGuide
-- src/docs/narrativeComposer.ts: fallbackNarrative
-- src/docs/qualityReport.ts: buildChecks
-- src/docs/semanticAggregator.ts: inferGroupName
+- src/parser/javaStructureParser.ts: extractMethodBlocks
 
 ## Entrypoints
 

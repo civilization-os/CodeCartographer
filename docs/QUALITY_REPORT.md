@@ -18,13 +18,13 @@
 | Status | Check | Detail |
 | --- | --- | --- |
 | PASS | Method summary coverage | 216/216 methods use LLM summaries; 0 methods use fallback summaries. |
-| PASS | Narrative overview | see-code 是一个静态代码仓库分析工具，扫描指定仓库的源代码文件，提取模块、类、方法、资源及调用关系图，生成结构化工程文档和 Markdown 报告，并支持通过 LLM 为方法附加语义标签。 |
-| PASS | Architecture abstraction | 9 architecture layers generated. |
+| PASS | Narrative overview | see-code 是一个静态代码仓库分析工具，用于扫描指定仓库的源代码，提取模块、方法、类、资源及调用关系图，并自动生成结构化的工程文档（Markdown 格式）和 JSON 结果文件。 |
+| PASS | Architecture abstraction | 10 architecture layers generated. |
 | PASS | Business flow coverage | 1 framework-aware business flows generated. |
 | PASS | Static execution flow coverage | 8 static execution flows generated. |
 | PASS | Placeholder residue | 0 placeholder-like fragments found across generated docs. |
 | PASS | English template residue | 0 English template fragments found across generated docs. |
-| PASS | Document size balance | Largest document is 73555 characters. |
+| PASS | Document size balance | Largest document is 73649 characters. |
 | PASS | Required outputs | 9 documents generated before quality report. |
 
 ## Recommendations

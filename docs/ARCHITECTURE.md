@@ -2,28 +2,29 @@
 
 ## System Shape
 
-系统采用分层架构，CLI 层负责参数解析和流程编排，分析器层协调扫描、解析、图构建和语义分析，文档层将分析结果渲染为 Markdown，输出层负责序列化和持久化。各层通过类型定义和接口解耦。
+系统采用分层架构，包括 CLI 入口层、分析器层、解析器层、图构建层、语义分析层、文档生成层和输出层。各层通过明确的接口和数据结构协作，数据流从文件扫描开始，经过解析、图构建、语义增强，最终生成文档和结果文件。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| CLI 层 | src/index.ts | 解析命令行参数，加载配置，编排主流程，输出帮助信息。 |
-| 分析器层 | src/analyzer/analyzeRepo.ts | 协调扫描、解析、图构建和语义分析，返回完整的分析结果。 |
-| 扫描层 | src/scanner/repoScanner.ts | 递归扫描目录，过滤排除项和大文件，按语言类型返回源文件列表。 |
-| 解析层 | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 将源文件文本解析为模块、类、方法的结构化单元。 |
+| 入口层 | src/index.ts | 解析命令行参数，加载配置，协调分析流程，输出结果。 |
+| 分析器层 | src/analyzer/analyzeRepo.ts | 编排扫描、解析、图构建、语义分析和文档生成的完整流程。 |
+| 扫描器层 | src/scanner/repoScanner.ts | 递归扫描文件系统，过滤排除项和大文件，返回源文件列表。 |
+| 解析器层 | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 将源代码文本解析为模块、类、方法的结构化单元。 |
 | 图构建层 | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，包含节点和边。 |
-| 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 为方法附加语义标签，优先使用缓存，未命中则调用 LLM 或启发式规则。 |
-| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果渲染为多份 Markdown 文档，包括概览、架构、模块、质量报告等。 |
-| 输出层 | src/output/resultJsonWriter.ts | 将分析结果序列化为 JSON，写入文件系统，并生成差异报告。 |
-| 配置层 | src/config/projectConfig.ts | 异步加载并解析项目配置文件，返回配置对象或空配置。 |
+| 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 为方法附加语义标签，支持缓存和 LLM 调用降级。 |
+| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果渲染为 Markdown 文档并写入输出目录。 |
+| 输出层 | src/output/resultJsonWriter.ts | 将结果序列化为 JSON 并写入文件系统，支持差异比较。 |
+| 配置层 | src/config/projectConfig.ts | 从文件系统加载项目配置，支持敏感键检测。 |
+| 工具层 | src/utils/path.ts | 提供路径规范化、稳定标识符生成等工具函数。 |
 
 ## Critical Paths
 
 - src/index.ts:main
 - src/analyzer/analyzeRepo.ts:analyzeRepo
 - src/scanner/repoScanner.ts:scanRepo
-- src/parser/typescriptStructureParser.ts:extractCallableUnit
+- src/parser/moduleParser.ts:parseModules
 - src/graph/relationGraphBuilder.ts:buildRelationGraph
 - src/llm/methodSemanticAnalyzer.ts:enrichModulesWithMethodSemantics
 - src/docs/docsGenerator.ts:generateDocs
@@ -104,7 +105,7 @@
 - 从Java源代码文本中提取所有导入语句并返回排序后的唯一导入列表。
 - 从Java源文本中提取类、接口、枚举或记录的定义块，返回包含名称、类型、注解和位置信息的数组。
 - 从Java类块中提取类单元，包括方法列表和类元数据。
-- 从Java类块中提取所有方法块，返回方法定义的位置和元数据。
+- 从Java类块中提取所有方法块，返回方法定义列表。
 
 ### Project Files
 

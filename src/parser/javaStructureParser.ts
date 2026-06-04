@@ -169,7 +169,8 @@ function extractMethodBlocks(
     if (char === "{") {
       if (depth === 0) {
         const headerText = sourceText.slice(statementStart, index);
-        const parsed = parseMethodHeader(headerText, classBlock.name);
+        const headerMasked = masked.slice(statementStart, index);
+        const parsed = parseMethodHeader(headerText, headerMasked, classBlock.name);
         if (parsed) {
           const methodEnd = findMatchingBrace(masked, index);
           if (methodEnd !== -1) {
@@ -208,10 +209,11 @@ function extractMethodBlocks(
 
 function parseMethodHeader(
   headerText: string,
+  headerMasked: string,
   className: string
 ): Omit<JavaMethodBlock, "start" | "bodyStart" | "end"> | undefined {
-  const annotations = extractAnnotations(headerText);
-  const headerWithoutAnnotations = stripAnnotations(headerText)
+  const annotations = extractAnnotations(headerText, headerMasked);
+  const headerWithoutAnnotations = stripAnnotations(headerMasked)
     .replace(/\s+/g, " ")
     .trim();
   if (!headerWithoutAnnotations || headerWithoutAnnotations.includes("=")) {
@@ -573,11 +575,12 @@ function extractReturnType(prefix: string, modifiers: string[]): string | undefi
   return value || undefined;
 }
 
-function extractAnnotations(text: string): string[] {
+function extractAnnotations(text: string, maskedText = text): string[] {
   const annotations: string[] = [];
   const pattern = /@[A-Za-z_$][\w$]*(?:\s*\([^)]*\))?/g;
-  for (const match of text.matchAll(pattern)) {
-    annotations.push(match[0].replace(/\s+/g, " ").trim());
+  for (const match of maskedText.matchAll(pattern)) {
+    const start = match.index ?? 0;
+    annotations.push(text.slice(start, start + match[0].length).replace(/\s+/g, " ").trim());
   }
   return annotations;
 }

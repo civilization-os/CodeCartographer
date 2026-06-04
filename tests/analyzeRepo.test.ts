@@ -102,6 +102,16 @@ test("analyzes Java Spring fixtures without LLM calls", async () => {
   const consume = result.methods.find((method) => method.name === "consume");
   assert.ok(consume);
   assert.ok(consume.entrypointHints.some((hint) => hint.kind === "message_consumer" && hint.path === "order-events"));
+
+  const loadOrderContext = result.methods.find((method) => method.name === "loadOrderContext");
+  assert.ok(loadOrderContext);
+  assert.deepEqual(loadOrderContext.annotations, [
+    "@ModelAttribute(\"orderContext\")",
+    "@PathVariable(\"orderId\")"
+  ]);
+  assert.ok(!loadOrderContext.frameworkHints.some((hint) => hint.kind === "http_route"));
+  assert.ok(!loadOrderContext.entrypointHints.some((hint) => hint.kind === "http_route"));
+  assert.ok(!result.methods.some((method) => method.name === "orderId"));
 });
 
 test("groups Java modules by package area instead of source set", async () => {

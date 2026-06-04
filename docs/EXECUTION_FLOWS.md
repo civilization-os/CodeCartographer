@@ -43,13 +43,13 @@ Entry: `src/parser/javaStructureParser.ts:134` extractClassUnit
 
 1. extractClassUnit - 从Java类块中提取类单元，包括方法列表和类元数据。
 2. buildMethodUnit - 根据给定的源代码、掩码文本、行索引、模块路径、类块和方法块等信息，构建并返回一个包含方法元数据（如名称、签名、调用、资源、框架提示等）的 MethodUnit 对象。
-3. extractMethodBlocks - 从Java类块中提取所有方法块，返回方法定义的位置和元数据。
+3. extractMethodBlocks - 从Java类块中提取所有方法块，返回方法定义列表。
 4. locationFromOffsets - 根据文件路径、行索引和偏移量范围计算并返回源代码位置信息。
 5. requestMappingPath - 从注解列表中提取RequestMapping注解的路径值。
 6. stableId - 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。
 7. findMatchingBrace - 从指定起始位置开始，在字符串中查找与左花括号匹配的右花括号的索引。
 8. leadingWhitespaceLength - 计算字符串开头空白字符的长度。
-9. parseMethodHeader - 解析Java方法头文本，提取方法名、注解、修饰符、可见性、参数和返回类型，并返回结构化对象。
+9. parseMethodHeader - 解析Java方法头文本，提取方法名、注解、修饰符、可见性、返回类型和参数列表，并返回结构化的方法块信息。
 10. lineNumberAt - 通过二分查找在行索引数组中定位给定偏移量对应的行号。
 
 ### Resources
@@ -58,7 +58,7 @@ Entry: `src/parser/javaStructureParser.ts:134` extractClassUnit
 
 ## extractFrameworkHints
 
-Entry: `src/parser/javaStructureParser.ts:354` extractFrameworkHints
+Entry: `src/parser/javaStructureParser.ts:356` extractFrameworkHints
 
 ### Steps
 
