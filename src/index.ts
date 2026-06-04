@@ -116,7 +116,7 @@ function requireValue(flag: string, value: string | undefined): string {
 }
 
 function printHelp(): void {
-  console.log(`see-code
+  console.log(`CodeCartographer
 
 Usage:
   pnpm analyze -- <repo-path>

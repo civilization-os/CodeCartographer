@@ -1,11 +1,11 @@
 # Change Summary
 
-Compared previous result `2026-06-04T07:13:21.925Z` with current result `2026-06-04T07:14:40.556Z`.
+Compared previous result `2026-06-04T07:14:40.556Z` with current result `2026-06-04T14:07:34.406Z`.
 
 ## Summary
 
-- Files: +0 / -0 / ~1
-- Methods: +0 / -0 / ~0
+- Files: +0 / -0 / ~4
+- Methods: +0 / -0 / ~1
 - Entrypoints: +0 / -0
 - Resources: +0 / -0
 - Business flows: +0 / -0
@@ -21,7 +21,7 @@ Compared previous result `2026-06-04T07:13:21.925Z` with current result `2026-06
 
 ## Modified Methods
 
-- 无
+- src/index.ts: printHelp
 
 ## Entrypoints
 

@@ -1,4 +1,4 @@
-# See Code
+# CodeCartographer
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-ES2022-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -7,9 +7,13 @@
 [![Java](https://img.shields.io/badge/Java-lightweight%20adapter-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Docs Quality](https://img.shields.io/badge/docs%20quality-100%2F100-brightgreen)](docs/QUALITY_REPORT.md)
 
-See Code is a repository semantic understanding engine. The first MVP scans a local project, extracts source units, builds a lightweight relation graph, writes engineering documentation into `docs/`, and emits machine-readable analysis and diff results under `.see-code/`.
+CodeCartographer is a static code intelligence tool for turning repositories into architecture documentation, call graphs, business-flow maps, resource inventories, and structured JSON context. It scans a local project, extracts source units, builds a lightweight relation graph, writes engineering documentation into `docs/`, and emits machine-readable analysis and diff results under `.see-code/`.
 
-## Usage
+GitHub description:
+
+> Static code intelligence for generating architecture docs, call graphs, business flows, and structured repository maps with optional LLM-powered method understanding.
+
+## Quick Start
 
 ```bash
 pnpm install
@@ -111,13 +115,13 @@ schema/
 
 - Scan local repositories.
 - Parse TypeScript and JavaScript with the TypeScript compiler AST through a parser adapter.
-- Parse Java with a lightweight static parser adapter that extracts classes, methods, annotations, calls, resources, and common Spring entrypoint hints.
+- Parse Java with a lightweight static parser adapter that extracts classes, methods, annotations, calls, resources, common Spring entrypoint hints, repository operations, and basic receiver type inference.
 - Validate parser behavior with fixture-based TypeScript, Java Spring, and document-only tests.
 - Load minimal non-sensitive project config from `see-code.config.json`.
 - Extract `MethodUnit` and `ClassUnit` records.
 - Build a basic relation graph.
 - Optionally enrich method summaries through LangChain chat model adapters.
-- Generate project-level architecture, entrypoint, and flow documents from aggregated MethodUnit semantics.
+- Generate project-level architecture, entrypoint, resource, business-flow, and execution-flow documents from aggregated MethodUnit semantics.
 - Generate human-facing engineering docs.
 - Generate a quality report that checks LLM coverage, architecture abstraction, business-flow coverage, template residue, and document size balance.
 - Generate `.see-code/result.json` with schema version, stats, files, modules, classes, methods, graph, semantic overview, and quality summary.

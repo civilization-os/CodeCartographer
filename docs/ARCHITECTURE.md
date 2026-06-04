@@ -2,27 +2,25 @@
 
 ## System Shape
 
-系统采用分层架构，由 CLI 入口层、扫描解析层、图构建层、语义分析层、文档生成层和输出层组成。各层通过明确的模块边界和接口协作，数据流从文件扫描开始，经解析、图构建、语义增强后，最终生成文档和 JSON 输出。
+系统采用分层架构，CLI层负责参数解析和流程编排，分析层执行扫描、解析、图构建和语义分析，文档层将分析结果渲染为Markdown，输出层序列化结果到文件系统。各层通过明确的模块边界和类型定义协作。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| CLI 入口层 | src/index.ts | 解析命令行参数，加载配置，编排分析流程，输出结果。 |
-| 扫描解析层 | src/scanner/repoScanner.ts, src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 递归扫描文件系统，按语言适配器解析源文件，提取模块单元（导入、类、方法、资源）。 |
-| 图构建层 | src/graph/relationGraphBuilder.ts | 基于解析结果构建模块、类、方法和资源之间的关系图，生成节点和边集合。 |
-| 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对每个方法执行语义分析，优先使用缓存，未命中则调用 LLM 或启发式规则，更新模块和类摘要。 |
-| 文档生成层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果渲染为多份 Markdown 文档（概览、架构、模块、业务流、质量报告）。 |
-| 输出层 | src/output/resultJsonWriter.ts | 将完整结果序列化为 JSON，写入文件系统，并生成差异报告和变更摘要。 |
-| 配置层 | src/config/projectConfig.ts | 从文件系统加载项目配置，验证敏感键名，返回配置对象。 |
+| CLI层 | src/index.ts | 解析命令行参数，加载配置，编排分析流程，触发文档生成和结果输出。 |
+| 分析层 | src/analyzer/analyzeRepo.ts, src/scanner/repoScanner.ts, src/parser/javaStructureParser.ts, src/parser/typescriptStructureParser.ts, src/parser/moduleParser.ts, src/graph/relationGraphBuilder.ts, src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts | 扫描仓库文件，解析源文件为结构化模块单元，构建关系图，执行方法语义分析。 |
+| 文档层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 将分析结果渲染为Markdown格式的工程文档，包括概览、架构、模块、业务流和质量报告。 |
+| 输出层 | src/output/resultJsonWriter.ts | 将分析结果序列化为JSON，写入文件系统，生成差异报告和变更摘要。 |
+| 配置层 | src/config/projectConfig.ts, src/llm/modelConfig.ts | 加载项目配置文件（see-code.config.json）和LLM模型配置（环境变量+配置文件）。 |
 
 ## Critical Paths
 
 - src/index.ts:main
 - src/analyzer/analyzeRepo.ts:analyzeRepo
-- src/scanner/repoScanner.ts:scanDirectory
-- src/parser/typescriptStructureParser.ts:extractCallableUnit
+- src/scanner/repoScanner.ts:scanRepo
 - src/parser/javaStructureParser.ts:extractClassUnit
+- src/parser/typescriptStructureParser.ts:extractCallableUnit
 - src/graph/relationGraphBuilder.ts:buildRelationGraph
 - src/llm/methodSemanticAnalyzer.ts:enrichModulesWithMethodSemantics
 - src/docs/docsGenerator.ts:generateDocs
@@ -57,7 +55,7 @@
 - 解析命令行参数，加载项目配置和模型配置，执行代码仓库分析并生成文档，最后输出结果到控制台和JSON文件。
 - 解析命令行参数，提取命令、目标路径和环境变量覆盖值。
 - 验证命令行参数值是否存在且不以'--'开头，否则抛出错误。
-- 打印 see-code 工具的使用说明和命令行参数帮助信息。
+- 打印命令行帮助信息，展示使用方法和配置选项。
 
 ### config
 

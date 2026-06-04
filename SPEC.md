@@ -1,4 +1,4 @@
-# SPEC - AI Repository Semantic Understanding Engine
+# SPEC - CodeCartographer
 
 ## 1. 项目目标
 

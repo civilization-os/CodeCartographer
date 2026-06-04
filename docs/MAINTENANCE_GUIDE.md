@@ -23,13 +23,13 @@
 | File | Language | Bytes |
 | --- | --- | --- |
 | evaluations/spring-petclinic.md | markdown | 6957 |
-| package.json | json | 797 |
-| README.md | markdown | 5162 |
+| package.json | json | 865 |
+| README.md | markdown | 5583 |
 | schema/result-diff.schema.json | json | 2493 |
 | schema/result.schema.json | json | 4702 |
 | scripts/secret-scan.mjs | javascript | 1382 |
 | see-code.config.json | json | 391 |
-| SPEC.md | markdown | 8983 |
+| SPEC.md | markdown | 8956 |
 | src/analyzer/analyzeRepo.ts | typescript | 2076 |
 | src/config/projectConfig.ts | typescript | 2238 |
 | src/core/types.ts | typescript | 3744 |
@@ -39,7 +39,7 @@
 | src/docs/qualityReport.ts | typescript | 7342 |
 | src/docs/semanticAggregator.ts | typescript | 11392 |
 | src/graph/relationGraphBuilder.ts | typescript | 5983 |
-| src/index.ts | typescript | 4640 |
+| src/index.ts | typescript | 4648 |
 | src/llm/methodSemanticAnalyzer.ts | typescript | 7870 |
 | src/llm/methodSemanticCache.ts | typescript | 2602 |
 | src/llm/modelConfig.ts | typescript | 3937 |

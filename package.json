@@ -1,7 +1,7 @@
 {
-  "name": "see-code",
+  "name": "codecartographer",
   "version": "0.1.0",
-  "description": "AI repository semantic understanding engine MVP.",
+  "description": "Static code intelligence for architecture docs, call graphs, business flows, and structured repository maps.",
   "type": "module",
   "private": true,
   "scripts": {
