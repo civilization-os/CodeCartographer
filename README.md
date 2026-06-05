@@ -101,26 +101,91 @@ Minimal project config can live in `see-code.config.json`:
 Do not put API keys in `see-code.config.json`; use CLI flags or environment variables for secrets. Precedence is CLI flags, then environment variables, then config, then defaults.
 `llm.noProxy` is non-sensitive and is copied to `NO_PROXY`/`no_proxy` before LLM calls so local model gateways and internal domains can bypass corporate proxies.
 
-OpenAI-compatible private server:
+## Self-hosted Model Setup
+
+Use `openai-compatible` when your private gateway exposes an OpenAI-style
+`/v1/chat/completions` API, such as vLLM, LM Studio, Ollama OpenAI-compatible
+mode, LocalAI, One API, LiteLLM, or an internal model gateway. Use
+`anthropic-compatible` only when the gateway follows Anthropic's Messages API.
+
+Required connection fields:
+
+- `provider`: `openai-compatible` or `anthropic-compatible`.
+- `model`: the model name accepted by your gateway.
+- `baseUrl`: the API base URL, not the full chat endpoint. For OpenAI-compatible
+  servers this usually ends with `/v1`.
+- `apiKey`: passed at run time through `SEE_CODE_LLM_API_KEY`, `LLM_API_KEY`, or
+  `--api-key`. If your local gateway does not validate keys, use any non-empty
+  placeholder such as `not-empty`.
+- `noProxy`: optional comma-separated hosts that should bypass corporate or
+  system proxies. This can be set with `--no-proxy`, `SEE_CODE_NO_PROXY`, or
+  non-sensitive `llm.noProxy` in config.
+
+OpenAI-compatible private server through CLI flags:
+
+```bash
+codecartographer analyze /path/to/repo \
+  --provider openai-compatible \
+  --model your-model \
+  --base-url http://localhost:8000/v1 \
+  --api-key not-empty \
+  --no-proxy localhost,127.0.0.1,.internal
+```
+
+The same OpenAI-compatible setup through environment variables:
 
 ```bash
 SEE_CODE_LLM_PROVIDER=openai-compatible \
 SEE_CODE_LLM_MODEL=your-model \
 SEE_CODE_LLM_BASE_URL=http://localhost:8000/v1 \
 SEE_CODE_LLM_API_KEY=not-empty \
+SEE_CODE_NO_PROXY=localhost,127.0.0.1,.internal \
 SEE_CODE_LLM_LIMIT=20 \
 pnpm analyze -- /path/to/repo
 ```
 
-Anthropic-compatible private server:
+The same non-sensitive defaults in `see-code.config.json`:
+
+```json
+{
+  "llm": {
+    "provider": "openai-compatible",
+    "model": "your-model",
+    "baseUrl": "http://localhost:8000/v1",
+    "noProxy": "localhost,127.0.0.1,.internal",
+    "cache": true
+  }
+}
+```
+
+Then provide the key only at run time:
+
+```bash
+SEE_CODE_LLM_API_KEY=not-empty codecartographer analyze /path/to/repo
+```
+
+Anthropic-compatible private server through environment variables:
 
 ```bash
 SEE_CODE_LLM_PROVIDER=anthropic-compatible \
 SEE_CODE_LLM_MODEL=your-model \
 SEE_CODE_LLM_BASE_URL=http://localhost:8000/anthropic \
 SEE_CODE_LLM_API_KEY=not-empty \
+SEE_CODE_NO_PROXY=localhost,127.0.0.1,.internal \
 SEE_CODE_LLM_LIMIT=20 \
 pnpm analyze -- /path/to/repo
+```
+
+Run `doctor` before a long analysis to confirm the resolved provider, API key
+presence, cache setting, and no-proxy value:
+
+```bash
+codecartographer doctor /path/to/repo \
+  --provider openai-compatible \
+  --model your-model \
+  --base-url http://localhost:8000/v1 \
+  --api-key not-empty \
+  --no-proxy localhost,127.0.0.1,.internal
 ```
 
 LLM semantic results are cached in `.see-code/cache/method-semantics.json`. Disable cache with:
