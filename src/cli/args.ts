@@ -1,6 +1,6 @@
 import type { ModelProvider } from "../core/types.js";
 
-export type CliCommand = "interactive" | "analyze" | "init" | "doctor" | "help";
+export type CliCommand = "interactive" | "analyze" | "init" | "doctor" | "model-test" | "help";
 
 export interface CliOptions {
   command: CliCommand;
@@ -13,7 +13,7 @@ export interface CliOptions {
   maxFileBytes?: number;
 }
 
-const COMMANDS = new Set(["analyze", "init", "doctor", "help"]);
+const COMMANDS = new Set(["analyze", "init", "doctor", "model-test", "test-model", "help"]);
 
 export function parseCliArgs(rawArgs: string[]): CliOptions {
   const args = rawArgs.filter((arg) => arg !== "--");
@@ -109,11 +109,27 @@ export function parseCliArgs(rawArgs: string[]): CliOptions {
     };
   }
 
+  if (positional.length === 0) {
+    return {
+      command: "analyze",
+      targetPath: ".",
+      envOverrides: overrides,
+      force,
+      yes,
+      interactive,
+      excludes,
+      maxFileBytes
+    };
+  }
+
   const [first, second] = positional;
   const command = commandFrom(first);
+  const firstIsCommand = first === "test-model" || (first !== undefined && COMMANDS.has(first));
   const targetPath = command === "interactive"
     ? first ?? "."
-    : second ?? ".";
+    : firstIsCommand
+      ? second ?? "."
+      : first ?? ".";
 
   return {
     command,
@@ -147,6 +163,9 @@ export function normalizeProvider(value: string | undefined): ModelProvider {
 function commandFrom(value: string | undefined): CliCommand {
   if (!value) {
     return "interactive";
+  }
+  if (value === "test-model") {
+    return "model-test";
   }
   if (COMMANDS.has(value)) {
     return value as CliCommand;

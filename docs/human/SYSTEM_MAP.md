@@ -8,15 +8,15 @@
 
 | Metric | Value |
 | --- | --- |
-| Scanned files | 42 |
-| Source files | 33 |
-| Modules | 42 |
+| Scanned files | 43 |
+| Source files | 34 |
+| Modules | 43 |
 | Classes | 2 |
-| Method units | 270 |
+| Method units | 277 |
 | Business flows | 1 |
 | Static execution flows | 8 |
 | External resources | 28 |
-| Graph edges | 653 |
+| Graph edges | 669 |
 
 ## Subsystem Map
 
@@ -24,7 +24,7 @@
 | --- | --- | --- |
 | analyzer | 2 | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。 |
 | Application | 1 | main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。 printHelp 定义一个可调用单元；调用 console.log。 |
-| cli | 5 | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 parseCliArgs 定义一个可调用单元；调用 commandFrom, excludes.push, parsePositiveInteger, positional.push, rawArgs.filter。 |
+| cli | 6 | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 parseCliArgs 定义一个可调用单元；调用 COMMANDS.has, commandFrom, excludes.push, parsePositiveInteger, positional.push。 |
 | config | 1 | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 递归遍历对象并检查是否包含敏感键名，若发现则抛出错误。 |
 | docs | 5 | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。 renderDocIndex 定义一个可调用单元；调用 String, bulletList, docRows.map, docs.get, docs.has；访问 FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/CHANGE_SUMMARY.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。 |
 | graph | 1 | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 从模块单元中提取所有资源并去重排序，返回资源节点数组。 |
@@ -38,7 +38,7 @@
 3. src/docs/markdown.ts#table: 生成 Markdown 表格字符串，包含表头、分隔符和行数据。
 4. src/analyzer/analyzeRepo.ts#analyzeRepo: 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
 5. src/output/resultJsonWriter.ts#buildResultDiff: 比较两个记录对象，生成包含文件、方法、入口点、资源和业务流程差异的结构化差异报告。
-6. src/cli/interactiveCommand.ts#runInteractiveCommand: runInteractiveCommand 定义一个可调用单元；调用 ask, askSecret, askYesNo, console.log, defaultModel。
+6. src/docs/markdown.ts#bulletList: 将字符串数组转换为Markdown格式的无序列表，若数组为空则返回默认占位符。
 
 ## Output Strategy
 

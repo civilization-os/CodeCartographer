@@ -4,6 +4,7 @@ import { parseCliArgs, normalizeProvider } from "./cli/args.js";
 import { runDoctorCommand } from "./cli/doctorCommand.js";
 import { runInitCommand } from "./cli/initCommand.js";
 import { runInteractiveCommand } from "./cli/interactiveCommand.js";
+import { runModelTestCommand } from "./cli/modelCommand.js";
 
 async function main(): Promise<void> {
   const options = parseCliArgs(process.argv.slice(2));
@@ -36,6 +37,14 @@ async function main(): Promise<void> {
         envOverrides: options.envOverrides
       });
       return;
+    case "model-test":
+      await runModelTestCommand({
+        targetPath: options.targetPath,
+        envOverrides: options.envOverrides,
+        yes: options.yes,
+        interactive: options.interactive
+      });
+      return;
     case "help":
       printHelp();
       return;
@@ -50,11 +59,13 @@ Usage:
   codecartographer analyze [repo-path] [options]
   codecartographer init [repo-path] [options]
   codecartographer doctor [repo-path] [options]
+  codecartographer model-test [repo-path] [options]
 
 Commands:
   analyze              Analyze a repository and generate docs plus .see-code JSON.
   init                 Create a safe see-code.config.json without API keys.
   doctor               Check target path, config, and local LLM settings.
+  model-test           Test the configured model connection, then optionally save defaults.
   help                 Show this help.
 
 Analyze options:

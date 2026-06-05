@@ -40,6 +40,55 @@ test("parses analyze flags into environment overrides", () => {
   assert.equal(options.envOverrides.SEE_CODE_LLM_CACHE, "0");
 });
 
+test("parses model-test command and aliases", () => {
+  const options = parseCliArgs([
+    "model-test",
+    "sample-repo",
+    "--provider",
+    "openai-compatible",
+    "--model",
+    "local-model",
+    "--base-url",
+    "http://localhost:8000/v1",
+    "--api-key",
+    "not-empty",
+    "--yes"
+  ]);
+  const aliasOptions = parseCliArgs(["test-model", "sample-repo"]);
+
+  assert.equal(options.command, "model-test");
+  assert.equal(options.targetPath, "sample-repo");
+  assert.equal(options.envOverrides.SEE_CODE_LLM_PROVIDER, "openai-compatible");
+  assert.equal(options.envOverrides.SEE_CODE_LLM_MODEL, "local-model");
+  assert.equal(options.envOverrides.SEE_CODE_LLM_BASE_URL, "http://localhost:8000/v1");
+  assert.equal(options.envOverrides.SEE_CODE_LLM_API_KEY, "not-empty");
+  assert.equal(options.yes, true);
+  assert.equal(options.interactive, false);
+  assert.equal(aliasOptions.command, "model-test");
+  assert.equal(aliasOptions.targetPath, "sample-repo");
+});
+
+test("defaults flag-only invocation to analyze current directory", () => {
+  const options = parseCliArgs([
+    "--provider",
+    "deepseek",
+    "--model",
+    "deepseek-chat"
+  ]);
+
+  assert.equal(options.command, "analyze");
+  assert.equal(options.targetPath, ".");
+  assert.equal(options.envOverrides.SEE_CODE_LLM_PROVIDER, "deepseek");
+  assert.equal(options.envOverrides.SEE_CODE_LLM_MODEL, "deepseek-chat");
+});
+
+test("parses path-only invocation as analyze target", () => {
+  const options = parseCliArgs(["sample-repo"]);
+
+  assert.equal(options.command, "analyze");
+  assert.equal(options.targetPath, "sample-repo");
+});
+
 test("writes safe project config without API keys", async () => {
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "codecartographer-init-"));
   const configPath = await writeProjectConfig({

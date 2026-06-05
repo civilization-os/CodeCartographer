@@ -8,7 +8,7 @@ This document is a compact handoff for AI agents and automation. Use `.see-code/
 | --- | --- |
 | Purpose | 该仓库是一个 TypeScript/JavaScript 工程，围绕 analyzer、cli、config、core、docs 等模块组织源码结构、调用关系和资源访问，包含 1 个 CLI 入口。 |
 | Root path | /root/project/ai/see_code |
-| Scanned at | 2026-06-05T03:37:34.777Z |
+| Scanned at | 2026-06-05T11:48:45.941Z |
 | LLM | deepseek/deepseek-chat |
 | Cache | enabled |
 
@@ -16,15 +16,15 @@ This document is a compact handoff for AI agents and automation. Use `.see-code/
 
 | Metric | Value |
 | --- | --- |
-| Files | 42 |
-| Source files | 33 |
-| Modules | 42 |
+| Files | 43 |
+| Source files | 34 |
+| Modules | 43 |
 | Classes | 2 |
-| Methods | 270 |
+| Methods | 277 |
 | Business flows | 1 |
 | Static flows | 8 |
 | Resources | 28 |
-| Graph edges | 653 |
+| Graph edges | 669 |
 
 ## Subsystems
 
@@ -32,7 +32,7 @@ This document is a compact handoff for AI agents and automation. Use `.see-code/
 | --- | --- | --- | --- |
 | analyzer | 2 | 11 | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。 |
 | Application | 1 | 2 | main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。 printHelp 定义一个可调用单元；调用 console.log。 |
-| cli | 5 | 19 | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 parseCliArgs 定义一个可调用单元；调用 commandFrom, excludes.push, parsePositiveInteger, positional.push, rawArgs.filter。 |
+| cli | 6 | 26 | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 parseCliArgs 定义一个可调用单元；调用 COMMANDS.has, commandFrom, excludes.push, parsePositiveInteger, positional.push。 |
 | config | 1 | 3 | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 递归遍历对象并检查是否包含敏感键名，若发现则抛出错误。 |
 | Configuration | 3 | 0 |  |
 | core | 1 | 0 |  |
@@ -50,14 +50,14 @@ This document is a compact handoff for AI agents and automation. Use `.see-code/
 
 | Name | Kind | Location | Summary |
 | --- | --- | --- | --- |
-| main function | cli | src/index.ts:8 | main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。 |
+| main function | cli | src/index.ts:9 | main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。 |
 
 ## Key Static Flows
 
 | Flow | Entry | Steps | Resources |
 | --- | --- | --- | --- |
 | extractClassUnit | src/parser/javaStructureParser.ts:144 | extractClassUnit -> buildMethodReturnTypeIndex -> buildMethodUnit -> extractClassResources -> extractFieldTypes -> extractMethodBlocks -> locationFromOffsets -> requestMappingPath -> stableId -> summarizeClass |  |
-| main | src/index.ts:8 | main -> normalizeProvider -> parseCliArgs -> printHelp -> runAnalyzeCommand -> runDoctorCommand -> runInitCommand -> runInteractiveCommand -> commandFrom -> parsePositiveInteger | FILE:QUALITY_REPORT.md, FILE:README.md |
+| main | src/index.ts:9 | main -> normalizeProvider -> parseCliArgs -> printHelp -> runAnalyzeCommand -> runDoctorCommand -> runInitCommand -> runInteractiveCommand -> runModelTestCommand -> commandFrom | FILE:QUALITY_REPORT.md, FILE:README.md |
 | extractFrameworkHints | src/parser/javaStructureParser.ts:578 | extractFrameworkHints -> annotationAttribute -> annotationByName -> firstAnnotationString -> hasAnnotation -> isRepositoryClass -> routeFromAnnotations -> annotationName -> joinRoutePaths -> requestMappingMethod |  |
 | parseJavaModule | src/parser/javaStructureParser.ts:84 | parseJavaModule -> buildClassResourceIndex -> buildLineIndex -> extractClassBlocks -> maskJavaSource -> stableId -> extractClassResources -> findMatchingBrace -> annotationAttribute -> annotationByName |  |
 | parseTypeScriptModule | src/parser/typescriptStructureParser.ts:15 | parseTypeScriptModule -> extractFunctionUnit -> extractVariableFunctionUnit -> stableId -> summarizeModule -> extractCallableUnit -> buildSignature -> extractParameters -> getLocation -> hasModifier |  |
@@ -74,11 +74,11 @@ This document is a compact handoff for AI agents and automation. Use `.see-code/
 | table | src/docs/markdown.ts | 生成 Markdown 表格字符串，包含表头、分隔符和行数据。 |
 | analyzeRepo | src/analyzer/analyzeRepo.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
 | buildResultDiff | src/output/resultJsonWriter.ts | 比较两个记录对象，生成包含文件、方法、入口点、资源和业务流程差异的结构化差异报告。 |
-| runInteractiveCommand | src/cli/interactiveCommand.ts | runInteractiveCommand 定义一个可调用单元；调用 ask, askSecret, askYesNo, console.log, defaultModel。 |
 | bulletList | src/docs/markdown.ts | 将字符串数组转换为Markdown格式的无序列表，若数组为空则返回默认占位符。 |
-| stableId | src/utils/path.ts | 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。 |
-| formatMethodName | src/docs/semanticAggregator.ts | 根据方法单元是否包含类名，格式化返回方法名称字符串。 |
 | loadModelConfig | src/llm/modelConfig.ts | loadModelConfig 定义一个可调用单元；调用 Boolean, defaultBaseUrl, defaultModel, getApiKey, modelProviderSchema.parse。 |
+| stableId | src/utils/path.ts | 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。 |
+| runInteractiveCommand | src/cli/interactiveCommand.ts | runInteractiveCommand 定义一个可调用单元；调用 ask, askSecret, askYesNo, console.log, defaultModel。 |
+| formatMethodName | src/docs/semanticAggregator.ts | 根据方法单元是否包含类名，格式化返回方法名称字符串。 |
 | extractClassUnit | src/parser/javaStructureParser.ts | 从Java源代码中提取类单元，包括方法、字段、资源和路由前缀，并构建ClassUnit对象。 |
 | extractCallableUnit | src/parser/typescriptStructureParser.ts | 从TypeScript AST节点提取可调用单元的所有元数据并组装为MethodUnit对象。 |
 

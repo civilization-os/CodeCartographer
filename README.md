@@ -66,6 +66,7 @@ The intended command shape for published usage is:
 codecartographer
 codecartographer init /path/to/repo --provider deepseek --model deepseek-chat
 codecartographer doctor /path/to/repo
+codecartographer model-test /path/to/repo --provider deepseek --model deepseek-chat
 codecartographer analyze /path/to/repo --provider deepseek --model deepseek-chat
 codecartographer analyze /path/to/repo --no-proxy localhost,127.0.0.1,.internal
 ```
@@ -164,6 +165,30 @@ Then provide the key only at run time:
 SEE_CODE_LLM_API_KEY=not-empty codecartographer analyze /path/to/repo
 ```
 
+Test the model connection before a long analysis:
+
+```bash
+codecartographer model-test /path/to/repo \
+  --provider openai-compatible \
+  --model your-model \
+  --base-url http://localhost:8000/v1 \
+  --api-key not-empty \
+  --no-proxy localhost,127.0.0.1,.internal
+```
+
+If the request succeeds, the command asks whether to save the non-sensitive
+defaults to `see-code.config.json`. It never stores API keys. Use `--yes` to
+save automatically in scripts:
+
+```bash
+codecartographer model-test /path/to/repo \
+  --provider openai-compatible \
+  --model your-model \
+  --base-url http://localhost:8000/v1 \
+  --api-key not-empty \
+  --yes
+```
+
 Anthropic-compatible private server through environment variables:
 
 ```bash
@@ -186,6 +211,20 @@ codecartographer doctor /path/to/repo \
   --base-url http://localhost:8000/v1 \
   --api-key not-empty \
   --no-proxy localhost,127.0.0.1,.internal
+```
+
+When running through `pnpm start`, put arguments after `--`:
+
+```bash
+pnpm start -- model-test /path/to/repo --provider deepseek --model deepseek-chat --api-key your-key
+pnpm start -- analyze /path/to/repo --provider deepseek --model deepseek-chat --api-key your-key
+```
+
+If you omit the subcommand and only pass flags, CodeCartographer defaults to
+`analyze .`, so this also works:
+
+```bash
+pnpm start -- --provider deepseek --model deepseek-chat --api-key your-key
 ```
 
 LLM semantic results are cached in `.see-code/cache/method-semantics.json`. Disable cache with:
