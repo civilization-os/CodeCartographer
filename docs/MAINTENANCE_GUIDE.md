@@ -25,7 +25,7 @@
 | evaluations/book-social-network.md | markdown | 5560 |
 | evaluations/spring-petclinic.md | markdown | 7538 |
 | package.json | json | 921 |
-| README.md | markdown | 8449 |
+| README.md | markdown | 8881 |
 | schema/result-diff.schema.json | json | 2493 |
 | schema/result.schema.json | json | 4702 |
 | scripts/secret-scan.mjs | javascript | 1382 |
@@ -40,10 +40,10 @@
 | src/cli/interactiveCommand.ts | typescript | 4878 |
 | src/config/projectConfig.ts | typescript | 2238 |
 | src/core/types.ts | typescript | 3744 |
-| src/docs/docsGenerator.ts | typescript | 24727 |
+| src/docs/docsGenerator.ts | typescript | 32924 |
 | src/docs/markdown.ts | typescript | 734 |
 | src/docs/narrativeComposer.ts | typescript | 11079 |
-| src/docs/qualityReport.ts | typescript | 8091 |
+| src/docs/qualityReport.ts | typescript | 8294 |
 | src/docs/semanticAggregator.ts | typescript | 11392 |
 | src/graph/relationGraphBuilder.ts | typescript | 5983 |
 | src/index.ts | typescript | 3014 |
@@ -57,10 +57,10 @@
 | src/parser/moduleParser.ts | typescript | 1060 |
 | src/parser/parserAdapter.ts | typescript | 437 |
 | src/parser/typescriptAdapter.ts | typescript | 304 |
-| src/parser/typescriptStructureParser.ts | typescript | 15301 |
+| src/parser/typescriptStructureParser.ts | typescript | 15308 |
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
-| tests/analyzeRepo.test.ts | typescript | 22398 |
+| tests/analyzeRepo.test.ts | typescript | 23443 |
 | tests/cli.test.ts | typescript | 2827 |
 | tests/schemaContract.test.ts | typescript | 4473 |
 | tsconfig.json | json | 311 |

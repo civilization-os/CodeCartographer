@@ -2,29 +2,32 @@
 
 Repository path: `/root/project/ai/see_code`
 
-Scan time: `2026-06-04T16:07:03.678Z`
+Scan time: `2026-06-05T01:59:29.876Z`
 
 ## Purpose
 
-CodeCartographer 是一个静态代码分析工具，用于扫描指定代码仓库，提取模块、方法、类、资源和调用关系图，并生成结构化工程文档（Markdown 格式）和 JSON 结果文件。
+该仓库是一个 TypeScript/JavaScript 工程，围绕 analyzer、cli、config、core、docs 等模块组织源码结构、调用关系和资源访问，包含 1 个 CLI 入口。
 
 ## Operating Model
 
-1. 用户通过 CLI 子命令（analyze、init、doctor、interactive）启动工具。
-2. 工具递归扫描目标目录，过滤排除项和大文件，识别 TypeScript/JavaScript 或 Java 源文件。
-3. 解析器将源文件转换为模块单元（ModuleUnit），包含类、方法、导入和资源引用。
-4. 关系图构建器从模块单元中提取节点和边，生成调用关系图。
-5. LLM 模块对方法进行语义分析（支持缓存和启发式回退），为方法附加语义标签。
-6. 文档生成器将分析结果写入多个 Markdown 文件（项目概览、架构、模块、业务流程等），并输出结果 JSON 和差异 JSON。
+1. 入口方法沿 8 条静态执行流调用内部方法，形成可追踪的处理路径。
+2. analyzer、Application、cli、config 等模块共同承载领域模型、入口处理和支撑逻辑。
+3. `.see-code/result.json` 保留完整模块、类、方法、资源和调用图，Markdown 文档面向人工阅读展示关键路径。
 
 ## Key Capabilities
 
-- 支持 TypeScript/JavaScript 和 Java 两种语言的静态解析。
-- 生成模块、类、方法、资源和调用关系的完整关系图。
-- 通过 LLM 或启发式规则为方法附加语义标签。
-- 输出结构化工程文档（Markdown）和机器可读 JSON 结果。
-- 支持配置排除规则、最大文件大小和 LLM 模型参数。
-- 提供交互式命令引导用户完成初始化、诊断和分析流程。
+- analyzer: 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
+- Application: 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。
+- cli: 执行代码仓库分析命令，加载配置，调用分析引擎，生成文档并输出结果。
+- config: 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。
+- docs: generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。
+- graph: 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
+- llm: 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
+- output: 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
+- parser: 解析Java源文件并提取模块单元信息，包括类、方法和导入。
+- Project Files: 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。
+- scanner: 异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。
+- utils: 将路径分隔符转换为正斜杠以生成POSIX风格路径。
 
 ## Primary Areas
 
@@ -36,7 +39,7 @@ CodeCartographer 是一个静态代码分析工具，用于扫描指定代码仓
 | config | src/config/projectConfig.ts | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 递归遍历对象并检查是否包含敏感键名，若发现则抛出错误。 判断未知错误是否为 Node.js 的 ErrnoException 类型。 |
 | Configuration | package.json, see-code.config.json, tsconfig.json |  |
 | core | src/core/types.ts |  |
-| docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。 生成文档索引页面，包含项目快照、推荐阅读顺序、文档映射表和机器可读输出列表。 生成项目概览的 Markdown 字符串，包含仓库元数据、目的、能力、模块分组、结构统计、语义分析器配置、扫描配置和输出文件列表。 |
+| docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。 renderDocIndex 定义一个可调用单元；调用 String, bulletList, docRows.map, docs.get, docs.has；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:CHANGE_SUMMARY.md。 renderSystemMap 定义一个可调用单元；调用 String, bulletList, corePipeline.slice, formatMethodName, group.modules.some。 |
 | Documentation | evaluations/book-social-network.md, evaluations/spring-petclinic.md, README.md, SPEC.md |  |
 | graph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 从模块单元中提取所有资源并去重排序，返回资源节点数组。 构建方法名称到方法单元的索引映射，支持类名限定和多种命名格式。 |
 | llm | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 将未知类型的错误对象转换为字符串消息。 遍历模块列表，为每个方法附加启发式语义标签。 |
@@ -55,9 +58,9 @@ CodeCartographer 是一个静态代码分析工具，用于扫描指定代码仓
 | Markdown documents | 4 |
 | Modules | 42 |
 | Classes | 2 |
-| Method units | 267 |
-| External resource nodes | 22 |
-| Graph edges | 627 |
+| Method units | 269 |
+| External resource nodes | 24 |
+| Graph edges | 648 |
 
 ## Semantic Analyzer
 
@@ -81,8 +84,10 @@ CodeCartographer 是一个静态代码分析工具，用于扫描指定代码仓
 ## Generated Outputs
 
 - `DOC_INDEX.md` 提供文档入口、质量快照、阅读顺序和文档地图。
+- `SYSTEM_MAP.md` 提供面向人读的高层系统地图和输出分层。
 - `PROJECT_OVERVIEW.md` 汇总仓库规模、目标和文档产物。
 - `ARCHITECTURE.md` 描述模块区域、架构层次和运行时依赖。
+- `AI_CONTEXT.md` 提供面向 AI/自动化读取的紧凑上下文。
 - `MODULES.md` 列出模块、类、方法、导入和方法语义摘要。
 - `EXECUTION_FLOWS.md` 汇总由调用边推断出的静态执行路径。
 - `BUSINESS_FLOWS.md` 展示框架入口驱动的业务流候选。

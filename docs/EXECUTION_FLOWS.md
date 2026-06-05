@@ -135,7 +135,7 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 
 1. generateFixtureOutput - 在临时目录中复制Java Spring测试夹具，执行仓库分析和文档生成，并将结果写入JSON文件。
 2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
-3. generateDocs - 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。
+3. generateDocs - generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。
 4. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
 5. addSyntheticRepositoryMethods - 为每个仓库操作生成合成方法并注入到对应的类和模块中。
 6. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
@@ -146,6 +146,7 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 
 ### Resources
 
+- `FILE:AI_CONTEXT.md`
 - `FILE:ARCHITECTURE.md`
 - `FILE:BUSINESS_FLOWS.md`
 - `FILE:CALL_GRAPH.md`
@@ -158,6 +159,7 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 - `FILE:MODULES.md`
 - `FILE:PROJECT_OVERVIEW.md`
 - `FILE:QUALITY_REPORT.md`
+- `FILE:SYSTEM_MAP.md`
 - `FILE:result-diff.json`
 - `FILE:result.json`
 

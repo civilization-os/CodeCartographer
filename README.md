@@ -5,7 +5,7 @@
 [![pnpm](https://img.shields.io/badge/pnpm-ready-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![LangChain](https://img.shields.io/badge/LangChain-LLM%20adapter-1C3C3C)](https://js.langchain.com/)
 [![Java](https://img.shields.io/badge/Java-lightweight%20adapter-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
-[![Docs Quality](https://img.shields.io/badge/docs%20quality-100%2F100-brightgreen)](docs/QUALITY_REPORT.md)
+[![Docs Quality](https://img.shields.io/badge/docs%20quality-96%2F100-yellowgreen)](docs/QUALITY_REPORT.md)
 
 CodeCartographer is a static code intelligence tool for turning repositories into architecture documentation, call graphs, business-flow maps, resource inventories, and structured JSON context. It scans a local project, extracts source units, builds a lightweight relation graph, writes engineering documentation into `docs/`, and emits machine-readable analysis and diff results under `.see-code/`.
 
@@ -130,8 +130,10 @@ SEE_CODE_LLM_CACHE=0 pnpm analyze -- .
 ```text
 docs/
   DOC_INDEX.md
+  SYSTEM_MAP.md
   PROJECT_OVERVIEW.md
   ARCHITECTURE.md
+  AI_CONTEXT.md
   MODULES.md
   EXECUTION_FLOWS.md
   BUSINESS_FLOWS.md
@@ -151,7 +153,18 @@ schema/
   result-diff.schema.json
 ```
 
-`DOC_INDEX.md` is the best starting point. It links the generated documents, shows the quality snapshot, and recommends a reading order.
+`DOC_INDEX.md` is the best starting point. It links the generated documents,
+shows the quality snapshot, separates human-readable and AI-readable outputs,
+and recommends a reading order.
+
+Output layers:
+
+- Human-readable: `SYSTEM_MAP.md`, `PROJECT_OVERVIEW.md`, `ARCHITECTURE.md`,
+  `BUSINESS_FLOWS.md`, and `QUALITY_REPORT.md`.
+- AI-readable: `AI_CONTEXT.md`, `.see-code/result.json`, and
+  `.see-code/result-diff.json`.
+- Deep-dive: `MODULES.md`, `CALL_GRAPH.md`, `EXECUTION_FLOWS.md`,
+  `ENTRYPOINTS.md`, and `DATA_AND_RESOURCES.md`.
 
 ## Real-project Snapshots
 

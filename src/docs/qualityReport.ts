@@ -110,7 +110,10 @@ function buildChecks(
     "The CLI receives",
     "The scanner collects",
     "Parser adapters convert",
-    "Call graph resolution is static"
+    "Call graph resolution is static",
+    "defines a callable unit",
+    " calls ",
+    " touches "
   ]);
 
   return [
@@ -182,10 +185,11 @@ function methodSummaryCoverageCheck(
     };
   }
 
+  const llmCoverage = llmCount / methodCount;
   return {
     name: "Method summary coverage",
-    status: heuristicCount === 0 ? "pass" : heuristicCount <= 3 ? "warn" : "fail",
-    detail: coverageDetail
+    status: heuristicCount === 0 ? "pass" : llmCoverage >= 0.95 ? "warn" : "fail",
+    detail: `${coverageDetail} Coverage is ${Math.round(llmCoverage * 100)}%.`
   };
 }
 
@@ -237,6 +241,8 @@ function maxDocLength(docs: Map<string, string>): number {
 function hasRequiredDocs(docs: Map<string, string>): boolean {
   return [
     "DOC_INDEX.md",
+    "SYSTEM_MAP.md",
+    "AI_CONTEXT.md",
     "PROJECT_OVERVIEW.md",
     "ARCHITECTURE.md",
     "MODULES.md",

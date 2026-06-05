@@ -34,8 +34,10 @@ export async function generateDocs(result: AnalysisResult): Promise<GeneratedDoc
   );
 
   const docs = new Map<string, string>([
+    ["SYSTEM_MAP.md", renderSystemMap(result, overview, narrative)],
     ["PROJECT_OVERVIEW.md", renderProjectOverview(result, overview, narrative)],
     ["ARCHITECTURE.md", renderArchitecture(result, overview, narrative)],
+    ["AI_CONTEXT.md", renderAiContext(result, overview, narrative)],
     ["MODULES.md", renderModules(result.modules)],
     ["EXECUTION_FLOWS.md", renderExecutionFlows(overview)],
     ["BUSINESS_FLOWS.md", renderBusinessFlows(overview, narrative)],
@@ -78,10 +80,12 @@ function renderDocIndex(
     (resource) => !isInternalResource(resource.name)
   );
   const docRows = [
+    ["SYSTEM_MAP.md", "面向人读的高层系统地图、核心链路、输出分层和扩展点。"],
     ["PROJECT_OVERVIEW.md", "项目目标、运行模型、规模指标和生成产物总览。"],
     ["ARCHITECTURE.md", "架构层、模块区域、关键路径和核心热点方法。"],
     ["BUSINESS_FLOWS.md", "由框架入口驱动的业务流程和资源访问路径。"],
     ["EXECUTION_FLOWS.md", "由静态调用图推断出的执行路径。"],
+    ["AI_CONTEXT.md", "面向 AI/自动化读取的紧凑结构化上下文。"],
     ["CALL_GRAPH.md", "可解析的仓库内部调用边和 Mermaid 图。"],
     ["ENTRYPOINTS.md", "框架感知入口和静态入口候选。"],
     ["DATA_AND_RESOURCES.md", "检测到的数据库、HTTP、文件、环境变量等资源。"],
@@ -118,12 +122,24 @@ function renderDocIndex(
     heading(2, "Recommended Reading Order"),
     "",
     numberedList([
-      "`PROJECT_OVERVIEW.md` - 先确认项目目标、运行模型和规模。",
-      "`ARCHITECTURE.md` - 再看模块边界、关键路径和热点方法。",
+      "`SYSTEM_MAP.md` - 先用人读版本快速理解系统地图、核心链路和输出分层。",
+      "`PROJECT_OVERVIEW.md` - 再确认项目目标、运行模型和规模。",
+      "`ARCHITECTURE.md` - 查看模块边界、关键路径和热点方法。",
       "`BUSINESS_FLOWS.md` / `EXECUTION_FLOWS.md` - 检查业务入口和静态执行路径。",
       "`DATA_AND_RESOURCES.md` - 追踪数据库、仓储、表、HTTP、文件和环境变量资源。",
-      "`MODULES.md` / `.see-code/result.json` - 需要方法级细节时再深入查看。"
+      "`AI_CONTEXT.md` / `.see-code/result.json` - 给 AI 或自动化流程读取紧凑上下文和完整结构化结果。"
     ]),
+    "",
+    heading(2, "Output Layers"),
+    "",
+    table(
+      ["Layer", "Documents", "Audience"],
+      [
+        ["Human-readable", "`SYSTEM_MAP.md`, `PROJECT_OVERVIEW.md`, `ARCHITECTURE.md`, `BUSINESS_FLOWS.md`, `QUALITY_REPORT.md`", "人类读者、评审、交接和项目理解。"],
+        ["AI-readable", "`AI_CONTEXT.md`, `.see-code/result.json`, `.see-code/result-diff.json`", "AI agent、自动化检查、二次分析和上下文注入。"],
+        ["Deep-dive", "`MODULES.md`, `CALL_GRAPH.md`, `EXECUTION_FLOWS.md`, `ENTRYPOINTS.md`, `DATA_AND_RESOURCES.md`", "需要追踪方法、调用边、入口点和资源细节时使用。"]
+      ]
+    ),
     "",
     heading(2, "Document Map"),
     "",
@@ -142,6 +158,205 @@ function renderDocIndex(
       "`.see-code/result.json` 保存完整结构化分析结果，包括文件、模块、类、方法、资源、图和语义概览。",
       "`.see-code/result-diff.json` 保存相对上一版结果的机器可读差异。",
       "`schema/result.schema.json` 和 `schema/result-diff.schema.json` 定义输出契约。"
+    ])
+  ].join("\n");
+}
+
+function renderSystemMap(
+  result: AnalysisResult,
+  overview: SemanticOverview,
+  narrative: ProjectNarrative
+): string {
+  const sourceFiles = result.files.filter(
+    (file) => file.language === "typescript" || file.language === "javascript" || file.language === "java"
+  );
+  const externalResources = result.resources.filter(
+    (resource) => !isInternalResource(resource.name)
+  );
+  const primaryGroups = overview.moduleGroups
+    .filter((group) => group.modules.some((module) => module.methods.length > 0))
+    .slice(0, 8);
+  const corePipeline = narrative.architecture.criticalPaths.length > 0
+    ? narrative.architecture.criticalPaths
+    : overview.hotMethods.slice(0, 8).map((method) => `${method.modulePath}:${formatMethodName(method)}`);
+
+  return [
+    heading(1, "System Map"),
+    "",
+    heading(2, "Executive Summary"),
+    "",
+    narrative.projectOverview.purpose,
+    "",
+    heading(2, "At A Glance"),
+    "",
+    table(
+      ["Metric", "Value"],
+      [
+        ["Scanned files", String(result.files.length)],
+        ["Source files", String(sourceFiles.length)],
+        ["Modules", String(result.modules.length)],
+        ["Classes", String(result.classes.length)],
+        ["Method units", String(result.methods.length)],
+        ["Business flows", String(overview.businessFlows.length)],
+        ["Static execution flows", String(overview.flows.length)],
+        ["External resources", String(externalResources.length)],
+        ["Graph edges", String(result.graph.edges.length)]
+      ]
+    ),
+    "",
+    heading(2, "Subsystem Map"),
+    "",
+    table(
+      ["Subsystem", "Modules", "Role"],
+      primaryGroups.map((group) => [
+        group.name,
+        String(group.modules.length),
+        group.responsibilities.slice(0, 2).join(" ") || group.summary
+      ])
+    ),
+    "",
+    heading(2, "Core Pipeline"),
+    "",
+    numberedList(corePipeline.slice(0, 10)),
+    "",
+    heading(2, "Output Strategy"),
+    "",
+    table(
+      ["Output", "Purpose"],
+      [
+        ["Human-readable docs", "`SYSTEM_MAP.md`, `PROJECT_OVERVIEW.md`, `ARCHITECTURE.md`, `BUSINESS_FLOWS.md` 用于快速理解和交接。"],
+        ["AI-readable context", "`AI_CONTEXT.md` 和 `.see-code/result.json` 用于 agent、自动化检查和二次分析。"],
+        ["Deep-dive docs", "`MODULES.md`, `CALL_GRAPH.md`, `EXECUTION_FLOWS.md` 保留完整追踪能力，但不作为第一阅读入口。"]
+      ]
+    ),
+    "",
+    heading(2, "Extension Points"),
+    "",
+    bulletList([
+      "Parser adapters: 新语言只需要输出统一的 ModuleUnit、ClassUnit 和 MethodUnit。",
+      "Framework adapters: 入口点、资源和业务流质量取决于框架元数据提取。",
+      "LLM providers: 语义摘要通过 LangChain 适配 DeepSeek、OpenAI 协议、Anthropic 协议和自建模型。",
+      "Document renderers: 人读文档、AI 上下文和 JSON 契约可以独立演进。"
+    ]),
+    "",
+    heading(2, "Current Limits"),
+    "",
+    bulletList([
+      "调用图是静态近似结果，不等同于完整运行时路径。",
+      "复杂泛型、链式表达式、动态调用和框架魔法仍需要更高保真解析器增强。",
+      "`MODULES.md` 和 `CALL_GRAPH.md` 偏细节追踪，优先通过 `SYSTEM_MAP.md` 和 `AI_CONTEXT.md` 消化。"
+    ])
+  ].join("\n");
+}
+
+function renderAiContext(
+  result: AnalysisResult,
+  overview: SemanticOverview,
+  narrative: ProjectNarrative
+): string {
+  const sourceFiles = result.files.filter(
+    (file) => file.language === "typescript" || file.language === "javascript" || file.language === "java"
+  );
+  const externalResources = result.resources.filter(
+    (resource) => !isInternalResource(resource.name)
+  );
+
+  return [
+    heading(1, "AI Context"),
+    "",
+    "This document is a compact handoff for AI agents and automation. Use `.see-code/result.json` for the full machine-readable graph and method inventory.",
+    "",
+    heading(2, "Project"),
+    "",
+    table(
+      ["Field", "Value"],
+      [
+        ["Purpose", narrative.projectOverview.purpose],
+        ["Root path", result.rootPath],
+        ["Scanned at", result.scannedAt],
+        ["LLM", result.model?.enabled ? `${result.model.provider}/${result.model.model ?? ""}` : "disabled"],
+        ["Cache", result.model?.cacheEnabled ? "enabled" : "disabled"]
+      ]
+    ),
+    "",
+    heading(2, "Stats"),
+    "",
+    table(
+      ["Metric", "Value"],
+      [
+        ["Files", String(result.files.length)],
+        ["Source files", String(sourceFiles.length)],
+        ["Modules", String(result.modules.length)],
+        ["Classes", String(result.classes.length)],
+        ["Methods", String(result.methods.length)],
+        ["Business flows", String(overview.businessFlows.length)],
+        ["Static flows", String(overview.flows.length)],
+        ["Resources", String(externalResources.length)],
+        ["Graph edges", String(result.graph.edges.length)]
+      ]
+    ),
+    "",
+    heading(2, "Subsystems"),
+    "",
+    table(
+      ["Name", "Modules", "Methods", "Responsibilities"],
+      overview.moduleGroups.map((group) => [
+        group.name,
+        String(group.modules.length),
+        String(group.modules.reduce((sum, module) => sum + module.methods.length, 0)),
+        group.responsibilities.slice(0, 2).join(" ")
+      ])
+    ),
+    "",
+    heading(2, "Entrypoints"),
+    "",
+    table(
+      ["Name", "Kind", "Location", "Summary"],
+      overview.businessFlows.slice(0, 20).map((flow) => [
+        flow.name,
+        flow.entrypointHint.kind,
+        `${flow.entrypoint.modulePath}:${flow.entrypoint.location.startLine}`,
+        flow.entrypoint.summary
+      ])
+    ),
+    "",
+    heading(2, "Key Static Flows"),
+    "",
+    table(
+      ["Flow", "Entry", "Steps", "Resources"],
+      overview.flows.slice(0, 12).map((flow) => [
+        flow.name,
+        `${flow.entrypoint.modulePath}:${flow.entrypoint.location.startLine}`,
+        flow.steps.map(formatMethodName).join(" -> "),
+        flow.resources.slice(0, 8).join(", ")
+      ])
+    ),
+    "",
+    heading(2, "Hot Methods"),
+    "",
+    table(
+      ["Method", "Module", "Summary"],
+      overview.hotMethods.map((method) => [
+        formatMethodName(method),
+        method.modulePath,
+        method.summary
+      ])
+    ),
+    "",
+    heading(2, "External Resources"),
+    "",
+    table(
+      ["Resource", "Kind"],
+      externalResources.slice(0, 80).map((resource) => [resource.name, resource.kind])
+    ),
+    "",
+    heading(2, "Handoff"),
+    "",
+    bulletList([
+      "Use `SYSTEM_MAP.md` for the shortest human summary.",
+      "Use `PROJECT_OVERVIEW.md` and `ARCHITECTURE.md` for narrative explanation.",
+      "Use `MODULES.md` and `CALL_GRAPH.md` only when method-level or edge-level detail is needed.",
+      "Use `.see-code/result.json` for complete structured data and `.see-code/result-diff.json` for deltas."
     ])
   ].join("\n");
 }
@@ -234,8 +449,10 @@ function renderProjectOverview(
     "",
     bulletList([
       "`DOC_INDEX.md` 提供文档入口、质量快照、阅读顺序和文档地图。",
+      "`SYSTEM_MAP.md` 提供面向人读的高层系统地图和输出分层。",
       "`PROJECT_OVERVIEW.md` 汇总仓库规模、目标和文档产物。",
       "`ARCHITECTURE.md` 描述模块区域、架构层次和运行时依赖。",
+      "`AI_CONTEXT.md` 提供面向 AI/自动化读取的紧凑上下文。",
       "`MODULES.md` 列出模块、类、方法、导入和方法语义摘要。",
       "`EXECUTION_FLOWS.md` 汇总由调用边推断出的静态执行路径。",
       "`BUSINESS_FLOWS.md` 展示框架入口驱动的业务流候选。",

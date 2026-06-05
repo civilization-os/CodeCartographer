@@ -2,30 +2,36 @@
 
 ## System Shape
 
-系统采用分层架构，由 CLI 层、分析引擎层、解析器层、图构建层、LLM 语义分析层和文档输出层组成。CLI 层负责命令分发和参数解析；分析引擎层协调扫描、解析、图构建和语义分析流程；解析器层按语言适配器模式实现；图构建层生成节点和边集合；LLM 层提供可缓存的语义分析；文档输出层将结果序列化为 Markdown 和 JSON。
+该仓库是一个 TypeScript/JavaScript 工程，围绕 analyzer、cli、config、core、docs 等模块组织源码结构、调用关系和资源访问，包含 1 个 CLI 入口。
 
 ## Architecture Layers
 
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
-| CLI 层 | src/index.ts, src/cli/args.ts, src/cli/analyzeCommand.ts, src/cli/initCommand.ts, src/cli/doctorCommand.ts, src/cli/interactiveCommand.ts | 解析命令行参数，根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 |
-| 分析引擎层 | src/analyzer/analyzeRepo.ts, src/analyzer/syntheticRepositoryMethods.ts | 协调扫描、解析、图构建和语义分析流程，组装最终分析结果。 |
-| 解析器层 | src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts, src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts | 按语言适配器模式解析源文件，提取模块单元（类、方法、导入、资源）。 |
-| 图构建层 | src/graph/relationGraphBuilder.ts | 从模块单元中提取节点（模块、类、方法、资源）和边（调用关系、资源引用），构建关系图。 |
-| LLM 语义分析层 | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对方法进行语义分析，优先使用缓存，未缓存方法通过 LLM 或启发式规则分析，更新模块和类摘要。 |
-| 文档输出层 | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts, src/output/resultJsonWriter.ts | 将分析结果序列化为 Markdown 文档和 JSON 文件，包括项目概览、架构、模块、业务流程、质量报告和差异报告。 |
+| analyzer | src/analyzer/analyzeRepo.ts, src/analyzer/syntheticRepositoryMethods.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
+| Application | src/index.ts | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 |
+| cli | src/cli/analyzeCommand.ts, src/cli/args.ts, src/cli/doctorCommand.ts, src/cli/initCommand.ts, src/cli/interactiveCommand.ts | 执行代码仓库分析命令，加载配置，调用分析引擎，生成文档并输出结果。 |
+| config | src/config/projectConfig.ts | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 |
+| Configuration | package.json, see-code.config.json, tsconfig.json | Configuration 区域包含 3 个模块、0 个类和 0 个方法单元。 |
+| core | src/core/types.ts | core 区域包含 1 个模块、0 个类和 0 个方法单元。 |
+| docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。 |
+| Documentation | evaluations/book-social-network.md, evaluations/spring-petclinic.md, README.md, SPEC.md | Documentation 区域包含 4 个模块、0 个类和 0 个方法单元。 |
+| graph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 |
+| llm | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
+| output | src/output/resultJsonWriter.ts | 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。 |
+| parser | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 解析Java源文件并提取模块单元信息，包括类、方法和导入。 |
+| Project Files | schema/result-diff.schema.json, schema/result.schema.json, scripts/secret-scan.mjs, tests/analyzeRepo.test.ts, tests/cli.test.ts, tests/schemaContract.test.ts | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
+| scanner | src/scanner/repoScanner.ts | 异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。 |
+| utils | src/utils/path.ts | 将路径分隔符转换为正斜杠以生成POSIX风格路径。 |
 
 ## Critical Paths
 
-- src/index.ts:main
-- src/cli/analyzeCommand.ts:runAnalyzeCommand
-- src/analyzer/analyzeRepo.ts:analyzeRepo
-- src/scanner/repoScanner.ts:scanDirectory
-- src/parser/moduleParser.ts:parseModules
-- src/graph/relationGraphBuilder.ts:buildRelationGraph
-- src/llm/methodSemanticAnalyzer.ts:enrichModulesWithMethodSemantics
-- src/docs/docsGenerator.ts:generateDocs
-- src/output/resultJsonWriter.ts:writeResult
+- src/docs/docsGenerator.ts#generateDocs: generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。
+- src/docs/markdown.ts#heading: 生成指定级别的 Markdown 标题字符串。
+- src/docs/markdown.ts#table: 生成 Markdown 表格字符串，包含表头、分隔符和行数据。
+- src/analyzer/analyzeRepo.ts#analyzeRepo: 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
+- src/output/resultJsonWriter.ts#buildResultDiff: 比较两个记录对象，生成包含文件、方法、入口点、资源和业务流程差异的结构化差异报告。
+- src/cli/interactiveCommand.ts#runInteractiveCommand: 通过交互式命令行引导用户配置并依次执行初始化、诊断和分析命令。
 
 ## Module Areas
 
@@ -37,7 +43,7 @@
 | config | 1 | 3 | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 |
 | Configuration | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | core | 1 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
-| docs | 5 | 65 | 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。 |
+| docs | 5 | 67 | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。 |
 | Documentation | 4 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | graph | 1 | 8 | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 |
 | llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
@@ -76,11 +82,11 @@
 
 ### docs
 
-- 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。
-- 生成文档索引页面，包含项目快照、推荐阅读顺序、文档映射表和机器可读输出列表。
-- 生成项目概览的 Markdown 字符串，包含仓库元数据、目的、能力、模块分组、结构统计、语义分析器配置、扫描配置和输出文件列表。
-- 生成架构文档的完整 Markdown 字符串，包含系统形状、架构层、关键路径、模块区域、核心热点方法和运行时资源等章节。
-- 生成模块文档的 Markdown 字符串，包含模块概览表格和每个模块的详细信息（导入、类、高信号方法）。
+- generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。
+- renderDocIndex 定义一个可调用单元；调用 String, bulletList, docRows.map, docs.get, docs.has；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:CHANGE_SUMMARY.md。
+- renderSystemMap 定义一个可调用单元；调用 String, bulletList, corePipeline.slice, formatMethodName, group.modules.some。
+- renderAiContext 定义一个可调用单元；调用 String, bulletList, externalResources.slice, flow.resources.slice, flow.steps.map。
+- renderProjectOverview 定义一个可调用单元；调用 String, bulletList, group.modules.map, group.responsibilities.slice, heading。
 
 ### graph
 
@@ -139,18 +145,18 @@
 
 | Method | Module | Summary |
 | --- | --- | --- |
-| generateDocs | src/docs/docsGenerator.ts | 生成工程文档，将分析结果写入指定目录的多个Markdown文件，并返回写入路径及摘要信息。 |
-| analyzeRepo | src/analyzer/analyzeRepo.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
+| generateDocs | src/docs/docsGenerator.ts | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。 |
 | heading | src/docs/markdown.ts | 生成指定级别的 Markdown 标题字符串。 |
+| table | src/docs/markdown.ts | 生成 Markdown 表格字符串，包含表头、分隔符和行数据。 |
+| analyzeRepo | src/analyzer/analyzeRepo.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
 | buildResultDiff | src/output/resultJsonWriter.ts | 比较两个记录对象，生成包含文件、方法、入口点、资源和业务流程差异的结构化差异报告。 |
 | runInteractiveCommand | src/cli/interactiveCommand.ts | 通过交互式命令行引导用户配置并依次执行初始化、诊断和分析命令。 |
-| table | src/docs/markdown.ts | 生成 Markdown 表格字符串，包含表头、分隔符和行数据。 |
+| bulletList | src/docs/markdown.ts | 将字符串数组转换为Markdown格式的无序列表，若数组为空则返回默认占位符。 |
 | stableId | src/utils/path.ts | 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。 |
+| formatMethodName | src/docs/semanticAggregator.ts | 根据方法单元是否包含类名，格式化返回方法名称字符串。 |
 | loadModelConfig | src/llm/modelConfig.ts | 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。 |
 | extractClassUnit | src/parser/javaStructureParser.ts | 从Java源代码中提取类单元，包括方法、字段、资源和路由前缀，并构建ClassUnit对象。 |
 | extractCallableUnit | src/parser/typescriptStructureParser.ts | 从TypeScript AST节点提取可调用单元的所有元数据并组装为MethodUnit对象。 |
-| bulletList | src/docs/markdown.ts | 将字符串数组转换为Markdown格式的无序列表，若数组为空则返回默认占位符。 |
-| enrichModulesWithMethodSemantics | src/llm/methodSemanticAnalyzer.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
 
 ## Runtime Resources
 
@@ -159,6 +165,7 @@
 | ENV:DB_DELETE | env |
 | ENV:DB_READ | env |
 | ENV:DB_WRITE | env |
+| FILE:AI_CONTEXT.md | file |
 | FILE:ARCHITECTURE.md | file |
 | FILE:BUSINESS_FLOWS.md | file |
 | FILE:CALL_GRAPH.md | file |
@@ -177,4 +184,5 @@
 | FILE:QUALITY_REPORT.md | file |
 | FILE:result-diff.json | file |
 | FILE:result.json | file |
+| FILE:SYSTEM_MAP.md | file |
 | HTTP:https://api.deepseek.com | http |

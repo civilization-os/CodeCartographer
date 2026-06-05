@@ -531,14 +531,14 @@ function getLocation(sourceFile: ts.SourceFile, node: ts.Node): SourceLocation {
 }
 
 function summarizeMethod(name: string, calls: string[], resources: string[]): string {
-  const parts = [`${name} defines a callable unit`];
+  const parts = [`${name} 定义一个可调用单元`];
   if (calls.length > 0) {
-    parts.push(`calls ${calls.slice(0, 5).join(", ")}`);
+    parts.push(`调用 ${calls.slice(0, 5).join(", ")}`);
   }
   if (resources.length > 0) {
-    parts.push(`touches ${resources.slice(0, 5).join(", ")}`);
+    parts.push(`访问 ${resources.slice(0, 5).join(", ")}`);
   }
-  return `${parts.join("; ")}.`;
+  return `${parts.join("；")}。`;
 }
 
 function isJavaScriptFile(fileName: string): boolean {

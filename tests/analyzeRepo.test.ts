@@ -61,6 +61,8 @@ test("analyzes TypeScript fixtures without LLM calls", async () => {
   assert.ok(createOrder);
   assert.ok(createOrder.calls.includes("persistOrder"));
   assert.ok(createOrder.resources.includes("HTTP:https://payments.example.com/charge"));
+  assert.match(createOrder.summary, /定义一个可调用单元/);
+  assert.doesNotMatch(createOrder.summary, /defines a callable unit/);
 
   const callEdges = result.graph.edges.filter((edge) => edge.kind === "calls");
   assert.ok(callEdges.some((edge) => edge.label === "persistOrder"));
@@ -294,18 +296,26 @@ test("localizes fallback generated docs without LLM", async () => {
   });
   const generatedDocs = await generateDocs(result);
   const docIndexPath = generatedDocs.written.find((docPath) => docPath.endsWith("DOC_INDEX.md"));
+  const systemMapPath = generatedDocs.written.find((docPath) => docPath.endsWith("SYSTEM_MAP.md"));
+  const aiContextPath = generatedDocs.written.find((docPath) => docPath.endsWith("AI_CONTEXT.md"));
   const overviewDocPath = generatedDocs.written.find((docPath) => docPath.endsWith("PROJECT_OVERVIEW.md"));
   const businessFlowsPath = generatedDocs.written.find((docPath) => docPath.endsWith("BUSINESS_FLOWS.md"));
   const qualityReportPath = generatedDocs.written.find((docPath) => docPath.endsWith("QUALITY_REPORT.md"));
   assert.ok(docIndexPath);
+  assert.ok(systemMapPath);
+  assert.ok(aiContextPath);
   assert.ok(overviewDocPath);
   assert.ok(businessFlowsPath);
   assert.ok(qualityReportPath);
 
   const docIndex = await fs.readFile(docIndexPath, "utf8");
+  const systemMap = await fs.readFile(systemMapPath, "utf8");
+  const aiContext = await fs.readFile(aiContextPath, "utf8");
   const qualityReport = await fs.readFile(qualityReportPath, "utf8");
   const combinedDocs = [
     docIndex,
+    systemMap,
+    aiContext,
     qualityReport,
     await fs.readFile(overviewDocPath, "utf8"),
     await fs.readFile(businessFlowsPath, "utf8")
@@ -313,9 +323,18 @@ test("localizes fallback generated docs without LLM", async () => {
 
   assert.match(docIndex, /# Documentation Index/);
   assert.match(docIndex, /Recommended Reading Order/);
+  assert.match(docIndex, /Output Layers/);
+  assert.match(docIndex, /Human-readable/);
+  assert.match(docIndex, /AI-readable/);
+  assert.match(docIndex, /SYSTEM_MAP\.md/);
+  assert.match(docIndex, /AI_CONTEXT\.md/);
   assert.match(docIndex, /PROJECT_OVERVIEW\.md/);
   assert.match(docIndex, /QUALITY_REPORT\.md/);
   assert.match(docIndex, /\.see-code\/result\.json/);
+  assert.match(systemMap, /# System Map/);
+  assert.match(systemMap, /Output Strategy/);
+  assert.match(aiContext, /# AI Context/);
+  assert.match(aiContext, /Handoff/);
   const methodCoverage = generatedDocs.quality.checks.find((check) => check.name === "Method summary coverage");
   assert.equal(methodCoverage?.status, "warn");
   assert.match(methodCoverage?.detail ?? "", /LLM analysis is disabled/);
@@ -458,6 +477,8 @@ test("writes structured result JSON for analyzer output", async () => {
   assert.equal(json.quality.methodUnits, result.methods.length);
   assert.ok(json.quality.score >= 60);
   assert.ok(json.docs.includes("docs/DOC_INDEX.md"));
+  assert.ok(json.docs.includes("docs/SYSTEM_MAP.md"));
+  assert.ok(json.docs.includes("docs/AI_CONTEXT.md"));
   assert.ok(json.docs.includes("docs/QUALITY_REPORT.md"));
 
   const create = json.methods.find((method) => method.name === "create");

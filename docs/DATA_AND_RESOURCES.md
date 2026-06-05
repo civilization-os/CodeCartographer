@@ -5,6 +5,7 @@
 | ENV:DB_DELETE | env |
 | ENV:DB_READ | env |
 | ENV:DB_WRITE | env |
+| FILE:AI_CONTEXT.md | file |
 | FILE:ARCHITECTURE.md | file |
 | FILE:BUSINESS_FLOWS.md | file |
 | FILE:CALL_GRAPH.md | file |
@@ -23,4 +24,5 @@
 | FILE:QUALITY_REPORT.md | file |
 | FILE:result-diff.json | file |
 | FILE:result.json | file |
+| FILE:SYSTEM_MAP.md | file |
 | HTTP:https://api.deepseek.com | http |

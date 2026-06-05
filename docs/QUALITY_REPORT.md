@@ -4,12 +4,12 @@
 
 | Metric | Value |
 | --- | --- |
-| Score | 100/100 |
-| Pass | 9 |
-| Warn | 0 |
+| Score | 96/100 |
+| Pass | 8 |
+| Warn | 1 |
 | Fail | 0 |
-| Method units | 267 |
-| LLM method summaries | 267 |
+| Method units | 269 |
+| LLM method summaries | 260 |
 | Business flows | 1 |
 | Static execution flows | 8 |
 
@@ -17,15 +17,15 @@
 
 | Status | Check | Detail |
 | --- | --- | --- |
-| PASS | Method summary coverage | 267/267 methods use LLM summaries; 0 methods use fallback summaries. |
-| PASS | Narrative overview | CodeCartographer 是一个静态代码分析工具，用于扫描指定代码仓库，提取模块、方法、类、资源和调用关系图，并生成结构化工程文档（Markdown 格式）和 JSON 结果文件。 |
-| PASS | Architecture abstraction | 6 architecture layers generated. |
+| WARN | Method summary coverage | 260/269 methods use LLM summaries; 9 methods use fallback summaries. Coverage is 97%. |
+| PASS | Narrative overview | 该仓库是一个 TypeScript/JavaScript 工程，围绕 analyzer、cli、config、core、docs 等模块组织源码结构、调用关系和资源访问，包含 1 个 CLI 入口。 |
+| PASS | Architecture abstraction | 15 architecture layers generated. |
 | PASS | Business flow coverage | 1 framework-aware business flows generated. |
 | PASS | Static execution flow coverage | 8 static execution flows generated. |
 | PASS | Placeholder residue | 0 placeholder-like fragments found across generated docs. |
 | PASS | English template residue | 0 English template fragments found across generated docs. |
-| PASS | Document size balance | Largest document is 60569 characters. |
-| PASS | Required outputs | 10 documents generated before quality report. |
+| PASS | Document size balance | Largest document is 61621 characters. |
+| PASS | Required outputs | 12 documents generated before quality report. |
 
 ## Recommendations
 
