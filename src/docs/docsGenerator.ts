@@ -34,26 +34,27 @@ export async function generateDocs(result: AnalysisResult): Promise<GeneratedDoc
   );
 
   const docs = new Map<string, string>([
-    ["SYSTEM_MAP.md", renderSystemMap(result, overview, narrative)],
-    ["PROJECT_OVERVIEW.md", renderProjectOverview(result, overview, narrative)],
-    ["ARCHITECTURE.md", renderArchitecture(result, overview, narrative)],
-    ["AI_CONTEXT.md", renderAiContext(result, overview, narrative)],
-    ["MODULES.md", renderModules(result.modules)],
-    ["EXECUTION_FLOWS.md", renderExecutionFlows(overview)],
-    ["BUSINESS_FLOWS.md", renderBusinessFlows(overview, narrative)],
-    ["CALL_GRAPH.md", renderCallGraph(result)],
-    ["ENTRYPOINTS.md", renderEntrypoints(overview)],
-    ["DATA_AND_RESOURCES.md", renderDataAndResources(result)],
-    ["MAINTENANCE_GUIDE.md", renderMaintenanceGuide(result)]
+    ["human/SYSTEM_MAP.md", renderSystemMap(result, overview, narrative)],
+    ["human/PROJECT_OVERVIEW.md", renderProjectOverview(result, overview, narrative)],
+    ["human/ARCHITECTURE.md", renderArchitecture(result, overview, narrative)],
+    ["ai/AI_CONTEXT.md", renderAiContext(result, overview, narrative)],
+    ["deep-dive/MODULES.md", renderModules(result.modules)],
+    ["deep-dive/EXECUTION_FLOWS.md", renderExecutionFlows(overview)],
+    ["human/BUSINESS_FLOWS.md", renderBusinessFlows(overview, narrative)],
+    ["deep-dive/CALL_GRAPH.md", renderCallGraph(result)],
+    ["deep-dive/ENTRYPOINTS.md", renderEntrypoints(overview)],
+    ["deep-dive/DATA_AND_RESOURCES.md", renderDataAndResources(result)],
+    ["deep-dive/MAINTENANCE_GUIDE.md", renderMaintenanceGuide(result)]
   ]);
-  docs.set("DOC_INDEX.md", "");
+  docs.set("README.md", "");
   const quality = buildQualitySummary(result, overview, narrative, docs);
-  docs.set("DOC_INDEX.md", renderDocIndex(result, overview, narrative, quality, docs));
-  docs.set("QUALITY_REPORT.md", renderQualityReport(result, overview, narrative, docs));
+  docs.set("human/QUALITY_REPORT.md", renderQualityReport(result, overview, narrative, docs));
+  docs.set("README.md", renderDocIndex(result, overview, narrative, quality, docs));
 
   const written: string[] = [];
   for (const [fileName, content] of docs) {
     const outputPath = path.join(docsDir, fileName);
+    await fs.mkdir(path.dirname(outputPath), { recursive: true });
     await fs.writeFile(outputPath, `${content.trim()}\n`, "utf8");
     written.push(outputPath);
   }
@@ -80,23 +81,23 @@ function renderDocIndex(
     (resource) => !isInternalResource(resource.name)
   );
   const docRows = [
-    ["SYSTEM_MAP.md", "面向人读的高层系统地图、核心链路、输出分层和扩展点。"],
-    ["PROJECT_OVERVIEW.md", "项目目标、运行模型、规模指标和生成产物总览。"],
-    ["ARCHITECTURE.md", "架构层、模块区域、关键路径和核心热点方法。"],
-    ["BUSINESS_FLOWS.md", "由框架入口驱动的业务流程和资源访问路径。"],
-    ["EXECUTION_FLOWS.md", "由静态调用图推断出的执行路径。"],
-    ["AI_CONTEXT.md", "面向 AI/自动化读取的紧凑结构化上下文。"],
-    ["CALL_GRAPH.md", "可解析的仓库内部调用边和 Mermaid 图。"],
-    ["ENTRYPOINTS.md", "框架感知入口和静态入口候选。"],
-    ["DATA_AND_RESOURCES.md", "检测到的数据库、HTTP、文件、环境变量等资源。"],
-    ["MODULES.md", "模块、类、关键方法和高信号方法摘要。"],
-    ["MAINTENANCE_GUIDE.md", "当前分析边界、维护注意事项和仓库文件清单。"],
-    ["QUALITY_REPORT.md", "质量得分、覆盖率、模板残留和输出完整性检查。"],
-    ["CHANGE_SUMMARY.md", "本次分析相对上一版结构化结果的变化。"]
+    ["human/SYSTEM_MAP.md", "面向人读的高层系统地图、核心链路、输出分层和扩展点。"],
+    ["human/PROJECT_OVERVIEW.md", "项目目标、运行模型、规模指标和生成产物总览。"],
+    ["human/ARCHITECTURE.md", "架构层、模块区域、关键路径和核心热点方法。"],
+    ["human/BUSINESS_FLOWS.md", "由框架入口驱动的业务流程和资源访问路径。"],
+    ["human/QUALITY_REPORT.md", "质量得分、覆盖率、模板残留和输出完整性检查。"],
+    ["ai/AI_CONTEXT.md", "面向 AI/自动化读取的紧凑结构化上下文。"],
+    ["deep-dive/MODULES.md", "模块、类、关键方法和高信号方法摘要。"],
+    ["deep-dive/CALL_GRAPH.md", "可解析的仓库内部调用边和 Mermaid 图。"],
+    ["deep-dive/EXECUTION_FLOWS.md", "由静态调用图推断出的执行路径。"],
+    ["deep-dive/ENTRYPOINTS.md", "框架感知入口和静态入口候选。"],
+    ["deep-dive/DATA_AND_RESOURCES.md", "检测到的数据库、HTTP、文件、环境变量等资源。"],
+    ["deep-dive/MAINTENANCE_GUIDE.md", "当前分析边界、维护注意事项和仓库文件清单。"],
+    ["deep-dive/CHANGE_SUMMARY.md", "本次分析相对上一版结构化结果的变化。"]
   ];
 
   return [
-    heading(1, "Documentation Index"),
+    heading(1, "Documentation README"),
     "",
     narrative.projectOverview.purpose,
     "",
@@ -122,12 +123,12 @@ function renderDocIndex(
     heading(2, "Recommended Reading Order"),
     "",
     numberedList([
-      "`SYSTEM_MAP.md` - 先用人读版本快速理解系统地图、核心链路和输出分层。",
-      "`PROJECT_OVERVIEW.md` - 再确认项目目标、运行模型和规模。",
-      "`ARCHITECTURE.md` - 查看模块边界、关键路径和热点方法。",
-      "`BUSINESS_FLOWS.md` / `EXECUTION_FLOWS.md` - 检查业务入口和静态执行路径。",
-      "`DATA_AND_RESOURCES.md` - 追踪数据库、仓储、表、HTTP、文件和环境变量资源。",
-      "`AI_CONTEXT.md` / `.see-code/result.json` - 给 AI 或自动化流程读取紧凑上下文和完整结构化结果。"
+      "`human/SYSTEM_MAP.md` - 先用人读版本快速理解系统地图、核心链路和输出分层。",
+      "`human/PROJECT_OVERVIEW.md` - 再确认项目目标、运行模型和规模。",
+      "`human/ARCHITECTURE.md` - 查看模块边界、关键路径和热点方法。",
+      "`human/BUSINESS_FLOWS.md` / `deep-dive/EXECUTION_FLOWS.md` - 检查业务入口和静态执行路径。",
+      "`deep-dive/DATA_AND_RESOURCES.md` - 追踪数据库、仓储、表、HTTP、文件和环境变量资源。",
+      "`ai/AI_CONTEXT.md` / `.see-code/result.json` - 给 AI 或自动化流程读取紧凑上下文和完整结构化结果。"
     ]),
     "",
     heading(2, "Output Layers"),
@@ -135,9 +136,9 @@ function renderDocIndex(
     table(
       ["Layer", "Documents", "Audience"],
       [
-        ["Human-readable", "`SYSTEM_MAP.md`, `PROJECT_OVERVIEW.md`, `ARCHITECTURE.md`, `BUSINESS_FLOWS.md`, `QUALITY_REPORT.md`", "人类读者、评审、交接和项目理解。"],
-        ["AI-readable", "`AI_CONTEXT.md`, `.see-code/result.json`, `.see-code/result-diff.json`", "AI agent、自动化检查、二次分析和上下文注入。"],
-        ["Deep-dive", "`MODULES.md`, `CALL_GRAPH.md`, `EXECUTION_FLOWS.md`, `ENTRYPOINTS.md`, `DATA_AND_RESOURCES.md`", "需要追踪方法、调用边、入口点和资源细节时使用。"]
+        ["Human-readable", "`human/SYSTEM_MAP.md`, `human/PROJECT_OVERVIEW.md`, `human/ARCHITECTURE.md`, `human/BUSINESS_FLOWS.md`, `human/QUALITY_REPORT.md`", "人类读者、评审、交接和项目理解。"],
+        ["AI-readable", "`ai/AI_CONTEXT.md`, `.see-code/result.json`, `.see-code/result-diff.json`", "AI agent、自动化检查、二次分析和上下文注入。"],
+        ["Deep-dive", "`deep-dive/MODULES.md`, `deep-dive/CALL_GRAPH.md`, `deep-dive/EXECUTION_FLOWS.md`, `deep-dive/ENTRYPOINTS.md`, `deep-dive/DATA_AND_RESOURCES.md`", "需要追踪方法、调用边、入口点和资源细节时使用。"]
       ]
     ),
     "",
@@ -148,7 +149,9 @@ function renderDocIndex(
       docRows.map(([fileName, description]) => [
         `[${fileName}](${fileName})`,
         description,
-        docs.has(fileName) ? `${docs.get(fileName)?.length ?? 0} chars` : "generated later"
+        docs.has(fileName)
+          ? `${docs.get(fileName)?.length ?? 0} chars`
+          : "written after JSON diff"
       ])
     ),
     "",
@@ -224,9 +227,9 @@ function renderSystemMap(
     table(
       ["Output", "Purpose"],
       [
-        ["Human-readable docs", "`SYSTEM_MAP.md`, `PROJECT_OVERVIEW.md`, `ARCHITECTURE.md`, `BUSINESS_FLOWS.md` 用于快速理解和交接。"],
-        ["AI-readable context", "`AI_CONTEXT.md` 和 `.see-code/result.json` 用于 agent、自动化检查和二次分析。"],
-        ["Deep-dive docs", "`MODULES.md`, `CALL_GRAPH.md`, `EXECUTION_FLOWS.md` 保留完整追踪能力，但不作为第一阅读入口。"]
+        ["Human-readable docs", "`human/SYSTEM_MAP.md`, `human/PROJECT_OVERVIEW.md`, `human/ARCHITECTURE.md`, `human/BUSINESS_FLOWS.md` 用于快速理解和交接。"],
+        ["AI-readable context", "`ai/AI_CONTEXT.md` 和 `.see-code/result.json` 用于 agent、自动化检查和二次分析。"],
+        ["Deep-dive docs", "`deep-dive/MODULES.md`, `deep-dive/CALL_GRAPH.md`, `deep-dive/EXECUTION_FLOWS.md` 保留完整追踪能力，但不作为第一阅读入口。"]
       ]
     ),
     "",
@@ -244,7 +247,7 @@ function renderSystemMap(
     bulletList([
       "调用图是静态近似结果，不等同于完整运行时路径。",
       "复杂泛型、链式表达式、动态调用和框架魔法仍需要更高保真解析器增强。",
-      "`MODULES.md` 和 `CALL_GRAPH.md` 偏细节追踪，优先通过 `SYSTEM_MAP.md` 和 `AI_CONTEXT.md` 消化。"
+      "`deep-dive/MODULES.md` 和 `deep-dive/CALL_GRAPH.md` 偏细节追踪，优先通过 `human/SYSTEM_MAP.md` 和 `ai/AI_CONTEXT.md` 消化。"
     ])
   ].join("\n");
 }
@@ -353,9 +356,9 @@ function renderAiContext(
     heading(2, "Handoff"),
     "",
     bulletList([
-      "Use `SYSTEM_MAP.md` for the shortest human summary.",
-      "Use `PROJECT_OVERVIEW.md` and `ARCHITECTURE.md` for narrative explanation.",
-      "Use `MODULES.md` and `CALL_GRAPH.md` only when method-level or edge-level detail is needed.",
+      "Use `human/SYSTEM_MAP.md` for the shortest human summary.",
+      "Use `human/PROJECT_OVERVIEW.md` and `human/ARCHITECTURE.md` for narrative explanation.",
+      "Use `deep-dive/MODULES.md` and `deep-dive/CALL_GRAPH.md` only when method-level or edge-level detail is needed.",
       "Use `.see-code/result.json` for complete structured data and `.see-code/result-diff.json` for deltas."
     ])
   ].join("\n");
@@ -448,20 +451,20 @@ function renderProjectOverview(
     heading(2, "Generated Outputs"),
     "",
     bulletList([
-      "`DOC_INDEX.md` 提供文档入口、质量快照、阅读顺序和文档地图。",
-      "`SYSTEM_MAP.md` 提供面向人读的高层系统地图和输出分层。",
-      "`PROJECT_OVERVIEW.md` 汇总仓库规模、目标和文档产物。",
-      "`ARCHITECTURE.md` 描述模块区域、架构层次和运行时依赖。",
-      "`AI_CONTEXT.md` 提供面向 AI/自动化读取的紧凑上下文。",
-      "`MODULES.md` 列出模块、类、方法、导入和方法语义摘要。",
-      "`EXECUTION_FLOWS.md` 汇总由调用边推断出的静态执行路径。",
-      "`BUSINESS_FLOWS.md` 展示框架入口驱动的业务流候选。",
-      "`CALL_GRAPH.md` 用 Mermaid 渲染已解析的仓库内部调用关系。",
-      "`ENTRYPOINTS.md` 列出框架感知入口和静态入口候选。",
-      "`DATA_AND_RESOURCES.md` 列出检测到的数据与外部资源。",
-      "`MAINTENANCE_GUIDE.md` 记录当前分析边界和维护注意事项。",
-      "`QUALITY_REPORT.md` 汇总文档质量、LLM 覆盖率和模板残留检查。",
-      "`CHANGE_SUMMARY.md` 汇总本次分析相对上一版结构化结果的变化。",
+      "`docs/README.md` 提供文档入口、质量快照、阅读顺序和文档地图。",
+      "`docs/human/SYSTEM_MAP.md` 提供面向人读的高层系统地图和输出分层。",
+      "`docs/human/PROJECT_OVERVIEW.md` 汇总仓库规模、目标和文档产物。",
+      "`docs/human/ARCHITECTURE.md` 描述模块区域、架构层次和运行时依赖。",
+      "`docs/human/BUSINESS_FLOWS.md` 展示框架入口驱动的业务流候选。",
+      "`docs/human/QUALITY_REPORT.md` 汇总文档质量、LLM 覆盖率和模板残留检查。",
+      "`docs/ai/AI_CONTEXT.md` 提供面向 AI/自动化读取的紧凑上下文。",
+      "`docs/deep-dive/MODULES.md` 列出模块、类、方法、导入和方法语义摘要。",
+      "`docs/deep-dive/EXECUTION_FLOWS.md` 汇总由调用边推断出的静态执行路径。",
+      "`docs/deep-dive/CALL_GRAPH.md` 用 Mermaid 渲染已解析的仓库内部调用关系。",
+      "`docs/deep-dive/ENTRYPOINTS.md` 列出框架感知入口和静态入口候选。",
+      "`docs/deep-dive/DATA_AND_RESOURCES.md` 列出检测到的数据与外部资源。",
+      "`docs/deep-dive/MAINTENANCE_GUIDE.md` 记录当前分析边界和维护注意事项。",
+      "`docs/deep-dive/CHANGE_SUMMARY.md` 汇总本次分析相对上一版结构化结果的变化。",
       "`.see-code/result.json` 保存机器可读的完整结构化分析结果。",
       "`.see-code/result-diff.json` 保存机器可读的增量差异结果。",
       "`schema/result.schema.json` 和 `schema/result-diff.schema.json` 定义机器可读输出契约。"

@@ -33,7 +33,7 @@ Entry: `src/index.ts:8` main
 2. normalizeProvider - 将字符串或未定义值标准化为有效的ModelProvider枚举值，若无效则抛出错误。
 3. parseCliArgs - 解析命令行参数并返回结构化的 CliOptions 对象，包含命令、目标路径、环境变量覆盖、排除列表等配置。
 4. printHelp - 打印 CodeCartographer 工具的帮助信息，包括用法、命令、选项和环境变量说明。
-5. runAnalyzeCommand - 执行代码仓库分析命令，加载配置，调用分析引擎，生成文档并输出结果。
+5. runAnalyzeCommand - runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。
 6. runDoctorCommand - 运行医生诊断命令，收集并输出所有检查结果，若有失败项则设置退出码为1。
 7. runInitCommand - 初始化项目配置并写入文件，同时输出提示信息。
 8. runInteractiveCommand - 通过交互式命令行引导用户配置并依次执行初始化、诊断和分析命令。
@@ -42,8 +42,8 @@ Entry: `src/index.ts:8` main
 
 ### Resources
 
-- `FILE:DOC_INDEX.md`
 - `FILE:QUALITY_REPORT.md`
+- `FILE:README.md`
 
 ## extractFrameworkHints
 
@@ -135,8 +135,8 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 
 1. generateFixtureOutput - 在临时目录中复制Java Spring测试夹具，执行仓库分析和文档生成，并将结果写入JSON文件。
 2. analyzeRepo - 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
-3. generateDocs - generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。
-4. writeResultJson - 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
+3. generateDocs - generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。
+4. writeResultJson - writeResultJson 定义一个可调用单元；调用 JSON.stringify, buildResultDiff, fs.mkdir, fs.writeFile, path.dirname；访问 FILE:CHANGE_SUMMARY.md, FILE:result-diff.json, FILE:result.json。
 5. addSyntheticRepositoryMethods - 为每个仓库操作生成合成方法并注入到对应的类和模块中。
 6. attachHeuristicSemantics - 遍历模块列表，为每个方法附加启发式语义标签。
 7. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
@@ -146,20 +146,20 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 
 ### Resources
 
-- `FILE:AI_CONTEXT.md`
-- `FILE:ARCHITECTURE.md`
-- `FILE:BUSINESS_FLOWS.md`
-- `FILE:CALL_GRAPH.md`
 - `FILE:CHANGE_SUMMARY.md`
-- `FILE:DATA_AND_RESOURCES.md`
-- `FILE:DOC_INDEX.md`
-- `FILE:ENTRYPOINTS.md`
-- `FILE:EXECUTION_FLOWS.md`
-- `FILE:MAINTENANCE_GUIDE.md`
-- `FILE:MODULES.md`
-- `FILE:PROJECT_OVERVIEW.md`
-- `FILE:QUALITY_REPORT.md`
-- `FILE:SYSTEM_MAP.md`
+- `FILE:README.md`
+- `FILE:ai/AI_CONTEXT.md`
+- `FILE:deep-dive/CALL_GRAPH.md`
+- `FILE:deep-dive/DATA_AND_RESOURCES.md`
+- `FILE:deep-dive/ENTRYPOINTS.md`
+- `FILE:deep-dive/EXECUTION_FLOWS.md`
+- `FILE:deep-dive/MAINTENANCE_GUIDE.md`
+- `FILE:deep-dive/MODULES.md`
+- `FILE:human/ARCHITECTURE.md`
+- `FILE:human/BUSINESS_FLOWS.md`
+- `FILE:human/PROJECT_OVERVIEW.md`
+- `FILE:human/QUALITY_REPORT.md`
+- `FILE:human/SYSTEM_MAP.md`
 - `FILE:result-diff.json`
 - `FILE:result.json`
 

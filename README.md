@@ -5,7 +5,7 @@
 [![pnpm](https://img.shields.io/badge/pnpm-ready-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![LangChain](https://img.shields.io/badge/LangChain-LLM%20adapter-1C3C3C)](https://js.langchain.com/)
 [![Java](https://img.shields.io/badge/Java-lightweight%20adapter-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
-[![Docs Quality](https://img.shields.io/badge/docs%20quality-96%2F100-yellowgreen)](docs/QUALITY_REPORT.md)
+[![Docs Quality](https://img.shields.io/badge/docs%20quality-96%2F100-yellowgreen)](docs/human/QUALITY_REPORT.md)
 
 CodeCartographer is a static code intelligence tool for turning repositories into architecture documentation, call graphs, business-flow maps, resource inventories, and structured JSON context. It scans a local project, extracts source units, builds a lightweight relation graph, writes engineering documentation into `docs/`, and emits machine-readable analysis and diff results under `.see-code/`.
 
@@ -129,20 +129,23 @@ SEE_CODE_LLM_CACHE=0 pnpm analyze -- .
 
 ```text
 docs/
-  DOC_INDEX.md
-  SYSTEM_MAP.md
-  PROJECT_OVERVIEW.md
-  ARCHITECTURE.md
-  AI_CONTEXT.md
-  MODULES.md
-  EXECUTION_FLOWS.md
-  BUSINESS_FLOWS.md
-  CALL_GRAPH.md
-  ENTRYPOINTS.md
-  DATA_AND_RESOURCES.md
-  MAINTENANCE_GUIDE.md
-  QUALITY_REPORT.md
-  CHANGE_SUMMARY.md
+  README.md
+  human/
+    SYSTEM_MAP.md
+    PROJECT_OVERVIEW.md
+    ARCHITECTURE.md
+    BUSINESS_FLOWS.md
+    QUALITY_REPORT.md
+  ai/
+    AI_CONTEXT.md
+  deep-dive/
+    MODULES.md
+    CALL_GRAPH.md
+    EXECUTION_FLOWS.md
+    ENTRYPOINTS.md
+    DATA_AND_RESOURCES.md
+    MAINTENANCE_GUIDE.md
+    CHANGE_SUMMARY.md
 
 .see-code/
   result.json
@@ -153,18 +156,20 @@ schema/
   result-diff.schema.json
 ```
 
-`DOC_INDEX.md` is the best starting point. It links the generated documents,
+`docs/README.md` is the best starting point. It links the generated documents,
 shows the quality snapshot, separates human-readable and AI-readable outputs,
 and recommends a reading order.
 
 Output layers:
 
-- Human-readable: `SYSTEM_MAP.md`, `PROJECT_OVERVIEW.md`, `ARCHITECTURE.md`,
-  `BUSINESS_FLOWS.md`, and `QUALITY_REPORT.md`.
-- AI-readable: `AI_CONTEXT.md`, `.see-code/result.json`, and
+- Human-readable: `docs/human/SYSTEM_MAP.md`, `docs/human/PROJECT_OVERVIEW.md`,
+  `docs/human/ARCHITECTURE.md`, `docs/human/BUSINESS_FLOWS.md`, and
+  `docs/human/QUALITY_REPORT.md`.
+- AI-readable: `docs/ai/AI_CONTEXT.md`, `.see-code/result.json`, and
   `.see-code/result-diff.json`.
-- Deep-dive: `MODULES.md`, `CALL_GRAPH.md`, `EXECUTION_FLOWS.md`,
-  `ENTRYPOINTS.md`, and `DATA_AND_RESOURCES.md`.
+- Deep-dive: `docs/deep-dive/MODULES.md`, `docs/deep-dive/CALL_GRAPH.md`,
+  `docs/deep-dive/EXECUTION_FLOWS.md`, `docs/deep-dive/ENTRYPOINTS.md`,
+  and `docs/deep-dive/DATA_AND_RESOURCES.md`.
 
 ## Real-project Snapshots
 
@@ -206,7 +211,7 @@ handling, file upload, feedback, borrow, return, and return-approval flows.
 - Generate human-facing engineering docs.
 - Generate a quality report that checks LLM coverage, architecture abstraction, business-flow coverage, template residue, and document size balance.
 - Generate `.see-code/result.json` with schema version, stats, files, modules, classes, methods, graph, semantic overview, and quality summary.
-- Generate `.see-code/result-diff.json` and `docs/CHANGE_SUMMARY.md` by comparing the new analysis with the previous result.
+- Generate `.see-code/result-diff.json` and `docs/deep-dive/CHANGE_SUMMARY.md` by comparing the new analysis with the previous result.
 - Publish JSON schema contracts under `schema/` for machine-readable outputs.
 
 ## Multi-language Direction

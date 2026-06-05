@@ -22,10 +22,10 @@
 
 | File | Language | Bytes |
 | --- | --- | --- |
-| evaluations/book-social-network.md | markdown | 5560 |
-| evaluations/spring-petclinic.md | markdown | 7538 |
+| evaluations/book-social-network.md | markdown | 5564 |
+| evaluations/spring-petclinic.md | markdown | 7542 |
 | package.json | json | 921 |
-| README.md | markdown | 8881 |
+| README.md | markdown | 9091 |
 | schema/result-diff.schema.json | json | 2493 |
 | schema/result.schema.json | json | 4702 |
 | scripts/secret-scan.mjs | javascript | 1382 |
@@ -33,17 +33,17 @@
 | SPEC.md | markdown | 8956 |
 | src/analyzer/analyzeRepo.ts | typescript | 2188 |
 | src/analyzer/syntheticRepositoryMethods.ts | typescript | 6639 |
-| src/cli/analyzeCommand.ts | typescript | 2233 |
+| src/cli/analyzeCommand.ts | typescript | 2239 |
 | src/cli/args.ts | typescript | 3970 |
 | src/cli/doctorCommand.ts | typescript | 3034 |
 | src/cli/initCommand.ts | typescript | 1968 |
 | src/cli/interactiveCommand.ts | typescript | 4878 |
 | src/config/projectConfig.ts | typescript | 2238 |
 | src/core/types.ts | typescript | 3744 |
-| src/docs/docsGenerator.ts | typescript | 32924 |
+| src/docs/docsGenerator.ts | typescript | 33634 |
 | src/docs/markdown.ts | typescript | 734 |
 | src/docs/narrativeComposer.ts | typescript | 11079 |
-| src/docs/qualityReport.ts | typescript | 8294 |
+| src/docs/qualityReport.ts | typescript | 8378 |
 | src/docs/semanticAggregator.ts | typescript | 11392 |
 | src/graph/relationGraphBuilder.ts | typescript | 5983 |
 | src/index.ts | typescript | 3014 |
@@ -51,7 +51,7 @@
 | src/llm/methodSemanticCache.ts | typescript | 2602 |
 | src/llm/modelConfig.ts | typescript | 3937 |
 | src/llm/modelFactory.ts | typescript | 1276 |
-| src/output/resultJsonWriter.ts | typescript | 18630 |
+| src/output/resultJsonWriter.ts | typescript | 18643 |
 | src/parser/javaAdapter.ts | typescript | 267 |
 | src/parser/javaStructureParser.ts | typescript | 34195 |
 | src/parser/moduleParser.ts | typescript | 1060 |
@@ -60,7 +60,7 @@
 | src/parser/typescriptStructureParser.ts | typescript | 15308 |
 | src/scanner/repoScanner.ts | typescript | 3254 |
 | src/utils/path.ts | typescript | 284 |
-| tests/analyzeRepo.test.ts | typescript | 23443 |
+| tests/analyzeRepo.test.ts | typescript | 23590 |
 | tests/cli.test.ts | typescript | 2827 |
 | tests/schemaContract.test.ts | typescript | 4473 |
 | tsconfig.json | json | 311 |

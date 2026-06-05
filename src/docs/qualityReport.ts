@@ -240,17 +240,17 @@ function maxDocLength(docs: Map<string, string>): number {
 
 function hasRequiredDocs(docs: Map<string, string>): boolean {
   return [
-    "DOC_INDEX.md",
-    "SYSTEM_MAP.md",
-    "AI_CONTEXT.md",
-    "PROJECT_OVERVIEW.md",
-    "ARCHITECTURE.md",
-    "MODULES.md",
-    "BUSINESS_FLOWS.md",
-    "EXECUTION_FLOWS.md",
-    "CALL_GRAPH.md",
-    "ENTRYPOINTS.md",
-    "DATA_AND_RESOURCES.md",
-    "MAINTENANCE_GUIDE.md"
+    "README.md",
+    "human/SYSTEM_MAP.md",
+    "ai/AI_CONTEXT.md",
+    "human/PROJECT_OVERVIEW.md",
+    "human/ARCHITECTURE.md",
+    "deep-dive/MODULES.md",
+    "human/BUSINESS_FLOWS.md",
+    "deep-dive/EXECUTION_FLOWS.md",
+    "deep-dive/CALL_GRAPH.md",
+    "deep-dive/ENTRYPOINTS.md",
+    "deep-dive/DATA_AND_RESOURCES.md",
+    "deep-dive/MAINTENANCE_GUIDE.md"
   ].every((fileName) => docs.has(fileName));
 }

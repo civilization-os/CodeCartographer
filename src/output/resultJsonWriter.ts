@@ -101,7 +101,7 @@ export async function writeResultJson(input: ResultJsonInput): Promise<ResultJso
 
   const outputPath = path.join(outputDir, "result.json");
   const diffPath = path.join(outputDir, "result-diff.json");
-  const changeSummaryPath = path.join(input.result.rootPath, "docs", "CHANGE_SUMMARY.md");
+  const changeSummaryPath = path.join(input.result.rootPath, "docs", "deep-dive", "CHANGE_SUMMARY.md");
   const previous = await readJson(outputPath);
   const next = toResultJson(input);
   const diff = buildResultDiff(previous, next);

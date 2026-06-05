@@ -1,0 +1,30 @@
+# Data And Resources
+
+| Resource | Kind |
+| --- | --- |
+| ENV:DB_DELETE | env |
+| ENV:DB_READ | env |
+| ENV:DB_WRITE | env |
+| FILE:ai/AI_CONTEXT.md | file |
+| FILE:CHANGE_SUMMARY.md | file |
+| FILE:config.json | file |
+| FILE:deep-dive/CALL_GRAPH.md | file |
+| FILE:deep-dive/CHANGE_SUMMARY.md | file |
+| FILE:deep-dive/DATA_AND_RESOURCES.md | file |
+| FILE:deep-dive/ENTRYPOINTS.md | file |
+| FILE:deep-dive/EXECUTION_FLOWS.md | file |
+| FILE:deep-dive/MAINTENANCE_GUIDE.md | file |
+| FILE:deep-dive/MODULES.md | file |
+| FILE:FILE:method-semantics.json | file |
+| FILE:human/ARCHITECTURE.md | file |
+| FILE:human/BUSINESS_FLOWS.md | file |
+| FILE:human/PROJECT_OVERVIEW.md | file |
+| FILE:human/QUALITY_REPORT.md | file |
+| FILE:human/SYSTEM_MAP.md | file |
+| FILE:package.json | file |
+| FILE:project-narratives.json | file |
+| FILE:QUALITY_REPORT.md | file |
+| FILE:README.md | file |
+| FILE:result-diff.json | file |
+| FILE:result.json | file |
+| HTTP:https://api.deepseek.com | http |

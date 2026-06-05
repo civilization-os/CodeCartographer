@@ -39,8 +39,8 @@ export async function runAnalyzeCommand(options: AnalyzeCommandOptions): Promise
       : "LLM semantic analyzer: disabled, using heuristic summaries."
   );
   console.log(`Quality score: ${generatedDocs.quality.score}/100`);
-  console.log(`Documentation index: ${path.join(rootPath, "docs", "DOC_INDEX.md")}`);
-  console.log(`Quality report: ${path.join(rootPath, "docs", "QUALITY_REPORT.md")}`);
+  console.log(`Documentation entry: ${path.join(rootPath, "docs", "README.md")}`);
+  console.log(`Quality report: ${path.join(rootPath, "docs", "human", "QUALITY_REPORT.md")}`);
   console.log(`Project config: ${projectConfig.configPath ?? "not found"}`);
   console.log(`Generated result JSON: ${output.resultPath}`);
   console.log(`Generated result diff: ${output.diffPath}`);

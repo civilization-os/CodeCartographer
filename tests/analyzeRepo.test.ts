@@ -295,12 +295,12 @@ test("localizes fallback generated docs without LLM", async () => {
     modelConfig: noLlmConfig
   });
   const generatedDocs = await generateDocs(result);
-  const docIndexPath = generatedDocs.written.find((docPath) => docPath.endsWith("DOC_INDEX.md"));
-  const systemMapPath = generatedDocs.written.find((docPath) => docPath.endsWith("SYSTEM_MAP.md"));
-  const aiContextPath = generatedDocs.written.find((docPath) => docPath.endsWith("AI_CONTEXT.md"));
-  const overviewDocPath = generatedDocs.written.find((docPath) => docPath.endsWith("PROJECT_OVERVIEW.md"));
-  const businessFlowsPath = generatedDocs.written.find((docPath) => docPath.endsWith("BUSINESS_FLOWS.md"));
-  const qualityReportPath = generatedDocs.written.find((docPath) => docPath.endsWith("QUALITY_REPORT.md"));
+  const docIndexPath = generatedDocs.written.find((docPath) => docPath.endsWith("docs/README.md"));
+  const systemMapPath = generatedDocs.written.find((docPath) => docPath.endsWith("docs/human/SYSTEM_MAP.md"));
+  const aiContextPath = generatedDocs.written.find((docPath) => docPath.endsWith("docs/ai/AI_CONTEXT.md"));
+  const overviewDocPath = generatedDocs.written.find((docPath) => docPath.endsWith("docs/human/PROJECT_OVERVIEW.md"));
+  const businessFlowsPath = generatedDocs.written.find((docPath) => docPath.endsWith("docs/human/BUSINESS_FLOWS.md"));
+  const qualityReportPath = generatedDocs.written.find((docPath) => docPath.endsWith("docs/human/QUALITY_REPORT.md"));
   assert.ok(docIndexPath);
   assert.ok(systemMapPath);
   assert.ok(aiContextPath);
@@ -321,15 +321,16 @@ test("localizes fallback generated docs without LLM", async () => {
     await fs.readFile(businessFlowsPath, "utf8")
   ].join("\n");
 
-  assert.match(docIndex, /# Documentation Index/);
+  assert.match(docIndex, /# Documentation README/);
   assert.match(docIndex, /Recommended Reading Order/);
   assert.match(docIndex, /Output Layers/);
   assert.match(docIndex, /Human-readable/);
   assert.match(docIndex, /AI-readable/);
-  assert.match(docIndex, /SYSTEM_MAP\.md/);
-  assert.match(docIndex, /AI_CONTEXT\.md/);
-  assert.match(docIndex, /PROJECT_OVERVIEW\.md/);
-  assert.match(docIndex, /QUALITY_REPORT\.md/);
+  assert.match(docIndex, /human\/SYSTEM_MAP\.md/);
+  assert.match(docIndex, /ai\/AI_CONTEXT\.md/);
+  assert.match(docIndex, /human\/PROJECT_OVERVIEW\.md/);
+  assert.match(docIndex, /human\/QUALITY_REPORT\.md/);
+  assert.match(docIndex, /deep-dive\/CALL_GRAPH\.md/);
   assert.match(docIndex, /\.see-code\/result\.json/);
   assert.match(systemMap, /# System Map/);
   assert.match(systemMap, /Output Strategy/);
@@ -476,10 +477,10 @@ test("writes structured result JSON for analyzer output", async () => {
   assert.equal(json.stats.methods, result.methods.length);
   assert.equal(json.quality.methodUnits, result.methods.length);
   assert.ok(json.quality.score >= 60);
-  assert.ok(json.docs.includes("docs/DOC_INDEX.md"));
-  assert.ok(json.docs.includes("docs/SYSTEM_MAP.md"));
-  assert.ok(json.docs.includes("docs/AI_CONTEXT.md"));
-  assert.ok(json.docs.includes("docs/QUALITY_REPORT.md"));
+  assert.ok(json.docs.includes("docs/README.md"));
+  assert.ok(json.docs.includes("docs/human/SYSTEM_MAP.md"));
+  assert.ok(json.docs.includes("docs/ai/AI_CONTEXT.md"));
+  assert.ok(json.docs.includes("docs/human/QUALITY_REPORT.md"));
 
   const create = json.methods.find((method) => method.name === "create");
   assert.ok(create);

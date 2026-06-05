@@ -50,7 +50,7 @@ Local evaluation config:
 | LLM method summaries | 0/93 |
 | Architecture areas | Configuration, Documentation, model, owner, petclinic, Project Files, system, vet |
 
-The run generated the full document set, including `DOC_INDEX.md`,
+The run generated the full document set, including `docs/README.md`,
 `.see-code/result.json`, and `.see-code/result-diff.json` inside the ignored
 evaluation project.
 
@@ -126,7 +126,7 @@ structured output.
   well as to `DB_WRITE:OwnerRepository.save`.
 - No-LLM fallback narratives are localized and target-project aware for
   generated purpose, operating-model, and business-flow text.
-- `DOC_INDEX.md` now provides a generated navigation entrypoint with quality
+- `docs/README.md` now provides a generated navigation entrypoint with quality
   snapshot, recommended reading order, document map, and pointers to structured
   outputs.
 - Repository cleanliness held: external project files remain ignored, and the

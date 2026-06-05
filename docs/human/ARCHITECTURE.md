@@ -10,15 +10,15 @@
 | --- | --- | --- |
 | analyzer | src/analyzer/analyzeRepo.ts, src/analyzer/syntheticRepositoryMethods.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
 | Application | src/index.ts | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 |
-| cli | src/cli/analyzeCommand.ts, src/cli/args.ts, src/cli/doctorCommand.ts, src/cli/initCommand.ts, src/cli/interactiveCommand.ts | 执行代码仓库分析命令，加载配置，调用分析引擎，生成文档并输出结果。 |
+| cli | src/cli/analyzeCommand.ts, src/cli/args.ts, src/cli/doctorCommand.ts, src/cli/initCommand.ts, src/cli/interactiveCommand.ts | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 |
 | config | src/config/projectConfig.ts | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 |
 | Configuration | package.json, see-code.config.json, tsconfig.json | Configuration 区域包含 3 个模块、0 个类和 0 个方法单元。 |
 | core | src/core/types.ts | core 区域包含 1 个模块、0 个类和 0 个方法单元。 |
-| docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。 |
+| docs | src/docs/docsGenerator.ts, src/docs/markdown.ts, src/docs/narrativeComposer.ts, src/docs/qualityReport.ts, src/docs/semanticAggregator.ts | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。 |
 | Documentation | evaluations/book-social-network.md, evaluations/spring-petclinic.md, README.md, SPEC.md | Documentation 区域包含 4 个模块、0 个类和 0 个方法单元。 |
 | graph | src/graph/relationGraphBuilder.ts | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 |
 | llm | src/llm/methodSemanticAnalyzer.ts, src/llm/methodSemanticCache.ts, src/llm/modelConfig.ts, src/llm/modelFactory.ts | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
-| output | src/output/resultJsonWriter.ts | 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。 |
+| output | src/output/resultJsonWriter.ts | writeResultJson 定义一个可调用单元；调用 JSON.stringify, buildResultDiff, fs.mkdir, fs.writeFile, path.dirname；访问 FILE:CHANGE_SUMMARY.md, FILE:result-diff.json, FILE:result.json。 |
 | parser | src/parser/javaAdapter.ts, src/parser/javaStructureParser.ts, src/parser/moduleParser.ts, src/parser/parserAdapter.ts, src/parser/typescriptAdapter.ts, src/parser/typescriptStructureParser.ts | 解析Java源文件并提取模块单元信息，包括类、方法和导入。 |
 | Project Files | schema/result-diff.schema.json, schema/result.schema.json, scripts/secret-scan.mjs, tests/analyzeRepo.test.ts, tests/cli.test.ts, tests/schemaContract.test.ts | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
 | scanner | src/scanner/repoScanner.ts | 异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。 |
@@ -26,7 +26,7 @@
 
 ## Critical Paths
 
-- src/docs/docsGenerator.ts#generateDocs: generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。
+- src/docs/docsGenerator.ts#generateDocs: generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。
 - src/docs/markdown.ts#heading: 生成指定级别的 Markdown 标题字符串。
 - src/docs/markdown.ts#table: 生成 Markdown 表格字符串，包含表头、分隔符和行数据。
 - src/analyzer/analyzeRepo.ts#analyzeRepo: 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
@@ -39,15 +39,15 @@
 | --- | --- | --- | --- |
 | analyzer | 2 | 11 | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
 | Application | 1 | 2 | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 |
-| cli | 5 | 19 | 执行代码仓库分析命令，加载配置，调用分析引擎，生成文档并输出结果。 |
+| cli | 5 | 19 | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 |
 | config | 1 | 3 | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 |
 | Configuration | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | core | 1 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
-| docs | 5 | 67 | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。 |
+| docs | 5 | 67 | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。 |
 | Documentation | 4 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | graph | 1 | 8 | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 |
 | llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
-| output | 1 | 32 | 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。 |
+| output | 1 | 32 | writeResultJson 定义一个可调用单元；调用 JSON.stringify, buildResultDiff, fs.mkdir, fs.writeFile, path.dirname；访问 FILE:CHANGE_SUMMARY.md, FILE:result-diff.json, FILE:result.json。 |
 | parser | 6 | 82 | 解析Java源文件并提取模块单元信息，包括类、方法和导入。 |
 | Project Files | 6 | 7 | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
 | scanner | 1 | 5 | 异步递归扫描指定根目录下的文件，过滤排除项、大文件和未知语言文件，返回按相对路径排序的源文件信息列表。 |
@@ -68,7 +68,7 @@
 
 ### cli
 
-- 执行代码仓库分析命令，加载配置，调用分析引擎，生成文档并输出结果。
+- runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。
 - 解析命令行参数并返回结构化的 CliOptions 对象，包含命令、目标路径、环境变量覆盖、排除列表等配置。
 - 将字符串或未定义值标准化为有效的ModelProvider枚举值，若无效则抛出错误。
 - 根据输入字符串或默认值返回对应的 CLI 命令类型。
@@ -82,8 +82,8 @@
 
 ### docs
 
-- generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。
-- renderDocIndex 定义一个可调用单元；调用 String, bulletList, docRows.map, docs.get, docs.has；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:CHANGE_SUMMARY.md。
+- generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。
+- renderDocIndex 定义一个可调用单元；调用 String, bulletList, docRows.map, docs.get, docs.has；访问 FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/CHANGE_SUMMARY.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。
 - renderSystemMap 定义一个可调用单元；调用 String, bulletList, corePipeline.slice, formatMethodName, group.modules.some。
 - renderAiContext 定义一个可调用单元；调用 String, bulletList, externalResources.slice, flow.resources.slice, flow.steps.map。
 - renderProjectOverview 定义一个可调用单元；调用 String, bulletList, group.modules.map, group.responsibilities.slice, heading。
@@ -106,7 +106,7 @@
 
 ### output
 
-- 将结果写入文件系统，包括结果JSON、差异JSON和变更摘要Markdown文件。
+- writeResultJson 定义一个可调用单元；调用 JSON.stringify, buildResultDiff, fs.mkdir, fs.writeFile, path.dirname；访问 FILE:CHANGE_SUMMARY.md, FILE:result-diff.json, FILE:result.json。
 - 将扫描结果、概览、质量数据和文档路径组装为结构化的 JSON 对象并返回。
 - 将模块单元序列化为包含标识符、路径、语言、导入、摘要以及类和方法的ID列表的普通对象。
 - 将 ClassUnit 对象序列化为包含 id、name、modulePath、location、summary、resources 和 methodIds 字段的普通对象。
@@ -145,7 +145,7 @@
 
 | Method | Module | Summary |
 | --- | --- | --- |
-| generateDocs | src/docs/docsGenerator.ts | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:AI_CONTEXT.md, FILE:ARCHITECTURE.md, FILE:BUSINESS_FLOWS.md, FILE:CALL_GRAPH.md, FILE:DATA_AND_RESOURCES.md。 |
+| generateDocs | src/docs/docsGenerator.ts | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。 |
 | heading | src/docs/markdown.ts | 生成指定级别的 Markdown 标题字符串。 |
 | table | src/docs/markdown.ts | 生成 Markdown 表格字符串，包含表头、分隔符和行数据。 |
 | analyzeRepo | src/analyzer/analyzeRepo.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
@@ -165,24 +165,26 @@
 | ENV:DB_DELETE | env |
 | ENV:DB_READ | env |
 | ENV:DB_WRITE | env |
-| FILE:AI_CONTEXT.md | file |
-| FILE:ARCHITECTURE.md | file |
-| FILE:BUSINESS_FLOWS.md | file |
-| FILE:CALL_GRAPH.md | file |
+| FILE:ai/AI_CONTEXT.md | file |
 | FILE:CHANGE_SUMMARY.md | file |
 | FILE:config.json | file |
-| FILE:DATA_AND_RESOURCES.md | file |
-| FILE:DOC_INDEX.md | file |
-| FILE:ENTRYPOINTS.md | file |
-| FILE:EXECUTION_FLOWS.md | file |
+| FILE:deep-dive/CALL_GRAPH.md | file |
+| FILE:deep-dive/CHANGE_SUMMARY.md | file |
+| FILE:deep-dive/DATA_AND_RESOURCES.md | file |
+| FILE:deep-dive/ENTRYPOINTS.md | file |
+| FILE:deep-dive/EXECUTION_FLOWS.md | file |
+| FILE:deep-dive/MAINTENANCE_GUIDE.md | file |
+| FILE:deep-dive/MODULES.md | file |
 | FILE:FILE:method-semantics.json | file |
-| FILE:MAINTENANCE_GUIDE.md | file |
-| FILE:MODULES.md | file |
+| FILE:human/ARCHITECTURE.md | file |
+| FILE:human/BUSINESS_FLOWS.md | file |
+| FILE:human/PROJECT_OVERVIEW.md | file |
+| FILE:human/QUALITY_REPORT.md | file |
+| FILE:human/SYSTEM_MAP.md | file |
 | FILE:package.json | file |
-| FILE:PROJECT_OVERVIEW.md | file |
 | FILE:project-narratives.json | file |
 | FILE:QUALITY_REPORT.md | file |
+| FILE:README.md | file |
 | FILE:result-diff.json | file |
 | FILE:result.json | file |
-| FILE:SYSTEM_MAP.md | file |
 | HTTP:https://api.deepseek.com | http |

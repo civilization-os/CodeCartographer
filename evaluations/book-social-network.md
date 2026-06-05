@@ -51,7 +51,7 @@ Local evaluation config:
 | LLM method summaries | 0/87 |
 | Architecture areas | auth, book, common, config, Configuration, Documentation, email, exception, feedback, file, handler, history, role, security, user |
 
-The no-LLM run generated the full document set, including `DOC_INDEX.md`,
+The no-LLM run generated the full document set, including `docs/README.md`,
 `.see-code/result.json`, and `.see-code/result-diff.json` inside the ignored
 evaluation project.
 
@@ -97,7 +97,7 @@ same controller-service-repository path structure.
   from framework interfaces.
 - SQL resources from `@Query` methods are surfaced in business flows and
   `DATA_AND_RESOURCES.md`, making custom repository queries visible to readers.
-- The generated `DOC_INDEX.md` gives a good first page for the project: it
+- The generated `docs/README.md` gives a good first page for the project: it
   shows 51 scanned files, 49 classes, 87 method units, 15 business flows, 37
   resources, and links to the rest of the documentation set.
 
