@@ -5,6 +5,8 @@
 | ENV:DB_DELETE | env |
 | ENV:DB_READ | env |
 | ENV:DB_WRITE | env |
+| ENV:no_proxy | env |
+| ENV:NO_PROXY | env |
 | FILE:ai/AI_CONTEXT.md | file |
 | FILE:CHANGE_SUMMARY.md | file |
 | FILE:config.json | file |

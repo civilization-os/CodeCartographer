@@ -67,6 +67,7 @@ codecartographer
 codecartographer init /path/to/repo --provider deepseek --model deepseek-chat
 codecartographer doctor /path/to/repo
 codecartographer analyze /path/to/repo --provider deepseek --model deepseek-chat
+codecartographer analyze /path/to/repo --no-proxy localhost,127.0.0.1,.internal
 ```
 
 Run with an LLM provider:
@@ -74,6 +75,7 @@ Run with an LLM provider:
 ```bash
 SEE_CODE_LLM_PROVIDER=deepseek \
 SEE_CODE_LLM_API_KEY=... \
+SEE_CODE_NO_PROXY=localhost,127.0.0.1,.internal \
 SEE_CODE_LLM_LIMIT=10 \
 pnpm analyze -- .
 ```
@@ -90,12 +92,14 @@ Minimal project config can live in `see-code.config.json`:
     "provider": "deepseek",
     "model": "deepseek-chat",
     "baseUrl": "https://api.deepseek.com",
+    "noProxy": "localhost,127.0.0.1,.internal",
     "cache": true
   }
 }
 ```
 
 Do not put API keys in `see-code.config.json`; use CLI flags or environment variables for secrets. Precedence is CLI flags, then environment variables, then config, then defaults.
+`llm.noProxy` is non-sensitive and is copied to `NO_PROXY`/`no_proxy` before LLM calls so local model gateways and internal domains can bypass corporate proxies.
 
 OpenAI-compatible private server:
 

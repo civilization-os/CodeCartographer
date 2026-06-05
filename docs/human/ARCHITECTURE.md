@@ -9,8 +9,8 @@
 | Layer | Modules | Responsibility |
 | --- | --- | --- |
 | analyzer | src/analyzer/analyzeRepo.ts, src/analyzer/syntheticRepositoryMethods.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
-| Application | src/index.ts | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 |
-| cli | src/cli/analyzeCommand.ts, src/cli/args.ts, src/cli/doctorCommand.ts, src/cli/initCommand.ts, src/cli/interactiveCommand.ts | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 |
+| Application | src/index.ts | main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。 |
+| cli | src/cli/analyzeCommand.ts, src/cli/args.ts, src/cli/doctorCommand.ts, src/cli/initCommand.ts, src/cli/interactiveCommand.ts | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 |
 | config | src/config/projectConfig.ts | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 |
 | Configuration | package.json, see-code.config.json, tsconfig.json | Configuration 区域包含 3 个模块、0 个类和 0 个方法单元。 |
 | core | src/core/types.ts | core 区域包含 1 个模块、0 个类和 0 个方法单元。 |
@@ -31,22 +31,22 @@
 - src/docs/markdown.ts#table: 生成 Markdown 表格字符串，包含表头、分隔符和行数据。
 - src/analyzer/analyzeRepo.ts#analyzeRepo: 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
 - src/output/resultJsonWriter.ts#buildResultDiff: 比较两个记录对象，生成包含文件、方法、入口点、资源和业务流程差异的结构化差异报告。
-- src/cli/interactiveCommand.ts#runInteractiveCommand: 通过交互式命令行引导用户配置并依次执行初始化、诊断和分析命令。
+- src/cli/interactiveCommand.ts#runInteractiveCommand: runInteractiveCommand 定义一个可调用单元；调用 ask, askSecret, askYesNo, console.log, defaultModel。
 
 ## Module Areas
 
 | Area | Module Count | Method Units | Summary |
 | --- | --- | --- | --- |
 | analyzer | 2 | 11 | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
-| Application | 1 | 2 | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 |
-| cli | 5 | 19 | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 |
+| Application | 1 | 2 | main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。 |
+| cli | 5 | 19 | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 |
 | config | 1 | 3 | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 |
 | Configuration | 3 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | core | 1 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | docs | 5 | 67 | generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。 |
 | Documentation | 4 | 0 | 该区域主要承载配置、类型或文档资产，当前没有可抽取的方法级职责。 |
 | graph | 1 | 8 | 构建模块、类、方法和资源之间的关系图，返回节点和边集合。 |
-| llm | 4 | 31 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
+| llm | 4 | 32 | 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。 |
 | output | 1 | 32 | writeResultJson 定义一个可调用单元；调用 JSON.stringify, buildResultDiff, fs.mkdir, fs.writeFile, path.dirname；访问 FILE:CHANGE_SUMMARY.md, FILE:result-diff.json, FILE:result.json。 |
 | parser | 6 | 82 | 解析Java源文件并提取模块单元信息，包括类、方法和导入。 |
 | Project Files | 6 | 7 | 递归扫描目录，读取文件内容并检测是否匹配预定义的密钥模式，将匹配结果记录到数组中。 |
@@ -63,13 +63,13 @@
 
 ### Application
 
-- 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。
-- 打印 CodeCartographer 工具的帮助信息，包括用法、命令、选项和环境变量说明。
+- main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。
+- printHelp 定义一个可调用单元；调用 console.log。
 
 ### cli
 
-- runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。
-- 解析命令行参数并返回结构化的 CliOptions 对象，包含命令、目标路径、环境变量覆盖、排除列表等配置。
+- runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。
+- parseCliArgs 定义一个可调用单元；调用 commandFrom, excludes.push, parsePositiveInteger, positional.push, rawArgs.filter。
 - 将字符串或未定义值标准化为有效的ModelProvider枚举值，若无效则抛出错误。
 - 根据输入字符串或默认值返回对应的 CLI 命令类型。
 - 验证命令行标志参数值是否存在且不以'--'开头，否则抛出错误。
@@ -150,11 +150,11 @@
 | table | src/docs/markdown.ts | 生成 Markdown 表格字符串，包含表头、分隔符和行数据。 |
 | analyzeRepo | src/analyzer/analyzeRepo.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 |
 | buildResultDiff | src/output/resultJsonWriter.ts | 比较两个记录对象，生成包含文件、方法、入口点、资源和业务流程差异的结构化差异报告。 |
-| runInteractiveCommand | src/cli/interactiveCommand.ts | 通过交互式命令行引导用户配置并依次执行初始化、诊断和分析命令。 |
+| runInteractiveCommand | src/cli/interactiveCommand.ts | runInteractiveCommand 定义一个可调用单元；调用 ask, askSecret, askYesNo, console.log, defaultModel。 |
 | bulletList | src/docs/markdown.ts | 将字符串数组转换为Markdown格式的无序列表，若数组为空则返回默认占位符。 |
 | stableId | src/utils/path.ts | 将路径片段数组用冒号连接并规范化，生成稳定的标识符字符串。 |
 | formatMethodName | src/docs/semanticAggregator.ts | 根据方法单元是否包含类名，格式化返回方法名称字符串。 |
-| loadModelConfig | src/llm/modelConfig.ts | 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。 |
+| loadModelConfig | src/llm/modelConfig.ts | loadModelConfig 定义一个可调用单元；调用 Boolean, defaultBaseUrl, defaultModel, getApiKey, modelProviderSchema.parse。 |
 | extractClassUnit | src/parser/javaStructureParser.ts | 从Java源代码中提取类单元，包括方法、字段、资源和路由前缀，并构建ClassUnit对象。 |
 | extractCallableUnit | src/parser/typescriptStructureParser.ts | 从TypeScript AST节点提取可调用单元的所有元数据并组装为MethodUnit对象。 |
 
@@ -165,6 +165,8 @@
 | ENV:DB_DELETE | env |
 | ENV:DB_READ | env |
 | ENV:DB_WRITE | env |
+| ENV:no_proxy | env |
+| ENV:NO_PROXY | env |
 | FILE:ai/AI_CONTEXT.md | file |
 | FILE:CHANGE_SUMMARY.md | file |
 | FILE:config.json | file |

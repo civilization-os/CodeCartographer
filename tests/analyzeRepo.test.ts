@@ -591,6 +591,7 @@ test("loads minimal project config for scan and non-sensitive LLM defaults", asy
       llm: {
         provider: "deepseek",
         model: "deepseek-chat",
+        noProxy: "localhost,127.0.0.1,.internal",
         limit: 7,
         cache: false
       }
@@ -608,6 +609,7 @@ test("loads minimal project config for scan and non-sensitive LLM defaults", asy
 
   assert.equal(modelConfig.provider, "deepseek");
   assert.equal(modelConfig.model, "deepseek-chat");
+  assert.equal(modelConfig.noProxy, "localhost,127.0.0.1,.internal");
   assert.equal(modelConfig.limit, 7);
   assert.equal(modelConfig.cacheEnabled, false);
   assert.equal(modelConfig.enabled, false);

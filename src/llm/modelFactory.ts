@@ -1,7 +1,7 @@
 import { ChatAnthropic } from "@langchain/anthropic";
 import { ChatOpenAI } from "@langchain/openai";
 import type { BaseMessage } from "@langchain/core/messages";
-import type { ModelConfig } from "./modelConfig.js";
+import { applyModelNetworkEnv, type ModelConfig } from "./modelConfig.js";
 
 export interface ChatModel {
   invoke(input: string | BaseMessage[]): Promise<unknown>;
@@ -11,6 +11,8 @@ export function createChatModel(config: ModelConfig): ChatModel | undefined {
   if (!config.enabled || !config.apiKey) {
     return undefined;
   }
+
+  applyModelNetworkEnv(config);
 
   if (
     config.provider === "openai" ||

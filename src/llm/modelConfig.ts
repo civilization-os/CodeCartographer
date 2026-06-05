@@ -16,6 +16,7 @@ export interface ModelConfig {
   model: string;
   apiKey?: string;
   baseUrl?: string;
+  noProxy?: string;
   temperature: number;
   maxTokens: number;
   maxRetries: number;
@@ -36,6 +37,7 @@ export function loadModelConfig(
 
   const model = env.SEE_CODE_LLM_MODEL ?? config?.model ?? defaultModel(provider);
   const baseUrl = env.SEE_CODE_LLM_BASE_URL ?? config?.baseUrl ?? defaultBaseUrl(provider);
+  const noProxy = env.SEE_CODE_NO_PROXY ?? env.NO_PROXY ?? env.no_proxy ?? config?.noProxy;
   const apiKey = getApiKey(provider, env);
   const cacheValue = env.SEE_CODE_LLM_CACHE;
 
@@ -44,6 +46,7 @@ export function loadModelConfig(
     model,
     apiKey,
     baseUrl,
+    noProxy,
     temperature: parseNumber(env.SEE_CODE_LLM_TEMPERATURE, config?.temperature ?? 0.1),
     maxTokens: parseInteger(env.SEE_CODE_LLM_MAX_TOKENS, config?.maxTokens ?? 700),
     maxRetries: parseInteger(env.SEE_CODE_LLM_MAX_RETRIES, config?.maxRetries ?? 2),
@@ -55,6 +58,15 @@ export function loadModelConfig(
       : cacheValue !== "0" && cacheValue !== "false",
     enabled: provider !== "none" && Boolean(apiKey)
   };
+}
+
+export function applyModelNetworkEnv(config: ModelConfig): void {
+  if (!config.noProxy) {
+    return;
+  }
+
+  process.env.NO_PROXY = config.noProxy;
+  process.env.no_proxy = config.noProxy;
 }
 
 export function toModelRuntimeInfo(config: ModelConfig): ModelRuntimeInfo {

@@ -2,7 +2,7 @@ import path from "node:path";
 import { analyzeRepo } from "../analyzer/analyzeRepo.js";
 import { loadProjectConfig } from "../config/projectConfig.js";
 import { generateDocs } from "../docs/docsGenerator.js";
-import { loadModelConfig } from "../llm/modelConfig.js";
+import { applyModelNetworkEnv, loadModelConfig } from "../llm/modelConfig.js";
 import { writeResultJson } from "../output/resultJsonWriter.js";
 
 export interface AnalyzeCommandOptions {
@@ -17,6 +17,7 @@ export async function runAnalyzeCommand(options: AnalyzeCommandOptions): Promise
     { ...process.env, ...(options.envOverrides ?? {}) },
     projectConfig.config.llm
   );
+  applyModelNetworkEnv(modelConfig);
   const result = await analyzeRepo(rootPath, {
     modelConfig,
     scanConfig: projectConfig.config.scan,

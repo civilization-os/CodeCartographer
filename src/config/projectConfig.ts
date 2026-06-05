@@ -18,6 +18,7 @@ const projectConfigSchema = z.object({
     ]).optional(),
     model: z.string().min(1).optional(),
     baseUrl: z.string().min(1).optional(),
+    noProxy: z.string().min(1).optional(),
     limit: z.number().int().nonnegative().optional(),
     cache: z.boolean().optional(),
     temperature: z.number().optional(),

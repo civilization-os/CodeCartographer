@@ -28,6 +28,12 @@ export async function runInteractiveCommand(): Promise<void> {
       if (baseUrl) {
         envOverrides.SEE_CODE_LLM_BASE_URL = baseUrl;
       }
+      const noProxy = await ask(rl, "No proxy hosts (blank to use environment)", "");
+      if (noProxy) {
+        envOverrides.SEE_CODE_NO_PROXY = noProxy;
+        envOverrides.NO_PROXY = noProxy;
+        envOverrides.no_proxy = noProxy;
+      }
       const limit = await ask(rl, "LLM method limit for this run (blank for unlimited)", "");
       if (limit) {
         envOverrides.SEE_CODE_LLM_LIMIT = limit;
@@ -47,6 +53,7 @@ export async function runInteractiveCommand(): Promise<void> {
         provider,
         model: envOverrides.SEE_CODE_LLM_MODEL,
         baseUrl: envOverrides.SEE_CODE_LLM_BASE_URL,
+        noProxy: envOverrides.SEE_CODE_NO_PROXY,
         excludes: [],
         force: false
       });

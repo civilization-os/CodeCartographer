@@ -77,6 +77,11 @@ export async function collectDoctorChecks(options: DoctorCommandOptions): Promis
     status: "ok",
     detail: modelConfig.cacheEnabled ? "enabled" : "disabled"
   });
+  checks.push({
+    label: "No proxy",
+    status: "ok",
+    detail: modelConfig.noProxy ? modelConfig.noProxy : "not configured"
+  });
 
   checks.push({
     label: "Output directories",

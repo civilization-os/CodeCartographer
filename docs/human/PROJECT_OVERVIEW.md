@@ -2,7 +2,7 @@
 
 Repository path: `/root/project/ai/see_code`
 
-Scan time: `2026-06-05T03:28:40.841Z`
+Scan time: `2026-06-05T03:37:34.777Z`
 
 ## Purpose
 
@@ -17,8 +17,8 @@ Scan time: `2026-06-05T03:28:40.841Z`
 ## Key Capabilities
 
 - analyzer: 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。
-- Application: 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。
-- cli: runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。
+- Application: main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。
+- cli: runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。
 - config: 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。
 - docs: generateDocs 定义一个可调用单元；调用 buildQualitySummary, buildSemanticOverview, composeProjectNarrative, content.trim, docs.set；访问 FILE:README.md, FILE:ai/AI_CONTEXT.md, FILE:deep-dive/CALL_GRAPH.md, FILE:deep-dive/DATA_AND_RESOURCES.md, FILE:deep-dive/ENTRYPOINTS.md。
 - graph: 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
@@ -34,8 +34,8 @@ Scan time: `2026-06-05T03:28:40.841Z`
 | Area | Modules | Responsibilities |
 | --- | --- | --- |
 | analyzer | src/analyzer/analyzeRepo.ts, src/analyzer/syntheticRepositoryMethods.ts | 分析指定代码仓库，提取模块、方法、类、资源和关系图，并返回分析结果。 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。 为每个仓库操作生成合成方法并注入到对应的类和模块中。 |
-| Application | src/index.ts | 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。 打印 CodeCartographer 工具的帮助信息，包括用法、命令、选项和环境变量说明。 |
-| cli | src/cli/analyzeCommand.ts, src/cli/args.ts, src/cli/doctorCommand.ts, src/cli/initCommand.ts, src/cli/interactiveCommand.ts | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 解析命令行参数并返回结构化的 CliOptions 对象，包含命令、目标路径、环境变量覆盖、排除列表等配置。 将字符串或未定义值标准化为有效的ModelProvider枚举值，若无效则抛出错误。 |
+| Application | src/index.ts | main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。 printHelp 定义一个可调用单元；调用 console.log。 |
+| cli | src/cli/analyzeCommand.ts, src/cli/args.ts, src/cli/doctorCommand.ts, src/cli/initCommand.ts, src/cli/interactiveCommand.ts | runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。 parseCliArgs 定义一个可调用单元；调用 commandFrom, excludes.push, parsePositiveInteger, positional.push, rawArgs.filter。 将字符串或未定义值标准化为有效的ModelProvider枚举值，若无效则抛出错误。 |
 | config | src/config/projectConfig.ts | 从指定根路径异步加载并解析项目配置文件，若文件不存在则返回空配置。 递归遍历对象并检查是否包含敏感键名，若发现则抛出错误。 判断未知错误是否为 Node.js 的 ErrnoException 类型。 |
 | Configuration | package.json, see-code.config.json, tsconfig.json |  |
 | core | src/core/types.ts |  |
@@ -58,9 +58,9 @@ Scan time: `2026-06-05T03:28:40.841Z`
 | Markdown documents | 4 |
 | Modules | 42 |
 | Classes | 2 |
-| Method units | 269 |
-| External resource nodes | 26 |
-| Graph edges | 648 |
+| Method units | 270 |
+| External resource nodes | 28 |
+| Graph edges | 653 |
 
 ## Semantic Analyzer
 

@@ -11,12 +11,12 @@
 | Source files | 33 |
 | Modules | 42 |
 | Classes | 2 |
-| Method units | 269 |
-| LLM method summaries | 258/269 |
+| Method units | 270 |
+| LLM method summaries | 250/270 |
 | Business flows | 1 |
 | Static execution flows | 8 |
-| External resources | 26 |
-| Graph edges | 648 |
+| External resources | 28 |
+| Graph edges | 653 |
 
 ## Recommended Reading Order
 
@@ -39,17 +39,17 @@
 
 | Document | Use it for | Size |
 | --- | --- | --- |
-| [human/SYSTEM_MAP.md](human/SYSTEM_MAP.md) | 面向人读的高层系统地图、核心链路、输出分层和扩展点。 | 3421 chars |
-| [human/PROJECT_OVERVIEW.md](human/PROJECT_OVERVIEW.md) | 项目目标、运行模型、规模指标和生成产物总览。 | 6632 chars |
-| [human/ARCHITECTURE.md](human/ARCHITECTURE.md) | 架构层、模块区域、关键路径和核心热点方法。 | 10115 chars |
-| [human/BUSINESS_FLOWS.md](human/BUSINESS_FLOWS.md) | 由框架入口驱动的业务流程和资源访问路径。 | 1029 chars |
+| [human/SYSTEM_MAP.md](human/SYSTEM_MAP.md) | 面向人读的高层系统地图、核心链路、输出分层和扩展点。 | 3588 chars |
+| [human/PROJECT_OVERVIEW.md](human/PROJECT_OVERVIEW.md) | 项目目标、运行模型、规模指标和生成产物总览。 | 6811 chars |
+| [human/ARCHITECTURE.md](human/ARCHITECTURE.md) | 架构层、模块区域、关键路径和核心热点方法。 | 10580 chars |
+| [human/BUSINESS_FLOWS.md](human/BUSINESS_FLOWS.md) | 由框架入口驱动的业务流程和资源访问路径。 | 1196 chars |
 | [human/QUALITY_REPORT.md](human/QUALITY_REPORT.md) | 质量得分、覆盖率、模板残留和输出完整性检查。 | 1222 chars |
-| [ai/AI_CONTEXT.md](ai/AI_CONTEXT.md) | 面向 AI/自动化读取的紧凑结构化上下文。 | 7772 chars |
-| [deep-dive/MODULES.md](deep-dive/MODULES.md) | 模块、类、关键方法和高信号方法摘要。 | 62590 chars |
-| [deep-dive/CALL_GRAPH.md](deep-dive/CALL_GRAPH.md) | 可解析的仓库内部调用边和 Mermaid 图。 | 44363 chars |
-| [deep-dive/EXECUTION_FLOWS.md](deep-dive/EXECUTION_FLOWS.md) | 由静态调用图推断出的执行路径。 | 6098 chars |
-| [deep-dive/ENTRYPOINTS.md](deep-dive/ENTRYPOINTS.md) | 框架感知入口和静态入口候选。 | 2048 chars |
-| [deep-dive/DATA_AND_RESOURCES.md](deep-dive/DATA_AND_RESOURCES.md) | 检测到的数据库、HTTP、文件、环境变量等资源。 | 991 chars |
+| [ai/AI_CONTEXT.md](ai/AI_CONTEXT.md) | 面向 AI/自动化读取的紧凑结构化上下文。 | 8110 chars |
+| [deep-dive/MODULES.md](deep-dive/MODULES.md) | 模块、类、关键方法和高信号方法摘要。 | 63760 chars |
+| [deep-dive/CALL_GRAPH.md](deep-dive/CALL_GRAPH.md) | 可解析的仓库内部调用边和 Mermaid 图。 | 44669 chars |
+| [deep-dive/EXECUTION_FLOWS.md](deep-dive/EXECUTION_FLOWS.md) | 由静态调用图推断出的执行路径。 | 6325 chars |
+| [deep-dive/ENTRYPOINTS.md](deep-dive/ENTRYPOINTS.md) | 框架感知入口和静态入口候选。 | 2178 chars |
+| [deep-dive/DATA_AND_RESOURCES.md](deep-dive/DATA_AND_RESOURCES.md) | 检测到的数据库、HTTP、文件、环境变量等资源。 | 1037 chars |
 | [deep-dive/MAINTENANCE_GUIDE.md](deep-dive/MAINTENANCE_GUIDE.md) | 当前分析边界、维护注意事项和仓库文件清单。 | 2997 chars |
 | [deep-dive/CHANGE_SUMMARY.md](deep-dive/CHANGE_SUMMARY.md) | 本次分析相对上一版结构化结果的变化。 | written after JSON diff |
 

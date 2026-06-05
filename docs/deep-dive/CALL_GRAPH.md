@@ -62,914 +62,920 @@ flowchart TD
   N18_B["analyzeRepo"]
   N18_A --> N18_B
   N19_A["runAnalyzeCommand"]
-  N19_B["generateDocs"]
+  N19_B["applyModelNetworkEnv"]
   N19_A --> N19_B
   N20_A["runAnalyzeCommand"]
-  N20_B["loadModelConfig"]
+  N20_B["generateDocs"]
   N20_A --> N20_B
   N21_A["runAnalyzeCommand"]
-  N21_B["loadProjectConfig"]
+  N21_B["loadModelConfig"]
   N21_A --> N21_B
   N22_A["runAnalyzeCommand"]
-  N22_B["writeResultJson"]
+  N22_B["loadProjectConfig"]
   N22_A --> N22_B
-  N23_A["parseCliArgs"]
-  N23_B["commandFrom"]
+  N23_A["runAnalyzeCommand"]
+  N23_B["writeResultJson"]
   N23_A --> N23_B
   N24_A["parseCliArgs"]
-  N24_B["parsePositiveInteger"]
+  N24_B["commandFrom"]
   N24_A --> N24_B
   N25_A["parseCliArgs"]
-  N25_B["requireValue"]
+  N25_B["parsePositiveInteger"]
   N25_A --> N25_B
-  N26_A["runDoctorCommand"]
-  N26_B["collectDoctorChecks"]
+  N26_A["parseCliArgs"]
+  N26_B["requireValue"]
   N26_A --> N26_B
   N27_A["runDoctorCommand"]
-  N27_B["formatStatus"]
+  N27_B["collectDoctorChecks"]
   N27_A --> N27_B
-  N28_A["collectDoctorChecks"]
-  N28_B["isDirectory"]
+  N28_A["runDoctorCommand"]
+  N28_B["formatStatus"]
   N28_A --> N28_B
   N29_A["collectDoctorChecks"]
-  N29_B["loadModelConfig"]
+  N29_B["isDirectory"]
   N29_A --> N29_B
   N30_A["collectDoctorChecks"]
-  N30_B["loadProjectConfig"]
+  N30_B["loadModelConfig"]
   N30_A --> N30_B
-  N31_A["isDirectory"]
-  N31_B["isDirectory"]
+  N31_A["collectDoctorChecks"]
+  N31_B["loadProjectConfig"]
   N31_A --> N31_B
-  N32_A["runInitCommand"]
-  N32_B["writeProjectConfig"]
+  N32_A["isDirectory"]
+  N32_B["isDirectory"]
   N32_A --> N32_B
-  N33_A["writeProjectConfig"]
-  N33_B["buildProjectConfig"]
+  N33_A["runInitCommand"]
+  N33_B["writeProjectConfig"]
   N33_A --> N33_B
   N34_A["writeProjectConfig"]
-  N34_B["exists"]
+  N34_B["buildProjectConfig"]
   N34_A --> N34_B
-  N35_A["runInteractiveCommand"]
-  N35_B["ask"]
+  N35_A["writeProjectConfig"]
+  N35_B["exists"]
   N35_A --> N35_B
   N36_A["runInteractiveCommand"]
-  N36_B["askSecret"]
+  N36_B["ask"]
   N36_A --> N36_B
   N37_A["runInteractiveCommand"]
-  N37_B["askYesNo"]
+  N37_B["askSecret"]
   N37_A --> N37_B
   N38_A["runInteractiveCommand"]
-  N38_B["loadModelConfig"]
+  N38_B["askYesNo"]
   N38_A --> N38_B
   N39_A["runInteractiveCommand"]
-  N39_B["loadProjectConfig"]
+  N39_B["loadModelConfig"]
   N39_A --> N39_B
   N40_A["runInteractiveCommand"]
-  N40_B["normalizeProvider"]
+  N40_B["loadProjectConfig"]
   N40_A --> N40_B
   N41_A["runInteractiveCommand"]
-  N41_B["runAnalyzeCommand"]
+  N41_B["normalizeProvider"]
   N41_A --> N41_B
   N42_A["runInteractiveCommand"]
-  N42_B["runDoctorCommand"]
+  N42_B["runAnalyzeCommand"]
   N42_A --> N42_B
   N43_A["runInteractiveCommand"]
-  N43_B["runInitCommand"]
+  N43_B["runDoctorCommand"]
   N43_A --> N43_B
-  N44_A["askSecret"]
-  N44_B["ask"]
+  N44_A["runInteractiveCommand"]
+  N44_B["runInitCommand"]
   N44_A --> N44_B
-  N45_A["loadProjectConfig"]
-  N45_B["rejectSensitiveKeys"]
+  N45_A["askSecret"]
+  N45_B["ask"]
   N45_A --> N45_B
-  N46_A["rejectSensitiveKeys"]
+  N46_A["loadProjectConfig"]
   N46_B["rejectSensitiveKeys"]
   N46_A --> N46_B
-  N47_A["generateDocs"]
-  N47_B["buildQualitySummary"]
+  N47_A["rejectSensitiveKeys"]
+  N47_B["rejectSensitiveKeys"]
   N47_A --> N47_B
   N48_A["generateDocs"]
-  N48_B["buildSemanticOverview"]
+  N48_B["buildQualitySummary"]
   N48_A --> N48_B
   N49_A["generateDocs"]
-  N49_B["composeProjectNarrative"]
+  N49_B["buildSemanticOverview"]
   N49_A --> N49_B
   N50_A["generateDocs"]
-  N50_B["renderAiContext"]
+  N50_B["composeProjectNarrative"]
   N50_A --> N50_B
   N51_A["generateDocs"]
-  N51_B["renderArchitecture"]
+  N51_B["renderAiContext"]
   N51_A --> N51_B
   N52_A["generateDocs"]
-  N52_B["renderBusinessFlows"]
+  N52_B["renderArchitecture"]
   N52_A --> N52_B
   N53_A["generateDocs"]
-  N53_B["renderCallGraph"]
+  N53_B["renderBusinessFlows"]
   N53_A --> N53_B
   N54_A["generateDocs"]
-  N54_B["renderDataAndResources"]
+  N54_B["renderCallGraph"]
   N54_A --> N54_B
   N55_A["generateDocs"]
-  N55_B["renderDocIndex"]
+  N55_B["renderDataAndResources"]
   N55_A --> N55_B
   N56_A["generateDocs"]
-  N56_B["renderEntrypoints"]
+  N56_B["renderDocIndex"]
   N56_A --> N56_B
   N57_A["generateDocs"]
-  N57_B["renderExecutionFlows"]
+  N57_B["renderEntrypoints"]
   N57_A --> N57_B
   N58_A["generateDocs"]
-  N58_B["renderMaintenanceGuide"]
+  N58_B["renderExecutionFlows"]
   N58_A --> N58_B
   N59_A["generateDocs"]
-  N59_B["renderModules"]
+  N59_B["renderMaintenanceGuide"]
   N59_A --> N59_B
   N60_A["generateDocs"]
-  N60_B["renderProjectOverview"]
+  N60_B["renderModules"]
   N60_A --> N60_B
   N61_A["generateDocs"]
-  N61_B["renderQualityReport"]
+  N61_B["renderProjectOverview"]
   N61_A --> N61_B
   N62_A["generateDocs"]
-  N62_B["renderSystemMap"]
+  N62_B["renderQualityReport"]
   N62_A --> N62_B
-  N63_A["renderDocIndex"]
-  N63_B["bulletList"]
+  N63_A["generateDocs"]
+  N63_B["renderSystemMap"]
   N63_A --> N63_B
   N64_A["renderDocIndex"]
-  N64_B["heading"]
+  N64_B["bulletList"]
   N64_A --> N64_B
   N65_A["renderDocIndex"]
-  N65_B["isInternalResource"]
+  N65_B["heading"]
   N65_A --> N65_B
   N66_A["renderDocIndex"]
-  N66_B["numberedList"]
+  N66_B["isInternalResource"]
   N66_A --> N66_B
   N67_A["renderDocIndex"]
-  N67_B["table"]
+  N67_B["numberedList"]
   N67_A --> N67_B
-  N68_A["renderSystemMap"]
-  N68_B["bulletList"]
+  N68_A["renderDocIndex"]
+  N68_B["table"]
   N68_A --> N68_B
   N69_A["renderSystemMap"]
-  N69_B["formatMethodName"]
+  N69_B["bulletList"]
   N69_A --> N69_B
   N70_A["renderSystemMap"]
-  N70_B["heading"]
+  N70_B["formatMethodName"]
   N70_A --> N70_B
   N71_A["renderSystemMap"]
-  N71_B["isInternalResource"]
+  N71_B["heading"]
   N71_A --> N71_B
   N72_A["renderSystemMap"]
-  N72_B["numberedList"]
+  N72_B["isInternalResource"]
   N72_A --> N72_B
   N73_A["renderSystemMap"]
-  N73_B["table"]
+  N73_B["numberedList"]
   N73_A --> N73_B
-  N74_A["renderAiContext"]
-  N74_B["bulletList"]
+  N74_A["renderSystemMap"]
+  N74_B["table"]
   N74_A --> N74_B
   N75_A["renderAiContext"]
-  N75_B["formatMethodName"]
+  N75_B["bulletList"]
   N75_A --> N75_B
   N76_A["renderAiContext"]
-  N76_B["heading"]
+  N76_B["formatMethodName"]
   N76_A --> N76_B
   N77_A["renderAiContext"]
-  N77_B["isInternalResource"]
+  N77_B["heading"]
   N77_A --> N77_B
   N78_A["renderAiContext"]
-  N78_B["table"]
+  N78_B["isInternalResource"]
   N78_A --> N78_B
-  N79_A["renderProjectOverview"]
-  N79_B["bulletList"]
+  N79_A["renderAiContext"]
+  N79_B["table"]
   N79_A --> N79_B
   N80_A["renderProjectOverview"]
-  N80_B["heading"]
+  N80_B["bulletList"]
   N80_A --> N80_B
   N81_A["renderProjectOverview"]
-  N81_B["isInternalResource"]
+  N81_B["heading"]
   N81_A --> N81_B
   N82_A["renderProjectOverview"]
-  N82_B["numberedList"]
+  N82_B["isInternalResource"]
   N82_A --> N82_B
   N83_A["renderProjectOverview"]
-  N83_B["table"]
+  N83_B["numberedList"]
   N83_A --> N83_B
-  N84_A["renderArchitecture"]
-  N84_B["bulletList"]
+  N84_A["renderProjectOverview"]
+  N84_B["table"]
   N84_A --> N84_B
   N85_A["renderArchitecture"]
-  N85_B["formatMethodName"]
+  N85_B["bulletList"]
   N85_A --> N85_B
   N86_A["renderArchitecture"]
-  N86_B["heading"]
+  N86_B["formatMethodName"]
   N86_A --> N86_B
   N87_A["renderArchitecture"]
-  N87_B["isInternalResource"]
+  N87_B["heading"]
   N87_A --> N87_B
   N88_A["renderArchitecture"]
-  N88_B["table"]
+  N88_B["isInternalResource"]
   N88_A --> N88_B
-  N89_A["renderModules"]
-  N89_B["bulletList"]
+  N89_A["renderArchitecture"]
+  N89_B["table"]
   N89_A --> N89_B
   N90_A["renderModules"]
-  N90_B["formatMethodHints"]
+  N90_B["bulletList"]
   N90_A --> N90_B
   N91_A["renderModules"]
-  N91_B["heading"]
+  N91_B["formatMethodHints"]
   N91_A --> N91_B
   N92_A["renderModules"]
-  N92_B["selectHighSignalMethods"]
+  N92_B["heading"]
   N92_A --> N92_B
   N93_A["renderModules"]
-  N93_B["table"]
+  N93_B["selectHighSignalMethods"]
   N93_A --> N93_B
-  N94_A["selectHighSignalMethods"]
-  N94_B["scoreMethodForModuleDocs"]
+  N94_A["renderModules"]
+  N94_B["table"]
   N94_A --> N94_B
-  N95_A["renderCallGraph"]
-  N95_B["escapeMermaid"]
+  N95_A["selectHighSignalMethods"]
+  N95_B["scoreMethodForModuleDocs"]
   N95_A --> N95_B
   N96_A["renderCallGraph"]
-  N96_B["heading"]
+  N96_B["escapeMermaid"]
   N96_A --> N96_B
   N97_A["renderCallGraph"]
-  N97_B["table"]
+  N97_B["heading"]
   N97_A --> N97_B
-  N98_A["renderExecutionFlows"]
-  N98_B["bulletList"]
+  N98_A["renderCallGraph"]
+  N98_B["table"]
   N98_A --> N98_B
   N99_A["renderExecutionFlows"]
-  N99_B["formatMethodName"]
+  N99_B["bulletList"]
   N99_A --> N99_B
   N100_A["renderExecutionFlows"]
-  N100_B["heading"]
+  N100_B["formatMethodName"]
   N100_A --> N100_B
-  N101_A["renderBusinessFlows"]
-  N101_B["bulletList"]
+  N101_A["renderExecutionFlows"]
+  N101_B["heading"]
   N101_A --> N101_B
   N102_A["renderBusinessFlows"]
-  N102_B["formatMethodName"]
+  N102_B["bulletList"]
   N102_A --> N102_B
   N103_A["renderBusinessFlows"]
-  N103_B["heading"]
+  N103_B["formatMethodName"]
   N103_A --> N103_B
   N104_A["renderBusinessFlows"]
-  N104_B["matchingNarrativeFlow"]
+  N104_B["heading"]
   N104_A --> N104_B
   N105_A["renderBusinessFlows"]
-  N105_B["numberedList"]
+  N105_B["matchingNarrativeFlow"]
   N105_A --> N105_B
   N106_A["renderBusinessFlows"]
-  N106_B["table"]
+  N106_B["numberedList"]
   N106_A --> N106_B
-  N107_A["renderEntrypoints"]
-  N107_B["formatMethodName"]
+  N107_A["renderBusinessFlows"]
+  N107_B["table"]
   N107_A --> N107_B
   N108_A["renderEntrypoints"]
-  N108_B["heading"]
+  N108_B["formatMethodName"]
   N108_A --> N108_B
   N109_A["renderEntrypoints"]
-  N109_B["table"]
+  N109_B["heading"]
   N109_A --> N109_B
-  N110_A["renderDataAndResources"]
-  N110_B["heading"]
+  N110_A["renderEntrypoints"]
+  N110_B["table"]
   N110_A --> N110_B
   N111_A["renderDataAndResources"]
-  N111_B["isInternalResource"]
+  N111_B["heading"]
   N111_A --> N111_B
   N112_A["renderDataAndResources"]
-  N112_B["table"]
+  N112_B["isInternalResource"]
   N112_A --> N112_B
-  N113_A["renderMaintenanceGuide"]
-  N113_B["bulletList"]
+  N113_A["renderDataAndResources"]
+  N113_B["table"]
   N113_A --> N113_B
   N114_A["renderMaintenanceGuide"]
-  N114_B["heading"]
+  N114_B["bulletList"]
   N114_A --> N114_B
   N115_A["renderMaintenanceGuide"]
-  N115_B["table"]
+  N115_B["heading"]
   N115_A --> N115_B
-  N116_A["composeProjectNarrative"]
-  N116_B["NarrativeCache#open"]
+  N116_A["renderMaintenanceGuide"]
+  N116_B["table"]
   N116_A --> N116_B
   N117_A["composeProjectNarrative"]
-  N117_B["buildNarrativeContext"]
+  N117_B["NarrativeCache#open"]
   N117_A --> N117_B
   N118_A["composeProjectNarrative"]
-  N118_B["buildNarrativePrompt"]
+  N118_B["buildNarrativeContext"]
   N118_A --> N118_B
   N119_A["composeProjectNarrative"]
-  N119_B["createChatModel"]
+  N119_B["buildNarrativePrompt"]
   N119_A --> N119_B
   N120_A["composeProjectNarrative"]
-  N120_B["fallbackNarrative"]
+  N120_B["createChatModel"]
   N120_A --> N120_B
   N121_A["composeProjectNarrative"]
-  N121_B["parseNarrativeResponse"]
+  N121_B["fallbackNarrative"]
   N121_A --> N121_B
-  N122_A["fallbackNarrative"]
-  N122_B["fallbackOperatingModel"]
+  N122_A["composeProjectNarrative"]
+  N122_B["parseNarrativeResponse"]
   N122_A --> N122_B
-  N123_A["renderQualityReport"]
-  N123_B["buildQualitySummary"]
+  N123_A["fallbackNarrative"]
+  N123_B["fallbackOperatingModel"]
   N123_A --> N123_B
   N124_A["renderQualityReport"]
-  N124_B["bulletList"]
+  N124_B["buildQualitySummary"]
   N124_A --> N124_B
   N125_A["renderQualityReport"]
-  N125_B["heading"]
+  N125_B["bulletList"]
   N125_A --> N125_B
   N126_A["renderQualityReport"]
-  N126_B["table"]
+  N126_B["heading"]
   N126_A --> N126_B
-  N127_A["buildQualitySummary"]
-  N127_B["buildChecks"]
+  N127_A["renderQualityReport"]
+  N127_B["table"]
   N127_A --> N127_B
   N128_A["buildQualitySummary"]
-  N128_B["calculateScore"]
+  N128_B["buildChecks"]
   N128_A --> N128_B
   N129_A["buildQualitySummary"]
-  N129_B["recommendations"]
+  N129_B["calculateScore"]
   N129_A --> N129_B
-  N130_A["buildChecks"]
-  N130_B["countMatches"]
+  N130_A["buildQualitySummary"]
+  N130_B["recommendations"]
   N130_A --> N130_B
   N131_A["buildChecks"]
-  N131_B["hasRequiredDocs"]
+  N131_B["countMatches"]
   N131_A --> N131_B
   N132_A["buildChecks"]
-  N132_B["isChineseNarrative"]
+  N132_B["hasRequiredDocs"]
   N132_A --> N132_B
   N133_A["buildChecks"]
-  N133_B["maxDocLength"]
+  N133_B["isChineseNarrative"]
   N133_A --> N133_B
   N134_A["buildChecks"]
-  N134_B["methodSummaryCoverageCheck"]
+  N134_B["maxDocLength"]
   N134_A --> N134_B
-  N135_A["buildSemanticOverview"]
-  N135_B["buildBusinessFlows"]
+  N135_A["buildChecks"]
+  N135_B["methodSummaryCoverageCheck"]
   N135_A --> N135_B
   N136_A["buildSemanticOverview"]
-  N136_B["buildFlows"]
+  N136_B["buildBusinessFlows"]
   N136_A --> N136_B
   N137_A["buildSemanticOverview"]
-  N137_B["buildResourceUsage"]
+  N137_B["buildFlows"]
   N137_A --> N137_B
   N138_A["buildSemanticOverview"]
-  N138_B["countEdges"]
+  N138_B["buildResourceUsage"]
   N138_A --> N138_B
   N139_A["buildSemanticOverview"]
-  N139_B["groupModules"]
+  N139_B["countEdges"]
   N139_A --> N139_B
   N140_A["buildSemanticOverview"]
-  N140_B["inferPurpose"]
+  N140_B["groupModules"]
   N140_A --> N140_B
-  N141_A["buildBusinessFlows"]
-  N141_B["formatMethodName"]
+  N141_A["buildSemanticOverview"]
+  N141_B["inferPurpose"]
   N141_A --> N141_B
   N142_A["buildBusinessFlows"]
-  N142_B["walkFlow"]
+  N142_B["formatMethodName"]
   N142_A --> N142_B
-  N143_A["groupModules"]
-  N143_B["inferGroupName"]
+  N143_A["buildBusinessFlows"]
+  N143_B["walkFlow"]
   N143_A --> N143_B
   N144_A["groupModules"]
-  N144_B["summarizeGroup"]
+  N144_B["inferGroupName"]
   N144_A --> N144_B
   N145_A["groupModules"]
-  N145_B["summarizeResponsibilities"]
+  N145_B["summarizeGroup"]
   N145_A --> N145_B
-  N146_A["inferGroupName"]
-  N146_B["inferJavaGroupName"]
+  N146_A["groupModules"]
+  N146_B["summarizeResponsibilities"]
   N146_A --> N146_B
-  N147_A["inferPurpose"]
-  N147_B["collectResourceNames"]
+  N147_A["inferGroupName"]
+  N147_B["inferJavaGroupName"]
   N147_A --> N147_B
   N148_A["inferPurpose"]
-  N148_B["formatChineseList"]
+  N148_B["collectResourceNames"]
   N148_A --> N148_B
-  N149_A["buildFlows"]
-  N149_B["formatMethodName"]
+  N149_A["inferPurpose"]
+  N149_B["formatChineseList"]
   N149_A --> N149_B
   N150_A["buildFlows"]
-  N150_B["walkFlow"]
+  N150_B["formatMethodName"]
   N150_A --> N150_B
-  N151_A["buildResourceUsage"]
-  N151_B["isInternalResource"]
+  N151_A["buildFlows"]
+  N151_B["walkFlow"]
   N151_A --> N151_B
-  N152_A["buildRelationGraph"]
-  N152_B["buildMethodNameIndex"]
+  N152_A["buildResourceUsage"]
+  N152_B["isInternalResource"]
   N152_A --> N152_B
   N153_A["buildRelationGraph"]
-  N153_B["dedupeEdges"]
+  N153_B["buildMethodNameIndex"]
   N153_A --> N153_B
   N154_A["buildRelationGraph"]
-  N154_B["relationKindForResource"]
+  N154_B["dedupeEdges"]
   N154_A --> N154_B
   N155_A["buildRelationGraph"]
-  N155_B["resolveCallTarget"]
+  N155_B["relationKindForResource"]
   N155_A --> N155_B
   N156_A["buildRelationGraph"]
-  N156_B["scoreCall"]
+  N156_B["resolveCallTarget"]
   N156_A --> N156_B
   N157_A["buildRelationGraph"]
-  N157_B["stableId"]
+  N157_B["scoreCall"]
   N157_A --> N157_B
-  N158_A["extractResources"]
-  N158_B["resourceKind"]
+  N158_A["buildRelationGraph"]
+  N158_B["stableId"]
   N158_A --> N158_B
   N159_A["extractResources"]
-  N159_B["stableId"]
+  N159_B["resourceKind"]
   N159_A --> N159_B
-  N160_A["main"]
-  N160_B["normalizeProvider"]
+  N160_A["extractResources"]
+  N160_B["stableId"]
   N160_A --> N160_B
   N161_A["main"]
-  N161_B["parseCliArgs"]
+  N161_B["normalizeProvider"]
   N161_A --> N161_B
   N162_A["main"]
-  N162_B["printHelp"]
+  N162_B["parseCliArgs"]
   N162_A --> N162_B
   N163_A["main"]
-  N163_B["runAnalyzeCommand"]
+  N163_B["printHelp"]
   N163_A --> N163_B
   N164_A["main"]
-  N164_B["runDoctorCommand"]
+  N164_B["runAnalyzeCommand"]
   N164_A --> N164_B
   N165_A["main"]
-  N165_B["runInitCommand"]
+  N165_B["runDoctorCommand"]
   N165_A --> N165_B
   N166_A["main"]
-  N166_B["runInteractiveCommand"]
+  N166_B["runInitCommand"]
   N166_A --> N166_B
-  N167_A["enrichModulesWithMethodSemantics"]
-  N167_B["MethodSemanticCache#open"]
+  N167_A["main"]
+  N167_B["runInteractiveCommand"]
   N167_A --> N167_B
   N168_A["enrichModulesWithMethodSemantics"]
-  N168_B["analyzeMethodWithLlm"]
+  N168_B["MethodSemanticCache#open"]
   N168_A --> N168_B
   N169_A["enrichModulesWithMethodSemantics"]
-  N169_B["createChatModel"]
+  N169_B["analyzeMethodWithLlm"]
   N169_A --> N169_B
   N170_A["enrichModulesWithMethodSemantics"]
-  N170_B["formatError"]
+  N170_B["createChatModel"]
   N170_A --> N170_B
   N171_A["enrichModulesWithMethodSemantics"]
-  N171_B["heuristicSemantic"]
+  N171_B["formatError"]
   N171_A --> N171_B
   N172_A["enrichModulesWithMethodSemantics"]
-  N172_B["mapWithConcurrency"]
+  N172_B["heuristicSemantic"]
   N172_A --> N172_B
   N173_A["enrichModulesWithMethodSemantics"]
-  N173_B["summarizeModuleFromMethods"]
+  N173_B["mapWithConcurrency"]
   N173_A --> N173_B
-  N174_A["attachHeuristicSemantics"]
-  N174_B["heuristicSemantic"]
+  N174_A["enrichModulesWithMethodSemantics"]
+  N174_B["summarizeModuleFromMethods"]
   N174_A --> N174_B
-  N175_A["analyzeMethodWithLlm"]
-  N175_B["buildPrompt"]
+  N175_A["attachHeuristicSemantics"]
+  N175_B["heuristicSemantic"]
   N175_A --> N175_B
   N176_A["analyzeMethodWithLlm"]
-  N176_B["parseModelResponse"]
+  N176_B["buildPrompt"]
   N176_A --> N176_B
-  N177_A["parseModelResponse"]
-  N177_B["normalizeSemantic"]
+  N177_A["analyzeMethodWithLlm"]
+  N177_B["parseModelResponse"]
   N177_A --> N177_B
-  N178_A["buildPrompt"]
-  N178_B["trimSource"]
+  N178_A["parseModelResponse"]
+  N178_B["normalizeSemantic"]
   N178_A --> N178_B
-  N179_A["loadModelConfig"]
-  N179_B["defaultBaseUrl"]
+  N179_A["buildPrompt"]
+  N179_B["trimSource"]
   N179_A --> N179_B
   N180_A["loadModelConfig"]
-  N180_B["getApiKey"]
+  N180_B["defaultBaseUrl"]
   N180_A --> N180_B
   N181_A["loadModelConfig"]
-  N181_B["parseInteger"]
+  N181_B["getApiKey"]
   N181_A --> N181_B
   N182_A["loadModelConfig"]
-  N182_B["parseNumber"]
+  N182_B["parseInteger"]
   N182_A --> N182_B
   N183_A["loadModelConfig"]
-  N183_B["parseOptionalInteger"]
+  N183_B["parseNumber"]
   N183_A --> N183_B
-  N184_A["writeResultJson"]
-  N184_B["buildResultDiff"]
+  N184_A["loadModelConfig"]
+  N184_B["parseOptionalInteger"]
   N184_A --> N184_B
-  N185_A["writeResultJson"]
-  N185_B["renderChangeSummary"]
+  N185_A["createChatModel"]
+  N185_B["applyModelNetworkEnv"]
   N185_A --> N185_B
   N186_A["writeResultJson"]
-  N186_B["toResultJson"]
+  N186_B["buildResultDiff"]
   N186_A --> N186_B
-  N187_A["toResultJson"]
-  N187_B["toPosixPath"]
+  N187_A["writeResultJson"]
+  N187_B["renderChangeSummary"]
   N187_A --> N187_B
-  N188_A["serializeEntrypoint"]
-  N188_B["methodRef"]
+  N188_A["writeResultJson"]
+  N188_B["toResultJson"]
   N188_A --> N188_B
-  N189_A["serializeFlow"]
-  N189_B["methodRef"]
+  N189_A["toResultJson"]
+  N189_B["toPosixPath"]
   N189_A --> N189_B
-  N190_A["serializeBusinessFlow"]
+  N190_A["serializeEntrypoint"]
   N190_B["methodRef"]
   N190_A --> N190_B
-  N191_A["methodRef"]
-  N191_B["formatMethodName"]
+  N191_A["serializeFlow"]
+  N191_B["methodRef"]
   N191_A --> N191_B
-  N192_A["buildResultDiff"]
-  N192_B["businessFlows"]
+  N192_A["serializeBusinessFlow"]
+  N192_B["methodRef"]
   N192_A --> N192_B
-  N193_A["buildResultDiff"]
-  N193_B["diffByKey"]
+  N193_A["methodRef"]
+  N193_B["formatMethodName"]
   N193_A --> N193_B
   N194_A["buildResultDiff"]
-  N194_B["emptyBaselineDiff"]
+  N194_B["businessFlows"]
   N194_A --> N194_B
   N195_A["buildResultDiff"]
-  N195_B["entrypoints"]
+  N195_B["diffByKey"]
   N195_A --> N195_B
   N196_A["buildResultDiff"]
-  N196_B["files"]
+  N196_B["emptyBaselineDiff"]
   N196_A --> N196_B
   N197_A["buildResultDiff"]
-  N197_B["methods"]
+  N197_B["entrypoints"]
   N197_A --> N197_B
   N198_A["buildResultDiff"]
-  N198_B["qualityScore"]
+  N198_B["files"]
   N198_A --> N198_B
   N199_A["buildResultDiff"]
-  N199_B["resources"]
+  N199_B["methods"]
   N199_A --> N199_B
   N200_A["buildResultDiff"]
-  N200_B["stableStringify"]
+  N200_B["qualityScore"]
   N200_A --> N200_B
   N201_A["buildResultDiff"]
-  N201_B["stringField"]
+  N201_B["resources"]
   N201_A --> N201_B
-  N202_A["emptyBaselineDiff"]
-  N202_B["emptyChangeSet"]
+  N202_A["buildResultDiff"]
+  N202_B["stableStringify"]
   N202_A --> N202_B
-  N203_A["emptyBaselineDiff"]
-  N203_B["qualityScore"]
+  N203_A["buildResultDiff"]
+  N203_B["stringField"]
   N203_A --> N203_B
   N204_A["emptyBaselineDiff"]
-  N204_B["stringField"]
+  N204_B["emptyChangeSet"]
   N204_A --> N204_B
-  N205_A["files"]
-  N205_B["arrayField"]
+  N205_A["emptyBaselineDiff"]
+  N205_B["qualityScore"]
   N205_A --> N205_B
-  N206_A["files"]
-  N206_B["numberValue"]
+  N206_A["emptyBaselineDiff"]
+  N206_B["stringField"]
   N206_A --> N206_B
   N207_A["files"]
-  N207_B["stringValue"]
+  N207_B["arrayField"]
   N207_A --> N207_B
-  N208_A["methods"]
-  N208_B["arrayField"]
+  N208_A["files"]
+  N208_B["numberValue"]
   N208_A --> N208_B
-  N209_A["methods"]
+  N209_A["files"]
   N209_B["stringValue"]
   N209_A --> N209_B
-  N210_A["entrypoints"]
+  N210_A["methods"]
   N210_B["arrayField"]
   N210_A --> N210_B
-  N211_A["entrypoints"]
-  N211_B["methods"]
+  N211_A["methods"]
+  N211_B["stringValue"]
   N211_A --> N211_B
   N212_A["entrypoints"]
-  N212_B["stringValue"]
+  N212_B["arrayField"]
   N212_A --> N212_B
-  N213_A["resources"]
-  N213_B["arrayField"]
+  N213_A["entrypoints"]
+  N213_B["methods"]
   N213_A --> N213_B
-  N214_A["businessFlows"]
-  N214_B["arrayField"]
+  N214_A["entrypoints"]
+  N214_B["stringValue"]
   N214_A --> N214_B
-  N215_A["businessFlows"]
-  N215_B["objectField"]
+  N215_A["resources"]
+  N215_B["arrayField"]
   N215_A --> N215_B
-  N216_A["renderChangeSummary"]
-  N216_B["renderEntrypointList"]
+  N216_A["businessFlows"]
+  N216_B["arrayField"]
   N216_A --> N216_B
-  N217_A["renderChangeSummary"]
-  N217_B["renderMethodList"]
+  N217_A["businessFlows"]
+  N217_B["objectField"]
   N217_A --> N217_B
   N218_A["renderChangeSummary"]
-  N218_B["renderStringChange"]
+  N218_B["renderEntrypointList"]
   N218_A --> N218_B
-  N219_A["qualityScore"]
-  N219_B["numberValue"]
+  N219_A["renderChangeSummary"]
+  N219_B["renderMethodList"]
   N219_A --> N219_B
-  N220_A["qualityScore"]
-  N220_B["objectField"]
+  N220_A["renderChangeSummary"]
+  N220_B["renderStringChange"]
   N220_A --> N220_B
-  N221_A["stringField"]
-  N221_B["stringValue"]
+  N221_A["qualityScore"]
+  N221_B["numberValue"]
   N221_A --> N221_B
-  N222_A["stableStringify"]
-  N222_B["stableStringify"]
+  N222_A["qualityScore"]
+  N222_B["objectField"]
   N222_A --> N222_B
-  N223_A["parseJavaModule"]
-  N223_B["buildClassResourceIndex"]
+  N223_A["stringField"]
+  N223_B["stringValue"]
   N223_A --> N223_B
-  N224_A["parseJavaModule"]
-  N224_B["buildLineIndex"]
+  N224_A["stableStringify"]
+  N224_B["stableStringify"]
   N224_A --> N224_B
   N225_A["parseJavaModule"]
-  N225_B["extractClassBlocks"]
+  N225_B["buildClassResourceIndex"]
   N225_A --> N225_B
   N226_A["parseJavaModule"]
-  N226_B["maskJavaSource"]
+  N226_B["buildLineIndex"]
   N226_A --> N226_B
   N227_A["parseJavaModule"]
-  N227_B["stableId"]
+  N227_B["extractClassBlocks"]
   N227_A --> N227_B
-  N228_A["extractClassBlocks"]
-  N228_B["findMatchingBrace"]
+  N228_A["parseJavaModule"]
+  N228_B["maskJavaSource"]
   N228_A --> N228_B
-  N229_A["extractClassUnit"]
-  N229_B["buildMethodReturnTypeIndex"]
+  N229_A["parseJavaModule"]
+  N229_B["stableId"]
   N229_A --> N229_B
-  N230_A["extractClassUnit"]
-  N230_B["buildMethodUnit"]
+  N230_A["extractClassBlocks"]
+  N230_B["findMatchingBrace"]
   N230_A --> N230_B
   N231_A["extractClassUnit"]
-  N231_B["extractClassResources"]
+  N231_B["buildMethodReturnTypeIndex"]
   N231_A --> N231_B
   N232_A["extractClassUnit"]
-  N232_B["extractFieldTypes"]
+  N232_B["buildMethodUnit"]
   N232_A --> N232_B
   N233_A["extractClassUnit"]
-  N233_B["extractMethodBlocks"]
+  N233_B["extractClassResources"]
   N233_A --> N233_B
   N234_A["extractClassUnit"]
-  N234_B["locationFromOffsets"]
+  N234_B["extractFieldTypes"]
   N234_A --> N234_B
   N235_A["extractClassUnit"]
-  N235_B["requestMappingPath"]
+  N235_B["extractMethodBlocks"]
   N235_A --> N235_B
   N236_A["extractClassUnit"]
-  N236_B["stableId"]
+  N236_B["locationFromOffsets"]
   N236_A --> N236_B
   N237_A["extractClassUnit"]
-  N237_B["summarizeClass"]
+  N237_B["requestMappingPath"]
   N237_A --> N237_B
-  N238_A["extractClassResources"]
-  N238_B["annotationAttribute"]
+  N238_A["extractClassUnit"]
+  N238_B["stableId"]
   N238_A --> N238_B
-  N239_A["extractClassResources"]
-  N239_B["annotationByName"]
+  N239_A["extractClassUnit"]
+  N239_B["summarizeClass"]
   N239_A --> N239_B
   N240_A["extractClassResources"]
-  N240_B["hasAnnotation"]
+  N240_B["annotationAttribute"]
   N240_A --> N240_B
   N241_A["extractClassResources"]
-  N241_B["isRepositoryClass"]
+  N241_B["annotationByName"]
   N241_A --> N241_B
-  N242_A["buildClassResourceIndex"]
-  N242_B["extractClassResources"]
+  N242_A["extractClassResources"]
+  N242_B["hasAnnotation"]
   N242_A --> N242_B
-  N243_A["isRepositoryClass"]
-  N243_B["hasAnnotation"]
+  N243_A["extractClassResources"]
+  N243_B["isRepositoryClass"]
   N243_A --> N243_B
-  N244_A["buildMethodReturnTypeIndex"]
-  N244_B["normalizeJavaType"]
+  N244_A["buildClassResourceIndex"]
+  N244_B["extractClassResources"]
   N244_A --> N244_B
-  N245_A["extractMethodBlocks"]
-  N245_B["findMatchingBrace"]
+  N245_A["isRepositoryClass"]
+  N245_B["hasAnnotation"]
   N245_A --> N245_B
-  N246_A["extractMethodBlocks"]
-  N246_B["leadingWhitespaceLength"]
+  N246_A["buildMethodReturnTypeIndex"]
+  N246_B["normalizeJavaType"]
   N246_A --> N246_B
   N247_A["extractMethodBlocks"]
-  N247_B["parseMethodHeader"]
+  N247_B["findMatchingBrace"]
   N247_A --> N247_B
-  N248_A["parseMethodHeader"]
-  N248_B["parseParameters"]
+  N248_A["extractMethodBlocks"]
+  N248_B["leadingWhitespaceLength"]
   N248_A --> N248_B
-  N249_A["parseMethodHeader"]
-  N249_B["stripAnnotations"]
+  N249_A["extractMethodBlocks"]
+  N249_B["parseMethodHeader"]
   N249_A --> N249_B
-  N250_A["buildMethodUnit"]
-  N250_B["buildReceiverTypeIndex"]
+  N250_A["parseMethodHeader"]
+  N250_B["parseParameters"]
   N250_A --> N250_B
-  N251_A["buildMethodUnit"]
-  N251_B["locationFromOffsets"]
+  N251_A["parseMethodHeader"]
+  N251_B["stripAnnotations"]
   N251_A --> N251_B
   N252_A["buildMethodUnit"]
-  N252_B["stableId"]
+  N252_B["buildReceiverTypeIndex"]
   N252_A --> N252_B
-  N253_A["extractCalls"]
-  N253_B["normalizeReceiverCall"]
+  N253_A["buildMethodUnit"]
+  N253_B["locationFromOffsets"]
   N253_A --> N253_B
-  N254_A["buildReceiverTypeIndex"]
-  N254_B["extractLocalVariableTypes"]
+  N254_A["buildMethodUnit"]
+  N254_B["stableId"]
   N254_A --> N254_B
-  N255_A["buildReceiverTypeIndex"]
-  N255_B["normalizeJavaType"]
+  N255_A["extractCalls"]
+  N255_B["normalizeReceiverCall"]
   N255_A --> N255_B
-  N256_A["extractResources"]
-  N256_B["extractRepositoryOperationResources"]
+  N256_A["buildReceiverTypeIndex"]
+  N256_B["extractLocalVariableTypes"]
   N256_A --> N256_B
-  N257_A["extractResources"]
-  N257_B["extractStringLiterals"]
+  N257_A["buildReceiverTypeIndex"]
+  N257_B["normalizeJavaType"]
   N257_A --> N257_B
-  N258_A["extractRepositoryOperationResources"]
-  N258_B["isPersistenceReceiver"]
+  N258_A["extractResources"]
+  N258_B["extractRepositoryOperationResources"]
   N258_A --> N258_B
-  N259_A["extractRepositoryOperationResources"]
-  N259_B["relatedResourcesForType"]
+  N259_A["extractResources"]
+  N259_B["extractStringLiterals"]
   N259_A --> N259_B
-  N260_A["extractFrameworkHints"]
-  N260_B["annotationAttribute"]
+  N260_A["extractRepositoryOperationResources"]
+  N260_B["isPersistenceReceiver"]
   N260_A --> N260_B
-  N261_A["extractFrameworkHints"]
-  N261_B["annotationByName"]
+  N261_A["extractRepositoryOperationResources"]
+  N261_B["relatedResourcesForType"]
   N261_A --> N261_B
   N262_A["extractFrameworkHints"]
-  N262_B["firstAnnotationString"]
+  N262_B["annotationAttribute"]
   N262_A --> N262_B
   N263_A["extractFrameworkHints"]
-  N263_B["hasAnnotation"]
+  N263_B["annotationByName"]
   N263_A --> N263_B
   N264_A["extractFrameworkHints"]
-  N264_B["isRepositoryClass"]
+  N264_B["firstAnnotationString"]
   N264_A --> N264_B
   N265_A["extractFrameworkHints"]
-  N265_B["routeFromAnnotations"]
+  N265_B["hasAnnotation"]
   N265_A --> N265_B
-  N266_A["extractEntrypointHints"]
-  N266_B["hasAnnotation"]
+  N266_A["extractFrameworkHints"]
+  N266_B["isRepositoryClass"]
   N266_A --> N266_B
-  N267_A["routeFromAnnotations"]
-  N267_B["annotationAttribute"]
+  N267_A["extractFrameworkHints"]
+  N267_B["routeFromAnnotations"]
   N267_A --> N267_B
-  N268_A["routeFromAnnotations"]
-  N268_B["annotationName"]
+  N268_A["extractEntrypointHints"]
+  N268_B["hasAnnotation"]
   N268_A --> N268_B
   N269_A["routeFromAnnotations"]
-  N269_B["firstAnnotationString"]
+  N269_B["annotationAttribute"]
   N269_A --> N269_B
   N270_A["routeFromAnnotations"]
-  N270_B["joinRoutePaths"]
+  N270_B["annotationName"]
   N270_A --> N270_B
   N271_A["routeFromAnnotations"]
-  N271_B["requestMappingMethod"]
+  N271_B["firstAnnotationString"]
   N271_A --> N271_B
-  N272_A["requestMappingPath"]
-  N272_B["annotationAttribute"]
+  N272_A["routeFromAnnotations"]
+  N272_B["joinRoutePaths"]
   N272_A --> N272_B
-  N273_A["requestMappingPath"]
-  N273_B["annotationName"]
+  N273_A["routeFromAnnotations"]
+  N273_B["requestMappingMethod"]
   N273_A --> N273_B
   N274_A["requestMappingPath"]
-  N274_B["firstAnnotationString"]
+  N274_B["annotationAttribute"]
   N274_A --> N274_B
-  N275_A["parseParameters"]
-  N275_B["splitTopLevel"]
+  N275_A["requestMappingPath"]
+  N275_B["annotationName"]
   N275_A --> N275_B
-  N276_A["parseParameters"]
-  N276_B["stripAnnotations"]
+  N276_A["requestMappingPath"]
+  N276_B["firstAnnotationString"]
   N276_A --> N276_B
-  N277_A["extractFieldTypes"]
-  N277_B["findMatchingBrace"]
+  N277_A["parseParameters"]
+  N277_B["splitTopLevel"]
   N277_A --> N277_B
-  N278_A["extractFieldTypes"]
-  N278_B["parseFieldStatement"]
+  N278_A["parseParameters"]
+  N278_B["stripAnnotations"]
   N278_A --> N278_B
-  N279_A["extractLocalVariableTypes"]
-  N279_B["normalizeJavaType"]
+  N279_A["extractFieldTypes"]
+  N279_B["findMatchingBrace"]
   N279_A --> N279_B
-  N280_A["extractLocalVariableTypes"]
-  N280_B["normalizeReceiverCall"]
+  N280_A["extractFieldTypes"]
+  N280_B["parseFieldStatement"]
   N280_A --> N280_B
-  N281_A["parseFieldStatement"]
+  N281_A["extractLocalVariableTypes"]
   N281_B["normalizeJavaType"]
   N281_A --> N281_B
-  N282_A["parseFieldStatement"]
-  N282_B["splitTopLevel"]
+  N282_A["extractLocalVariableTypes"]
+  N282_B["normalizeReceiverCall"]
   N282_A --> N282_B
   N283_A["parseFieldStatement"]
-  N283_B["stripAnnotations"]
+  N283_B["normalizeJavaType"]
   N283_A --> N283_B
-  N284_A["hasAnnotation"]
-  N284_B["annotationName"]
+  N284_A["parseFieldStatement"]
+  N284_B["splitTopLevel"]
   N284_A --> N284_B
-  N285_A["annotationByName"]
-  N285_B["annotationName"]
+  N285_A["parseFieldStatement"]
+  N285_B["stripAnnotations"]
   N285_A --> N285_B
-  N286_A["locationFromOffsets"]
-  N286_B["lineNumberAt"]
+  N286_A["hasAnnotation"]
+  N286_B["annotationName"]
   N286_A --> N286_B
-  N287_A["parseModules"]
-  N287_B["findParserAdapter"]
+  N287_A["annotationByName"]
+  N287_B["annotationName"]
   N287_A --> N287_B
-  N288_A["parseModules"]
-  N288_B["stableId"]
+  N288_A["locationFromOffsets"]
+  N288_B["lineNumberAt"]
   N288_A --> N288_B
-  N289_A["parseTypeScriptModule"]
-  N289_B["extractFunctionUnit"]
+  N289_A["parseModules"]
+  N289_B["findParserAdapter"]
   N289_A --> N289_B
-  N290_A["parseTypeScriptModule"]
-  N290_B["extractVariableFunctionUnit"]
+  N290_A["parseModules"]
+  N290_B["stableId"]
   N290_A --> N290_B
   N291_A["parseTypeScriptModule"]
-  N291_B["stableId"]
+  N291_B["extractFunctionUnit"]
   N291_A --> N291_B
   N292_A["parseTypeScriptModule"]
-  N292_B["summarizeModule"]
+  N292_B["extractVariableFunctionUnit"]
   N292_A --> N292_B
-  N293_A["extractClassUnit"]
-  N293_B["extractCallableUnit"]
+  N293_A["parseTypeScriptModule"]
+  N293_B["stableId"]
   N293_A --> N293_B
-  N294_A["extractClassUnit"]
-  N294_B["getLocation"]
+  N294_A["parseTypeScriptModule"]
+  N294_B["summarizeModule"]
   N294_A --> N294_B
   N295_A["extractClassUnit"]
-  N295_B["stableId"]
+  N295_B["extractCallableUnit"]
   N295_A --> N295_B
-  N296_A["extractFunctionUnit"]
-  N296_B["extractCallableUnit"]
+  N296_A["extractClassUnit"]
+  N296_B["getLocation"]
   N296_A --> N296_B
-  N297_A["extractVariableFunctionUnit"]
-  N297_B["extractCallableUnit"]
+  N297_A["extractClassUnit"]
+  N297_B["stableId"]
   N297_A --> N297_B
-  N298_A["extractCallableUnit"]
-  N298_B["buildSignature"]
+  N298_A["extractFunctionUnit"]
+  N298_B["extractCallableUnit"]
   N298_A --> N298_B
-  N299_A["extractCallableUnit"]
-  N299_B["extractParameters"]
+  N299_A["extractVariableFunctionUnit"]
+  N299_B["extractCallableUnit"]
   N299_A --> N299_B
   N300_A["extractCallableUnit"]
-  N300_B["getLocation"]
+  N300_B["buildSignature"]
   N300_A --> N300_B
   N301_A["extractCallableUnit"]
-  N301_B["hasModifier"]
+  N301_B["extractParameters"]
   N301_A --> N301_B
   N302_A["extractCallableUnit"]
-  N302_B["isJavaScriptFile"]
+  N302_B["getLocation"]
   N302_A --> N302_B
   N303_A["extractCallableUnit"]
-  N303_B["stableId"]
+  N303_B["hasModifier"]
   N303_A --> N303_B
-  N304_A["extractVisibility"]
-  N304_B["hasModifier"]
+  N304_A["extractCallableUnit"]
+  N304_B["isJavaScriptFile"]
   N304_A --> N304_B
-  N305_A["extractCalls"]
-  N305_B["formatCallExpression"]
+  N305_A["extractCallableUnit"]
+  N305_B["stableId"]
   N305_A --> N305_B
-  N306_A["extractFrameworkHints"]
-  N306_B["literalText"]
+  N306_A["extractVisibility"]
+  N306_B["hasModifier"]
   N306_A --> N306_B
-  N307_A["extractFrameworkHints"]
-  N307_B["parseHttpRouteCall"]
+  N307_A["extractCalls"]
+  N307_B["formatCallExpression"]
   N307_A --> N307_B
-  N308_A["extractEntrypointHints"]
-  N308_B["parseHttpRouteCall"]
+  N308_A["extractFrameworkHints"]
+  N308_B["literalText"]
   N308_A --> N308_B
-  N309_A["parseHttpRouteCall"]
-  N309_B["literalText"]
+  N309_A["extractFrameworkHints"]
+  N309_B["parseHttpRouteCall"]
   N309_A --> N309_B
-  N310_A["scanRepo"]
-  N310_B["detectLanguage"]
+  N310_A["extractEntrypointHints"]
+  N310_B["parseHttpRouteCall"]
   N310_A --> N310_B
-  N311_A["scanRepo"]
-  N311_B["matchesAnyExclude"]
+  N311_A["parseHttpRouteCall"]
+  N311_B["literalText"]
   N311_A --> N311_B
   N312_A["scanRepo"]
-  N312_B["toPosixPath"]
+  N312_B["detectLanguage"]
   N312_A --> N312_B
-  N313_A["matchesAnyExclude"]
-  N313_B["matchesExclude"]
+  N313_A["scanRepo"]
+  N313_B["matchesAnyExclude"]
   N313_A --> N313_B
-  N314_A["matchesExclude"]
-  N314_B["escapeRegex"]
+  N314_A["scanRepo"]
+  N314_B["toPosixPath"]
   N314_A --> N314_B
-  N315_A["matchesExclude"]
-  N315_B["toPosixPath"]
+  N315_A["matchesAnyExclude"]
+  N315_B["matchesExclude"]
   N315_A --> N315_B
-  N316_A["readJson"]
-  N316_B["readJsonAt"]
+  N316_A["matchesExclude"]
+  N316_B["escapeRegex"]
   N316_A --> N316_B
-  N317_A["generateFixtureOutput"]
-  N317_B["analyzeRepo"]
+  N317_A["matchesExclude"]
+  N317_B["toPosixPath"]
   N317_A --> N317_B
-  N318_A["generateFixtureOutput"]
-  N318_B["generateDocs"]
+  N318_A["readJson"]
+  N318_B["readJsonAt"]
   N318_A --> N318_B
   N319_A["generateFixtureOutput"]
-  N319_B["writeResultJson"]
+  N319_B["analyzeRepo"]
   N319_A --> N319_B
-  N320_A["assertSchema"]
-  N320_B["assertSchema"]
+  N320_A["generateFixtureOutput"]
+  N320_B["generateDocs"]
   N320_A --> N320_B
-  N321_A["assertSchema"]
-  N321_B["typeOf"]
+  N321_A["generateFixtureOutput"]
+  N321_B["writeResultJson"]
   N321_A --> N321_B
+  N322_A["assertSchema"]
+  N322_B["assertSchema"]
+  N322_A --> N322_B
+  N323_A["assertSchema"]
+  N323_B["typeOf"]
+  N323_A --> N323_B
 ```
 
 ## Edges
@@ -995,6 +1001,7 @@ flowchart TD
 | buildSyntheticRepositoryMethod | syntheticParameters | syntheticParameters | 1 |
 | buildSyntheticRepositoryMethod | syntheticReturnType | syntheticReturnType | 1 |
 | runAnalyzeCommand | analyzeRepo | analyzeRepo | 1 |
+| runAnalyzeCommand | applyModelNetworkEnv | applyModelNetworkEnv | 1 |
 | runAnalyzeCommand | generateDocs | generateDocs | 1 |
 | runAnalyzeCommand | loadModelConfig | loadModelConfig | 1 |
 | runAnalyzeCommand | loadProjectConfig | loadProjectConfig | 1 |
@@ -1160,6 +1167,7 @@ flowchart TD
 | loadModelConfig | parseInteger | parseInteger | 1 |
 | loadModelConfig | parseNumber | parseNumber | 1 |
 | loadModelConfig | parseOptionalInteger | parseOptionalInteger | 1 |
+| createChatModel | applyModelNetworkEnv | applyModelNetworkEnv | 1 |
 | writeResultJson | buildResultDiff | buildResultDiff | 1 |
 | writeResultJson | renderChangeSummary | renderChangeSummary | 1 |
 | writeResultJson | toResultJson | toResultJson | 1 |

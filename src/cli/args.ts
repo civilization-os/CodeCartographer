@@ -42,6 +42,14 @@ export function parseCliArgs(rawArgs: string[]): CliOptions {
         overrides.SEE_CODE_LLM_BASE_URL = requireValue(arg, next);
         index += 1;
         break;
+      case "--no-proxy": {
+        const noProxy = requireValue(arg, next);
+        overrides.SEE_CODE_NO_PROXY = noProxy;
+        overrides.NO_PROXY = noProxy;
+        overrides.no_proxy = noProxy;
+        index += 1;
+        break;
+      }
       case "--api-key":
         overrides.SEE_CODE_LLM_API_KEY = requireValue(arg, next);
         index += 1;

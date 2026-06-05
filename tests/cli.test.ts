@@ -22,6 +22,8 @@ test("parses analyze flags into environment overrides", () => {
     "deepseek",
     "--model",
     "deepseek-chat",
+    "--no-proxy",
+    "localhost,127.0.0.1,.internal",
     "--llm-limit",
     "5",
     "--no-llm-cache"
@@ -31,6 +33,9 @@ test("parses analyze flags into environment overrides", () => {
   assert.equal(options.targetPath, "sample-repo");
   assert.equal(options.envOverrides.SEE_CODE_LLM_PROVIDER, "deepseek");
   assert.equal(options.envOverrides.SEE_CODE_LLM_MODEL, "deepseek-chat");
+  assert.equal(options.envOverrides.SEE_CODE_NO_PROXY, "localhost,127.0.0.1,.internal");
+  assert.equal(options.envOverrides.NO_PROXY, "localhost,127.0.0.1,.internal");
+  assert.equal(options.envOverrides.no_proxy, "localhost,127.0.0.1,.internal");
   assert.equal(options.envOverrides.SEE_CODE_LLM_LIMIT, "5");
   assert.equal(options.envOverrides.SEE_CODE_LLM_CACHE, "0");
 });
@@ -41,6 +46,7 @@ test("writes safe project config without API keys", async () => {
     targetPath: tempRoot,
     provider: "deepseek",
     model: "deepseek-chat",
+    noProxy: "localhost,127.0.0.1,.internal",
     excludes: ["generated/**"],
     maxFileBytes: 4096
   });
@@ -53,6 +59,7 @@ test("writes safe project config without API keys", async () => {
     llm: {
       provider: string;
       model: string;
+      noProxy: string;
       cache: boolean;
       apiKey?: string;
     };
@@ -62,6 +69,7 @@ test("writes safe project config without API keys", async () => {
   assert.deepEqual(config.scan.exclude, ["generated/**"]);
   assert.equal(config.llm.provider, "deepseek");
   assert.equal(config.llm.model, "deepseek-chat");
+  assert.equal(config.llm.noProxy, "localhost,127.0.0.1,.internal");
   assert.equal(config.llm.cache, true);
   assert.equal(config.llm.apiKey, undefined);
   await assert.rejects(
@@ -79,12 +87,15 @@ test("doctor reports missing LLM API key without printing secrets", async () => 
     targetPath: tempRoot,
     envOverrides: {
       SEE_CODE_LLM_PROVIDER: "deepseek",
-      SEE_CODE_LLM_MODEL: "deepseek-chat"
+      SEE_CODE_LLM_MODEL: "deepseek-chat",
+      SEE_CODE_NO_PROXY: "localhost,.internal"
     }
   });
   const apiKeyCheck = checks.find((check) => check.label === "LLM API key");
+  const noProxyCheck = checks.find((check) => check.label === "No proxy");
 
   assert.equal(apiKeyCheck?.status, "warn");
   assert.match(apiKeyCheck?.detail ?? "", /missing/);
+  assert.equal(noProxyCheck?.detail, "localhost,.internal");
   assert.doesNotMatch(JSON.stringify(checks), /sk-/);
 });

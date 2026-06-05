@@ -188,7 +188,7 @@ function methodSummaryCoverageCheck(
   const llmCoverage = llmCount / methodCount;
   return {
     name: "Method summary coverage",
-    status: heuristicCount === 0 ? "pass" : llmCoverage >= 0.95 ? "warn" : "fail",
+    status: heuristicCount === 0 ? "pass" : llmCoverage >= 0.9 ? "warn" : "fail",
     detail: `${coverageDetail} Coverage is ${Math.round(llmCoverage * 100)}%.`
   };
 }

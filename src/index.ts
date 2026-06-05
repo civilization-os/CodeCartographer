@@ -24,6 +24,7 @@ async function main(): Promise<void> {
         provider: normalizeProvider(options.envOverrides.SEE_CODE_LLM_PROVIDER),
         model: options.envOverrides.SEE_CODE_LLM_MODEL,
         baseUrl: options.envOverrides.SEE_CODE_LLM_BASE_URL,
+        noProxy: options.envOverrides.SEE_CODE_NO_PROXY,
         excludes: options.excludes,
         maxFileBytes: options.maxFileBytes,
         force: options.force
@@ -60,6 +61,7 @@ Analyze options:
   --provider none|deepseek|openai|anthropic|openai-compatible|anthropic-compatible
   --model <model-name>
   --base-url <compatible-api-base-url>
+  --no-proxy <hosts>        Comma-separated hosts that should bypass proxies
   --api-key <key>
   --llm-limit <count>       Max uncached methods to send to the LLM in this run
   --no-llm-cache            Disable MethodUnit semantic cache
@@ -70,6 +72,7 @@ Init options:
   --provider <provider>     Store non-sensitive provider defaults
   --model <model-name>      Store non-sensitive model default
   --base-url <url>          Store non-sensitive compatible API base URL
+  --no-proxy <hosts>        Store non-sensitive proxy bypass hosts
   --exclude <glob>          Add a project exclude rule; repeatable
   --max-file-bytes <bytes>  Set scan file size limit
   --force                   Overwrite existing see-code.config.json
@@ -79,6 +82,7 @@ Environment:
   SEE_CODE_LLM_MODEL=deepseek-chat
   SEE_CODE_LLM_API_KEY=...
   SEE_CODE_LLM_BASE_URL=https://api.deepseek.com
+  SEE_CODE_NO_PROXY=localhost,127.0.0.1,.internal
   SEE_CODE_LLM_LIMIT=10
   SEE_CODE_LLM_CACHE=1
 `);

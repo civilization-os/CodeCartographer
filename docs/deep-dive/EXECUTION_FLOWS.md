@@ -29,14 +29,14 @@ Entry: `src/index.ts:8` main
 
 ### Steps
 
-1. main - 解析命令行参数并根据子命令分发执行交互、分析、初始化、诊断或帮助操作。
+1. main - main 定义一个可调用单元；调用 normalizeProvider, parseCliArgs, printHelp, process.argv.slice, runAnalyzeCommand。
 2. normalizeProvider - 将字符串或未定义值标准化为有效的ModelProvider枚举值，若无效则抛出错误。
-3. parseCliArgs - 解析命令行参数并返回结构化的 CliOptions 对象，包含命令、目标路径、环境变量覆盖、排除列表等配置。
-4. printHelp - 打印 CodeCartographer 工具的帮助信息，包括用法、命令、选项和环境变量说明。
-5. runAnalyzeCommand - runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, console.log, generateDocs, loadModelConfig, loadProjectConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。
+3. parseCliArgs - parseCliArgs 定义一个可调用单元；调用 commandFrom, excludes.push, parsePositiveInteger, positional.push, rawArgs.filter。
+4. printHelp - printHelp 定义一个可调用单元；调用 console.log。
+5. runAnalyzeCommand - runAnalyzeCommand 定义一个可调用单元；调用 analyzeRepo, applyModelNetworkEnv, console.log, generateDocs, loadModelConfig；访问 FILE:QUALITY_REPORT.md, FILE:README.md。
 6. runDoctorCommand - 运行医生诊断命令，收集并输出所有检查结果，若有失败项则设置退出码为1。
 7. runInitCommand - 初始化项目配置并写入文件，同时输出提示信息。
-8. runInteractiveCommand - 通过交互式命令行引导用户配置并依次执行初始化、诊断和分析命令。
+8. runInteractiveCommand - runInteractiveCommand 定义一个可调用单元；调用 ask, askSecret, askYesNo, console.log, defaultModel。
 9. commandFrom - 根据输入字符串或默认值返回对应的 CLI 命令类型。
 10. parsePositiveInteger - 解析命令行参数中的正整数，若无效则抛出错误。
 
@@ -142,7 +142,7 @@ Entry: `tests/schemaContract.test.ts:88` generateFixtureOutput
 7. buildRelationGraph - 构建模块、类、方法和资源之间的关系图，返回节点和边集合。
 8. buildScanRuntimeInfo - 构建扫描运行时信息，合并默认排除规则与用户配置，并设置最大文件字节数和配置路径。
 9. enrichModulesWithMethodSemantics - 对模块列表中的每个方法进行语义分析，优先使用缓存，未缓存的方法通过LLM或启发式方法分析，并更新模块和类的摘要。
-10. loadModelConfig - 从环境变量和项目配置中加载并合并LLM模型配置，返回一个完整的ModelConfig对象。
+10. loadModelConfig - loadModelConfig 定义一个可调用单元；调用 Boolean, defaultBaseUrl, defaultModel, getApiKey, modelProviderSchema.parse。
 
 ### Resources
 

@@ -9,6 +9,7 @@ export interface InitCommandOptions {
   provider: ModelProvider;
   model?: string;
   baseUrl?: string;
+  noProxy?: string;
   excludes?: string[];
   maxFileBytes?: number;
   force?: boolean;
@@ -46,6 +47,9 @@ export function buildProjectConfig(options: InitCommandOptions): ProjectConfig {
     }
     if (options.baseUrl) {
       llm.baseUrl = options.baseUrl;
+    }
+    if (options.noProxy) {
+      llm.noProxy = options.noProxy;
     }
   }
 
